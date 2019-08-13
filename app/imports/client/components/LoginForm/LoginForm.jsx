@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import R from 'ramda';
-import Radium from 'radium';
 import Future from 'fluture';
 
 // Import components
@@ -19,7 +18,7 @@ class LoginForm extends Component {
     this.state = { user: false }
   }
 
-  setUser(error, users) { 
+  setUser(error, users) {
     if(!error && (users.length >0)) {
       this.setState({ user: users[0]});
     }

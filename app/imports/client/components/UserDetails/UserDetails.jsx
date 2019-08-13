@@ -60,7 +60,7 @@ class UserDetails extends Component {
     var isAdmin = Roles.userIsInRole(user._id, 'admin');
     var readonly = (this.props.currentuser == user._id);
 
-    backcolor = s.base.background;
+    let backcolor = s.base.background;
     if(!this.state.showDetails) {
       // show admins and records that are not active in different color
       if(!isActive) {

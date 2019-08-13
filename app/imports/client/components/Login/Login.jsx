@@ -87,7 +87,7 @@ class Login extends Component {
     const {currentUser} = this.props
     const {settings} = this.props
 
-    active = currentUser && currentUser.profile && currentUser.profile.active
+    let active = currentUser && currentUser.profile && currentUser.profile.active
     // if(!settings.onboarding.enabled) {
     //   active=true;
     // }

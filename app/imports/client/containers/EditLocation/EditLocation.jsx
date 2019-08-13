@@ -2,14 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import R from 'ramda';
 
 // Import components
 import EditFields from '../../components/EditFields/EditFields';
 
 // Import models
-import { Locations, LocationsSchema, Address2LatLng } from '/imports/api/locations.js'; 
+import { Locations, LocationsSchema, Address2LatLng } from '/imports/api/locations.js';
 
 class EditLocation extends Component {
 
@@ -48,7 +47,7 @@ class EditLocation extends Component {
       if(lat_lng_str=="0,0") {
         lat_lng_str="";
       }
-    }  
+    }
 
     return lat_lng_str;
   }

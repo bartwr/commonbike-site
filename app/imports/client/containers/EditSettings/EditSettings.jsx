@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import R from 'ramda';
 import {propTypes} from 'react-router';
 

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 
 // Block component - Renders an item block
 class TransactionBlock extends Component {
@@ -43,4 +42,4 @@ TransactionBlock.defaultProps = {
   isEditable: false
 }
 
-export default Radium(TransactionBlock);
+export default TransactionBlock;

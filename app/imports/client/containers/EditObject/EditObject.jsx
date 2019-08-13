@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
@@ -219,7 +218,7 @@ class EditObject extends Component {
   }
 
   getCoinFields() {
-    fields = [
+    let fields = [
       {
           controltype: 'header',
           label: 'CommonBikeCoin'

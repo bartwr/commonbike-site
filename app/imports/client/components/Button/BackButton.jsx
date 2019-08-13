@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import Radium from 'radium';
 
 class BackButton extends Component {
 
@@ -30,4 +29,4 @@ BackButton.propTypes = {
 BackButton.defaultProps = {
 }
 
-export default Radium(BackButton);
+export default BackButton;

@@ -455,9 +455,9 @@ if (Meteor.isServer) {
 				console.log('create genesis user');
 
 				Accounts.createUser({
-						username: 'commonbike-admin',
-						email : 'info@common.bike',
-						password : 'commonbike-admin-!!##',
+						username: 'backend-admin',
+						email : 'admin@lisk.bike',
+						password : 'lisk!!!!',
 						profile  : {
 								active: true
 						}

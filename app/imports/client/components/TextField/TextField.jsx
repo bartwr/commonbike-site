@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-import Radium from 'radium';
 
 class TextField extends Component {
 
@@ -172,4 +171,4 @@ TextField.defaultProps = {
   rows: 1,
 };
 
-export default Radium(TextField);
+export default TextField;

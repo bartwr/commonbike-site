@@ -1,5 +1,4 @@
 // Import libraries & helpers
-import Radium, { StyleRoot } from 'radium';
 import React, { Component, PropTypes } from 'react';
 
 class SocialShare extends Component  {
@@ -121,4 +120,4 @@ var styles = {
   }
 }
 
-export default Radium(SocialShare);
+export default SocialShare;

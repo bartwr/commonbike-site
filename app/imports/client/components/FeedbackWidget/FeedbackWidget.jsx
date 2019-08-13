@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import { Accounts } from 'meteor/accounts-base';
 
 class FeedbackWidget extends Component {
@@ -47,4 +46,4 @@ var s = {
 FeedbackWidget.propTypes = {
 }
 
-export default Radium(FeedbackWidget);
+export default FeedbackWidget;

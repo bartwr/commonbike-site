@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-import Radium from 'radium';
 import { RedirectTo } from '/client/main'
 
 // Import components
@@ -31,4 +30,4 @@ SignUpButton.defaultProps = {
   buttonText: 'Gaaf, meld me aan!'
 };
 
-export default Radium(SignUpButton);
+export default SignUpButton;

@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import Radium, { StyleRoot } from 'radium';
 import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
@@ -22,14 +21,11 @@ class Landing extends Component {
   render() {
     return (
       <div style={s.base} ref="base">
-
         <CommonBikeLogo style={s.logo} />
 
-        <StyleRoot>
-          <p style={s.introText}>
-            Welkom bij het nieuwe fiets-deel-systeem van Nederland. Wij maken bike sharing leuk en gemakkelijk. Ons doel: overal en altijd een fiets voor iedereen.
-          </p>
-        </StyleRoot>
+        <p style={s.introText}>
+          Welkom bij het nieuwe fiets-deel-systeem van Nederland. Wij maken bike sharing leuk en gemakkelijk. Ons doel: overal en altijd een fiets voor iedereen.
+        </p>
 
         <div style={s.bottomWrapper}>
           <p>
@@ -75,7 +71,7 @@ var s = {
     fontWeight: '500',
     fontSize: '1.45em',
     lineHeight: '1.3em',
-    '@media (min-width: 700px)': {
+    '@media (minWidth: 700px)': {
       maxWidth: '500px'
     }
   },
@@ -90,4 +86,4 @@ export default createContainer((props) => {
   return {
     currentUser: Meteor.user()
   };
-}, Radium(Landing));
+}, Landing);

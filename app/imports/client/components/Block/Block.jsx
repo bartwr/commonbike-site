@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import R from 'ramda';
 
 // Import models
@@ -35,6 +34,7 @@ class Block extends Component {
   }
 
   state2Text(state) {
+    let text = "";
     if (state=='r_available') {
       text = 'BESCHIKBAAR';
     } else if (state=='r_rentstart') {
@@ -181,4 +181,4 @@ Block.defaultProps = {
   showLockDetails: false
 }
 
-export default Radium(Block);
+export default Block;

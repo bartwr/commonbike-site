@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import Radium, { StyleRoot } from 'radium';
 import R from 'ramda';
 
 // Import components
@@ -51,4 +50,4 @@ ContentPage.propTypes = {
   children: PropTypes.any.isRequired,
 };
 
-export default Radium(ContentPage);
+export default ContentPage;

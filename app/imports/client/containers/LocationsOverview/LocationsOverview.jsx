@@ -89,8 +89,7 @@ class LocationList extends Component {
         <LocationsMap locations={locations}
                         objects={this.props.objects}
                         settings={this.props.settings}
-                        mapChanged={this.mapChanged.bind(this)}
-                        />
+                        mapChanged={this.mapChanged.bind(this)} />
       );
     } else {
       return (<div />);
@@ -98,6 +97,7 @@ class LocationList extends Component {
   }
 
   render() {
+    let locations = undefined;
     if(!this.props.isEditable) {
       locations = R.filter(this.getVisibleObjectsOnly.bind(this), this.props.locations)
     } else {

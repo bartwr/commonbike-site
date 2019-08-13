@@ -237,7 +237,7 @@ class LocationsMapComponent extends Component {
     console.log('trackSuccess');
 
     const {coords} = pos
-    newLatLng = [coords.latitude, coords.longitude]
+    let newLatLng = [coords.latitude, coords.longitude]
 
     var trackingMarkersGroup = this.state.trackingMarkersGroup;
     var marker = undefined;
@@ -271,7 +271,7 @@ class LocationsMapComponent extends Component {
 
   toggleTrackUser() {
     if(this.state.watchId==undefined) {
-      options = {
+      let options = {
         enableHighAccuracy: true,
         timeout: 1000,
         maximumAge: 0
@@ -403,8 +403,7 @@ LocationsMapComponent.defaultProps = {
   width: '100vw',
   height: '50vh',
   clickItemHandler: '',
-//  startLocation: [52.159685, 4.490405], // Leiden
-  startLocation: [51.842122, 5.859506],   // Nijmegen
+  startLocation: [52.088304, 5.107243],   // LCU
   startZoom: 15
 }
 

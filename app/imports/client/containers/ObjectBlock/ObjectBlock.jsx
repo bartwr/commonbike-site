@@ -1,12 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
 // Import models
-import { Objects } from '/imports/api/objects.js'; 
+import { Objects } from '/imports/api/objects.js';
 
 // Import components
 import Block from '../../components/Block/Block';
@@ -124,4 +123,4 @@ ObjectBlock.defaultProps = {
   isEditable: false
 }
 
-export default Radium(ObjectBlock);
+export default ObjectBlock;

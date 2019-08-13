@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor';
-import Radium from 'radium';
 
 class RaisedButton extends Component {
 
@@ -148,4 +147,4 @@ RaisedButton.defaultProps = {
   secondary: false,
 };
 
-export default Radium(RaisedButton);
+export default RaisedButton;

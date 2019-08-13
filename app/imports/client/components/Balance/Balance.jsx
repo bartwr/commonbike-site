@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 
 // Balance component - Renders an item Balance
 class Balance extends Component {
@@ -116,4 +115,4 @@ Balance.defaultProps = {
   showBC: true,
 }
 
-export default Radium(Balance);
+export default Balance;

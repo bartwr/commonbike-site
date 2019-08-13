@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
@@ -112,4 +111,4 @@ LocationBlock.defaultProps = {
   isEditable: false
 }
 
-export default Radium(LocationBlock);
+export default LocationBlock;

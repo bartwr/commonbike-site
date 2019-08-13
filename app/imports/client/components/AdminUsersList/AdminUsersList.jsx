@@ -9,7 +9,7 @@ import UserDetails from '../UserDetails/UserDetails.jsx';
 
 /**
  *  AdminUsersList
- * 
+ *
  * @param {Object} users
  * @param {Boolean} isEditable
  */
@@ -24,13 +24,13 @@ class AdminUsersList extends Component {
   }
 
   render() {
-    currentuser = Meteor.userId();
+    let currentuser = Meteor.userId();
     return (
       <div style={s.base}>
         <div style={Object.assign({display: 'none'}, this.props.isEditable && {display: 'block'})}>
 
           <p style={s.paragraph}>
-            Op deze pagina kun je gebruikers beheren. 
+            Op deze pagina kun je gebruikers beheren.
           </p>
         </div>
 

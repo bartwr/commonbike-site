@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import Radium, { StyleRoot } from 'radium';
 import R from 'ramda';
 
 import SignUpButton from '../SignUpButton/SignUpButton.jsx';
@@ -91,4 +90,4 @@ export default createContainer((props) => {
   return {
     currentUser: Meteor.user()
   };
-}, Radium(Join));
+}, Join);
