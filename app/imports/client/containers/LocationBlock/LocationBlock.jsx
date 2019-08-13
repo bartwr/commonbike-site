@@ -3,10 +3,10 @@ import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import Radium from 'radium';
 import R from 'ramda';
-import {propTypes} from 'react-router';
+import { RedirectTo } from '/client/main'
 
 // Import models
-import { Locations } from '/imports/api/locations.js'; 
+import { Locations } from '/imports/api/locations.js';
 
 // Import components
 import Block from '../../components/Block/Block';
@@ -15,14 +15,14 @@ class LocationBlock extends Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = { title: props.item.title, imageUrl: props.item.imageUrl }
   }
-    
+
   //+handleChange :: Event -> StateChange
   handleChange(e) {
     this.state.title = e.target.value;
-    
+
     Meteor.call('locations.update', this.props.item._id, this.state);
   }
 
@@ -40,7 +40,7 @@ class LocationBlock extends Component {
   }
 
   viewItem() {
-    this.context.history.push((this.props.isEditable ? '/admin/location/' : '/location/') + this.props.item._id)
+    RedirectTo((this.props.isEditable ? '/admin/location/' : '/location/') + this.props.item._id)
   }
 
   deleteItem() {
@@ -99,10 +99,6 @@ var s = {
     cursor: 'pointer',
     fontWeight: 'bold',
   }
-}
-
-LocationBlock.contextTypes = {
-  history: propTypes.historyContext
 }
 
 LocationBlock.propTypes = {

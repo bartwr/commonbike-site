@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { createContainer } from 'meteor/react-meteor-data';
 import L from 'leaflet'
-import { Settings } from '/imports/api/settings.js'; 
+import { Settings } from '/imports/api/settings.js';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition
 // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition
@@ -11,7 +11,6 @@ myLatLng = [0,0]
 myMap = undefined
 myMarker = undefined
 
-//
 class Map extends Component {
 
   watchMyLatLng() {
@@ -52,13 +51,13 @@ class Map extends Component {
     myMap = L.map('mapid').setView(item.lat_lng, 17)
 
     // https://www.mapbox.com/api-documentation/#retrieve-a-static-map-image
-    const url = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
     // const url = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+    const url = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}'
 
     L.tileLayer(url, {
       attribution: '<a href="http://mapbox.com">Mapbox</a> | <a href="http://openstreetmap.org">OpenStreetMap</a>',
       maxZoom: 22,
-      id: this.props.style,  
+      id: this.props.style,
       accessToken: this.props.accessToken
     }).addTo(myMap)
 
@@ -67,30 +66,30 @@ class Map extends Component {
 
     if (useCustomMarkerIcon) {
       const myIcon = L.icon({
-          iconUrl: '/files/LocationDetails/marker.svg',
-          iconSize: [32, 32],
-          iconAnchor: [15, 25],
-          popupAnchor: [8, -16],
-          // iconUrl: 'my-icon.png',
-          // iconRetinaUrl: 'my-icon@2x.png',
-          // iconSize: [38, 95],
-          // iconAnchor: [22, 94],
-          // popupAnchor: [-3, -76],
-          // shadowUrl: 'my-icon-shadow.png',
-          // shadowRetinaUrl: 'my-icon-shadow@2x.png',
-          // shadowSize: [68, 95],
-          // shadowAnchor: [22, 94]
+        iconUrl: '/files/LocationDetails/marker.svg',
+        iconSize: [32, 32],
+        iconAnchor: [15, 25],
+        popupAnchor: [8, -16],
+        // iconUrl: 'my-icon.png',
+        // iconRetinaUrl: 'my-icon@2x.png',
+        // iconSize: [38, 95],
+        // iconAnchor: [22, 94],
+        // popupAnchor: [-3, -76],
+        // shadowUrl: 'my-icon-shadow.png',
+        // shadowRetinaUrl: 'my-icon-shadow@2x.png',
+        // shadowSize: [68, 95],
+        // shadowAnchor: [22, 94]
       })
       marker = L.marker(item.lat_lng, {icon: myIcon}).addTo(myMap)
     } else { // !useCustomMarkerIcon
       marker = L.marker(item.lat_lng).addTo(myMap)
     }
-    
+
     marker.bindPopup(`<b>${item.title}</b><br>${item.address}`).openPopup()
 
     myMarker = L.circleMarker(myLatLng).addTo(myMap)
     myMarker.bindPopup(`<b>You are here</b>`)
-  
+
     this.watchMyLatLng()
   }
 

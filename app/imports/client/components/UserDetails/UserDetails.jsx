@@ -3,7 +3,7 @@ import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 import R from 'ramda';
-import {propTypes} from 'react-router';
+import { RedirectTo } from '/client/main'
 
 // Import components
 import ObjectBlock from '../../containers/ObjectBlock/ObjectBlock';
@@ -47,11 +47,14 @@ class UserDetails extends Component {
     var isActive = false;
     var picture = '';
     var canCreateLocations = false;
+    var publickey = '';
     if (user.profile) {
         name = user.profile.name||'anoniem'
         isActive = user.profile.active|| false
         picture = user.profile.avatar|| ''
         canCreateLocations = user.profile.cancreatelocations|| false
+        publickey = user.profile.wallet && user.profile.wallet.address|| ''
+        if(publickey!='') publickey=publickey.substring(0,10)+'.....'
     }
     var email = user.emails ? user.emails[0].address : name + ' (no email)'
     var isAdmin = Roles.userIsInRole(user._id, 'admin');
@@ -64,7 +67,7 @@ class UserDetails extends Component {
         backcolor = 'red'
       } else if(isAdmin) {
         backcolor = 'yellow'
-      } 
+      }
     }
 
     return (
@@ -79,10 +82,11 @@ class UserDetails extends Component {
                 <li style={s.listitem}><img style={s.profilepicture} src={picture}/></li>
                 <li style={s.listitem}>{name}</li>
                 <li style={s.listitem}>{email}</li>
+                <li style={s.listitem}>{publickey}</li>
                 <li style={s.listitem}>Admin: { this.getToggleButton('currentuser.setAdmin', user._id, isAdmin, readonly, 'Weet je zeker dat je deze gebruiker admin rechten wilt geven?') }</li>
                 <li style={s.listitem}>Active: { this.getToggleButton('currentuser.setActive', user._id, isActive, readonly) }</li>
                 <li style={s.listitem}>Add locations: { this.getToggleButton('currentuser.canCreateLocations', user._id, canCreateLocations, false) }</li>
-              </ul> 
+              </ul>
             }
           </div>
         </article>
@@ -141,14 +145,10 @@ var s = {
     height:' auto'
   },
   images: {
-    details: 'https://cdn1.iconfinder.com/data/icons/general-9/500/more-48.png',
-    yes: 'https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Tick_Mark_Dark-128.png',
-    no: 'https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Close_Icon_Dark-128.png'
+    details: '/files/IconsButtons/more-48.png', // https://cdn1.iconfinder.com/data/icons/general-9/500/more-48.png
+    yes: '/files/IconsButtons/Tick_Mark_Dark-128.png', // 'https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Tick_Mark_Dark-128.png',
+    no: '/files/IconsButtons/Close_Icon_Dark-128.png' // 'https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Close_Icon_Dark-128.png'
   },
-}
-
-UserDetails.contextTypes = {
-  history: propTypes.historyContext
 }
 
 UserDetails.propTypes = {
@@ -159,4 +159,4 @@ UserDetails.defaultProps = {
   user: {}
 }
 
-export default UserDetails;
+export default UserDetails

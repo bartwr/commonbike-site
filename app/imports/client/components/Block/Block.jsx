@@ -5,7 +5,7 @@ import Radium from 'radium';
 import R from 'ramda';
 
 // Import models
-import { Locations } from '/imports/api/locations.js'; 
+import { Locations } from '/imports/api/locations.js';
 
 // Import components
 import RaisedButton from '../Button/RaisedButton.jsx';
@@ -35,14 +35,20 @@ class Block extends Component {
   }
 
   state2Text(state) {
-    if (state=='available') {
-      text = 'BESCHIKBAAR'; 
+    if (state=='r_available') {
+      text = 'BESCHIKBAAR';
+    } else if (state=='r_rentstart') {
+      text = 'VERHUURD';
+    } else if (state=='r_outoforder') {
+      text = 'BUITEN GEBRUIK';
+    } if (state=='available') {
+      text = 'BESCHIKBAAR';
     } else if (state=='reserved') {
       text = 'GERESERVEERD';
     } else if (state=='inuse') {
-      text = 'VERHUURD'; 
+      text = 'VERHUURD';
     } else if (state=='outoforder') {
-      text = 'BUITEN GEBRUIK'; 
+      text = 'BUITEN GEBRUIK';
     } else {
       text = 'ONBEKEND';
     }
@@ -76,9 +82,8 @@ class Block extends Component {
   render() {
     return (
       <article style={Object.assign({}, s.base, ! this.props.isEditable && {cursor: 'pointer'})} onClick={this.props.onClick} ref="base">
-        <div style={s.avatar} onClick={this.props.newAvatar}>
-          <img src={this.props.item.imageUrl ? this.props.item.imageUrl : '/files/Block/bike.png'} alt="Bike" title="Le bike." />
-        </div>
+        <div style={s.avatar} onClick={this.props.newAvatar} style={Object.assign({}, s.avatar, {backgroundImage: 'url("'+this.props.item.imageUrl+'")'})}
+          onClick={this.props.newAvatar} />
 
         <div style={s.textWrapper} ref="textWrapper">
 
@@ -117,6 +122,11 @@ var s = {
   },
   avatar: {
     flex: 1,
+    width: '80px',
+    height: '80px',
+    backgroundPosition: 'center center',
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
     maxHeight: '148px'
   },
   textWrapper: {

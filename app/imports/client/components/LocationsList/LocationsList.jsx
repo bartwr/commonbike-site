@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import R from 'ramda';
-import {propTypes, Link} from 'react-router';
+import { Link } from 'react-router';
+import { RedirectTo } from '/client/main'
 
 // Import models
 import { Locations } from '/imports/api/locations.js'; 
@@ -22,26 +23,9 @@ class LocationList extends Component {
     super(props);
   }
 
-  /**
-   *  newLocation
-   * 
-   * Adds a new location to the database having the title "Locatie-naam"
-   */
-   newLocation() {
-     if(this.props.newLocationHandler) {
-       this.props.newLocationHandler();
-     }
-   }
-
-  renderAdminLinks() {
-    if (location.pathname.startsWith('/admin/')) {
-      return (
-        <Link to='/locations'>Locations</Link>
-      )
-    } else {
-      return (
-        <Link to='/admin/locations'>Admin Locations</Link>
-      )
+  newLocation() {
+    if(this.props.newLocationHandler) {
+      this.props.newLocationHandler();
     }
   }
 
@@ -49,7 +33,6 @@ class LocationList extends Component {
     self = this;
     return (
       <div style={s.base}>
-        {Roles.userIsInRole(Meteor.userId(), 'admin') && this.renderAdminLinks()}
         <div style={Object.assign({display: 'none'}, this.props.isEditable && {display: 'block'})}>
 
           <p style={s.paragraph}>
@@ -70,11 +53,11 @@ class LocationList extends Component {
         </div>
 
         {R.map((location) =>  <LocationBlock
-                                key={location._id}
-                                item={location}
-                                isEditable={self.props.isEditable}
-                                onClick={self.props.clickItemHandler} />
-                              , this.props.locations)}
+                              key={location._id}
+                              item={location}
+                              isEditable={self.props.isEditable}
+                              onClick={self.props.clickItemHandler} />
+                            , this.props.locations)}
 
       </div>
     );
@@ -92,10 +75,6 @@ var s = {
   }
 }
 
-LocationList.contextTypes = {
-  history: propTypes.historyContext
-}
-
 LocationList.propTypes = {
   locations: PropTypes.array,
   isEditable: PropTypes.any,
@@ -109,4 +88,4 @@ LocationList.defaultProps = {
   isEditable: false
 }
 
-export default LocationList;
+export default LocationList

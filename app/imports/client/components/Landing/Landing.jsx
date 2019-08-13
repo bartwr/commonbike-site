@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 import Radium, { StyleRoot } from 'radium';
 import R from 'ramda';
-import {propTypes} from 'react-router';
+import { RedirectTo } from '/client/main'
 
 // Import components
 import CommonBikeLogo from '../CommonBikeLogo/CommonBikeLogo.jsx'
@@ -15,8 +15,8 @@ class Landing extends Component {
     ReactDOM.findDOMNode(this.refs.base).style.display = 'flex';
   }
 
-  login() { 
-    this.context.history.push('/login')
+  login() {
+    RedirectTo('/login')
   }
 
   render() {
@@ -33,12 +33,12 @@ class Landing extends Component {
 
         <div style={s.bottomWrapper}>
           <p>
-            <a style={s.smallText} href="/join">euhm, maar hoe werkt dat dan?</a>
+            <a style={s.smallText} onClick={() => RedirectTo('/join')}>euhm, maar hoe werkt dat dan?</a>
           </p>
 
-			<RaisedButton onClick={this.login.bind(this)}>
-				{ this.props.currentUser ? "Waar kan ik fietsen?" : "Meld je aan voor de pilot" }
-			</RaisedButton>
+    			<RaisedButton onClick={RedirectTo.bind(this, '/locations')}>
+    				Waar kan ik fietsen?
+    			</RaisedButton>
         </div>
 
       </div>
@@ -63,11 +63,14 @@ var s = {
     minHeight: '568px',
   },
   logo: {
-    height: '100px'
+    height: '50px'
+  },
+  logo2: {
+    height: '220px'
   },
   introText: {
     maxWidth: '320px',
-    padding: '20px',
+    padding: '10px',
     margin: '0 auto',
     fontWeight: '500',
     fontSize: '1.45em',
@@ -81,10 +84,6 @@ var s = {
     fontSize: '0.8em',
     fontWeight: '500',
   }
-}
-
-Landing.contextTypes = {
-  history: propTypes.historyContext
 }
 
 export default createContainer((props) => {

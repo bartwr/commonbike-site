@@ -1,49 +1,50 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import R from 'ramda';
-import {propTypes} from 'react-router';
+import { RedirectTo } from '/client/main'
 
 // Import components
 import RaisedButton from '../Button/RaisedButton';
-import '../../../api/users.js'; 
-
+import '../../../api/users.js';
+import EditSettings from '/imports/client/containers/EditSettings/EditSettings.jsx'
+import ManageApiKeys from '../ManageApiKeys/ManageApiKeys';
 
 class Profile extends Component {
   constructor(props) {
     super(props);
   }
 
-  newreservation() {
-     this.context.history.push('/locations') 
-  }
-
-  newreservationMap() { 
-    this.context.history.push('/map') 
-  }
-
   reservations() {
-    this.context.history.push('/objects') 
+    RedirectTo('/objects')
   }
 
-  locations() { 
-    this.context.history.push('/admin/locations') 
+  locations() {
+    RedirectTo('/admin/locations')
   }
 
-  rentals() { 
-    this.context.history.push('/admin/rentals') 
+  wallet() {
+    RedirectTo('/wallet')
   }
 
-  transactions() { 
-    this.context.history.push('/transactions') 
+  rentals() {
+    RedirectTo('/admin/rentals')
+  }
+
+  transactions() {
+    RedirectTo('/transactions')
   }
 
   manageusers() {
-    this.context.history.push('/admin/users') 
+    RedirectTo('/admin/users')
   }
 
-  logout() { 
-    Meteor.logout(); 
-    this.context.history.push('/')
+  admintools() {
+    RedirectTo('/admin/admintools')
+  }
+
+  logout() {
+    Meteor.logout();
+    RedirectTo('/')
   }
 
   getUserPersonalia() {
@@ -68,7 +69,7 @@ class Profile extends Component {
 
   getMyLocationsButton() {
     // bestaande providers en gebruikers met rechten kunnen locaties beheren
-    var show = this.props.currentUser && this.props.currentUser.profile && 
+    var show = this.props.currentUser && this.props.currentUser.profile &&
                         (this.props.currentUser.profile.provider_locations ||
                          this.props.currentUser.profile.cancreatelocations)
 
@@ -84,7 +85,7 @@ class Profile extends Component {
   }
 
   getMyRentalsButton() {
-    var show = this.props.currentUser && this.props.currentUser.profile && 
+    var show = this.props.currentUser && this.props.currentUser.profile &&
                (this.props.currentUser.profile.provider_locations ||
                 this.props.currentUser.profile.cancreatelocations)
 
@@ -102,6 +103,22 @@ class Profile extends Component {
   getManageUsersButton() {
     if(Roles.userIsInRole( Meteor.userId(), 'admin' )) {
       return ( <RaisedButton onClick={this.manageusers.bind(this)}>GEBRUIKERSBEHEER</RaisedButton> )
+    } else {
+      return ( <div /> )
+    }
+  }
+
+  getEditSystemSettings() {
+    if(Roles.userIsInRole( Meteor.userId(), 'admin' )) {
+      return (<EditSettings title="SYSTEEMINSTELLINGEN"/> )
+    } else {
+      return ( <div /> )
+    }
+  }
+
+  getAdminToolsButton() {
+    if(Roles.userIsInRole( Meteor.userId(), 'admin' )) {
+      return ( <RaisedButton onClick={this.admintools.bind(this)}>BEHEERDERSFUNCTIES</RaisedButton> )
     } else {
       return ( <div /> )
     }
@@ -125,19 +142,25 @@ class Profile extends Component {
             { this.getUserPersonalia() }
           </p>
 
-          <RaisedButton onClick={this.newreservation.bind(this)}>NIEUWE RESERVERING</RaisedButton>
+          <RaisedButton onClick={() => RedirectTo('/locations')}>ZOEK</RaisedButton>
 
-          <RaisedButton onClick={this.newreservationMap.bind(this)}>ZOEK OP KAART</RaisedButton>
+          <RaisedButton onClick={this.reservations.bind(this)}>FIETS</RaisedButton>
 
-          <RaisedButton onClick={this.reservations.bind(this)}>MIJN RESERVERINGEN</RaisedButton>
+          <RaisedButton onClick={this.transactions.bind(this)}>GESCHIEDENIS</RaisedButton>
 
-          <RaisedButton onClick={this.transactions.bind(this)}>MIJN GESCHIEDENIS</RaisedButton>
+          <RaisedButton onClick={this.wallet.bind(this)}>PORTEMONNEE</RaisedButton>
 
           { this.getMyLocationsButton() }
 
           { this.getMyRentalsButton() }
 
+          {/* }<ManageApiKeys keyOwnerId={Meteor.userId()} keyType="user" /> */}
+
           { this.getManageUsersButton() }
+
+          { this.getEditSystemSettings() }
+
+          { this.getAdminToolsButton() }
 
           <RaisedButton onClick={this.logout.bind(this)}>LOG UIT</RaisedButton>
         </div>
@@ -162,10 +185,6 @@ var s = {
     width: '200px',
     height: '200px'
   }
-}
-
-Profile.contextTypes = {
-  history: propTypes.historyContext
 }
 
 Profile.propTypes = {

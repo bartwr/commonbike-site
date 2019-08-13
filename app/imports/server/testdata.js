@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor';
-import { Locations, Address2LatLng } from '/imports/api/locations.js'; 
-import { Objects } from '/imports/api/objects.js'; 
-import { Transactions } from '/imports/api/transactions.js'; 
-import '/imports/api/users.js'; 
-import { getUserDescription } from '/imports/api/users.js'; 
+import { Locations, Address2LatLng } from '/imports/api/locations.js';
+import { Objects } from '/imports/api/objects.js';
+import { Transactions } from '/imports/api/transactions.js';
+import '/imports/api/users.js';
+import { getUserDescription } from '/imports/api/users.js';
+import BikeCoin from '/imports/api/bikecoin.js';
 
 var testUsers = [
     {name:"admin",email:"admin@commonbike.com",
@@ -34,14 +35,25 @@ var testLocations = [
    imageUrl:'https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/bike-256.png',
    providers:["j156a@commonbike.com", "user1@commonbike.com"],
    bikeimage: '/files/Block/bike.png',
-   bikes: [ { title: 'Batavus 1 (AXA)', description: 'Fietsnr. 1122', state: 'available',
-              locktype: 'axa-elock', locksettings: { connectionname: 'AXA lock EFGGGHA1321', pincode: '00908'}}, 
-            { title: 'Batavus 2 (KeyLocker)', description: 'Fietsnr. 1134', state: 'available', 
-              locktype: 'open-keylocker', locksettings: { keylocker: 1, pincode: '3692'}}, 
-            { title: 'Batavus 3', description: 'Fietsnr. 1145', state: 'available', 
-              locktype: 'open-keylocker', locksettings: { keylocker: 2, pincode: '7834'}},
-            { title: 'Batavus 4', description: 'Fietsnr. 1165', state: 'available'},
-            { title: 'Batavus 5', description: 'Fietsnr. 1166', state: 'outoforder'} ]
+   bikes: [ { title: 'Skopei Demo Bike (160020)', description: 'de Skopei fiets met nummer 160020', state: 'available',
+              locktype: 'skopei-v1', locksettings: { elockid: '160020'}},
+            { title: 'Skopei Demo Bike (160021)', description: 'de Skopei fiets met nummer 160021 ', state: 'available',
+              locktype: 'skopei-v1', locksettings: { elockid: '160021'}},
+            { title: 'Skopei Demo Bike (170178)', description: 'de Skopei fiets met nummer 170178', state: 'available',
+              locktype: 'skopei-v1', locksettings: { elockid: '170178'}},
+            { title: 'GoAbout Demo Bike', description: 'de GoAbout fiets met nummer xxxx', state: 'available',
+              locktype: 'goabout-v1', locksettings: { elockid: '170178', code: 'asdfasdfasdfasdfasdf' }},
+            { title: 'OpenELock Demo Bike', description: 'de CommonBike Elock fiets met nummer xxxx', state: 'available',
+              locktype: 'open-elock', locksettings: { elockid: '0611', code: 'herewegonow' }},
+            // { title: 'Batavus 1 (AXA)', description: 'Fietsnr. 1122', state: 'available',
+            //   locktype: 'axa-elock', locksettings: { connectionname: 'AXA lock EFGGGHA1321', pincode: '00908'}},
+            // { title: 'Batavus 2 (KeyLocker)', description: 'Fietsnr. 1134', state: 'available',
+            //   locktype: 'open-keylocker', locksettings: { keylocker: 1, pincode: '3692'}},
+            // { title: 'Batavus 3', description: 'Fietsnr. 1145', state: 'available',
+            //   locktype: 'open-keylocker', locksettings: { keylocker: 2, pincode: '7834'}},
+            // { title: 'Batavus 4', description: 'Fietsnr. 1165', state: 'available'},
+            // { title: 'Batavus 5', description: 'Fietsnr. 1166', state: 'outoforder'}
+              ]
   },
   {title:"S2M",
    description: "The heart and mind",
@@ -49,10 +61,8 @@ var testLocations = [
    imageUrl:'https://cdn1.iconfinder.com/data/icons/UrbanStories-png-Artdesigner-lv/256/Bicycle_by_Artdesigner.lv.png',
    providers:["s2m@commonbike.com", "user2@commonbike.com"],
    bikeimage: '/files/Block/bike.png',
-   bikes: [ { title: 'Giant 1', description: 'Damesfiets 33879', state: 'available'}, 
-            { title: 'Giant 2', description: 'Damesfiets 33277 (met kinderzit)', state: 'available'}, 
-            { title: 'Giant 3', description: 'Herenfiets 31119', state: 'available'},
-            { title: 'Bakfiets', description: 'Bakfiets', state: 'available'} ]
+   bikes: [ { title: 'Skopei Demo Bike', description: 'Skopei demonstratiefiets met eLock', state: 'available'},
+            { title: 'Giant 1', description: 'Damesfiets 33879', state: 'available'}, ]
   },
   {title:"Lockers Zeist",
    address:"Utrechtseweg 2, 3732 HB De Bilt, Netherlands",
@@ -60,30 +70,22 @@ var testLocations = [
    imageUrl:'/files/Testdata/lockers.png',
    providers:["zeist@commonbike.com", "user1@commonbike.com"],
    bikeimage: '/files/Testdata/locker.png',
-   bikes: [ { title: 'Bikelocker A', description: 'Linkerkluis', state: 'available', 
-              locktype: 'open-bikelocker'}, 
-            { title: 'Bikelocker B', description: '1e kluis van links', state: 'available', 
-              locktype: 'open-bikelocker'}, 
-            { title: 'Bikelocker C', description: '2e kluis van links', state: 'available', 
+   bikes: [ { title: 'Bikelocker A', description: 'Linkerkluis', state: 'available',
               locktype: 'open-bikelocker'},
-            { title: 'Bikelocker D', description: '3e kluis van links', state: 'available', 
+            { title: 'Bikelocker B', description: '1e kluis van links', state: 'available',
               locktype: 'open-bikelocker'},
-            { title: 'Bikelocker E', description: '3e kluis van rechts', state: 'outoforder', 
-              locktype: 'open-bikelocker'}, 
-            { title: 'Bikelocker F', description: '2e kluis van rechts', state: 'outoforder', 
-              locktype: 'open-bikelocker'}, 
-            { title: 'Bikelocker G', description: '1e kluis van rechts', state: 'outoforder', 
+            { title: 'Bikelocker C', description: '2e kluis van links', state: 'available',
               locktype: 'open-bikelocker'},
-            { title: 'Bikelocker H', description: 'rechterkluis', state: 'available', 
+            { title: 'Bikelocker D', description: '3e kluis van links', state: 'available',
+              locktype: 'open-bikelocker'},
+            { title: 'Bikelocker E', description: '3e kluis van rechts', state: 'outoforder',
+              locktype: 'open-bikelocker'},
+            { title: 'Bikelocker F', description: '2e kluis van rechts', state: 'outoforder',
+              locktype: 'open-bikelocker'},
+            { title: 'Bikelocker G', description: '1e kluis van rechts', state: 'outoforder',
+              locktype: 'open-bikelocker'},
+            { title: 'Bikelocker H', description: 'rechterkluis', state: 'available',
               locktype: 'open-bikelocker'} ]
-  },
-  {title:"Zonder provider",
-   imageUrl:'/files/Testdata/lockers.png',
-   providers:[],
-   bikeimage: '/files/Testdata/easyfiets.png',
-   bikes: [ { title: 'Fiets 1', description: 'Blauwe fiets', state: 'available'}, 
-            { title: 'Fiets 2', description: 'Witte fiets', state: 'available'}, 
-            { title: 'Fiets 3', description: 'Rode fiets', state: 'available'} ]
   },
   {title:"Easyfiets - Bij Leiden CS",
    address: "Bargelaan 68, 2333 CV Leiden",
@@ -91,45 +93,45 @@ var testLocations = [
    imageUrl:'/files/Testdata/easyfiets-logo.jpg',
    providers:["easyfiets@commonbike.com"],
    bikeimage: '/files/Testdata/easyfiets-bike.jpg',
-   bikes: [ { title: 'Easyfiets 1', description: 'Herenfiets', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '1001' }}, 
-            { title: 'Easyfiets 5', description: 'Damesfiets', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '2361' }} ] 
+   bikes: [ { title: 'Easyfiets 1', description: 'Herenfiets', state: 'available',
+              locktype: 'plainkey', locksettings: { keyid: '1001' }},
+            { title: 'Easyfiets 5', description: 'Damesfiets', state: 'available',
+              locktype: 'plainkey', locksettings: { keyid: '2361' }} ]
   },
-  {title:"Easyfiets - Bij Leiden Lammenschans",
-   address: "Kamerlingh Onnesplein 4, 2313 VL Leiden, the Netherlands",
-   lat_lng: [52.146937, 4.492933],
-   imageUrl:'/files/Testdata/easyfiets-logo.jpg',
-   providers:["easyfiets@commonbike.com"],
-   bikeimage: '/files/Testdata/easyfiets-bike.jpg',
-   bikes: [ { title: 'Easyfiets 2', description: 'Herenfiets', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '2334' }}, 
-            { title: 'Easyfiets 3', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '1789' }}, 
-            { title: 'Easyfiets 4', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '2662' }} , 
-            { title: 'Easyfiets 8', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '9366' }} , 
-            { title: 'Easyfiets 11', description: 'in het easyfiets rek', state: 'outoforder', 
-              locktype: 'plainkey', locksettings: { keyid: '4425' }}  ]
-  },
-  {title:"Easyfiets - Haagweg",
-   address: "Haagweg 8, Leiden, the Netherlands",
-   lat_lng: [52.158957, 4.478508],
-   imageUrl:'/files/Testdata/easyfiets-logo.jpg',
-   providers:["easyfiets@commonbike.com"],
-   bikeimage: '/files/Testdata/easyfiets-bike.jpg',
-   bikes: [ { title: 'Easyfiets 6115', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '6115' }}, 
-            { title: 'Easyfiets 123', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '123' }}, 
-            { title: 'Easyfiets 17', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '17' }} , 
-            { title: 'Easyfiets 21', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '21' }} , 
-            { title: 'Easyfiets 33', description: 'in het easyfiets rek', state: 'available', 
-              locktype: 'plainkey', locksettings: { keyid: '33' }}  ]
-  }
+  // {title:"Easyfiets - Bij Leiden Lammenschans",
+  //  address: "Kamerlingh Onnesplein 4, 2313 VL Leiden, the Netherlands",
+  //  lat_lng: [52.146937, 4.492933],
+  //  imageUrl:'/files/Testdata/easyfiets-logo.jpg',
+  //  providers:["easyfiets@commonbike.com"],
+  //  bikeimage: '/files/Testdata/easyfiets-bike.jpg',
+  //  bikes: [ { title: 'Easyfiets 2', description: 'Herenfiets', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '2334' }},
+  //           { title: 'Easyfiets 3', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '1789' }},
+  //           { title: 'Easyfiets 4', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '2662' }} ,
+  //           { title: 'Easyfiets 8', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '9366' }} ,
+  //           { title: 'Easyfiets 11', description: 'in het easyfiets rek', state: 'outoforder',
+  //             locktype: 'plainkey', locksettings: { keyid: '4425' }}  ]
+  // },
+  // {title:"Easyfiets - Haagweg",
+  //  address: "Haagweg 8, Leiden, the Netherlands",
+  //  lat_lng: [52.158957, 4.478508],
+  //  imageUrl:'/files/Testdata/easyfiets-logo.jpg',
+  //  providers:["easyfiets@commonbike.com"],
+  //  bikeimage: '/files/Testdata/easyfiets-bike.jpg',
+  //  bikes: [ { title: 'Easyfiets 6115', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '6115' }},
+  //           { title: 'Easyfiets 123', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '123' }},
+  //           { title: 'Easyfiets 17', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '17' }} ,
+  //           { title: 'Easyfiets 21', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '21' }} ,
+  //           { title: 'Easyfiets 33', description: 'in het easyfiets rek', state: 'available',
+  //             locktype: 'plainkey', locksettings: { keyid: '33' }}  ]
+  // }
 ];
 
 export const cleanupTestUsers = function() {
@@ -149,11 +151,11 @@ export const cleanupTestUsers = function() {
 
       Transactions.remove({userId: id});
       Meteor.users.remove({_id: id});
-    } 
+    }
   });
 }
 
-export const cleanupTestData = function() { 
+export const cleanupTestData = function() {
   _.each(testLocations, function (locationData) {
     var hereitis=Locations.findOne({title: locationData.title});
     if(hereitis) {
@@ -174,7 +176,7 @@ export const cleanupTestData = function() {
 }
 
 const GetRandomAvatar = () => {
-  const url = 'https://randomuser.me/api/' 
+  const url = 'https://randomuser.me/api/'
   const response = HTTP.get(url)
   const obj = JSON.parse(response.content)
   const avatar_url = obj.results[0].picture.large
@@ -185,21 +187,28 @@ const GetRandomAvatar = () => {
 export const checkTestUsers = function() {
     _.each(testUsers, function (userData) {
       var id;
-      
+
       var hithere=Accounts.findUserByEmail(userData.email);
       if(hithere) {
       id = hithere._id;
     } else {
+      // assign new keypair to object
+      var keypair = BikeCoin.newKeypair();
+
       id = Accounts.createUser({
         email: userData.email,
         password: userData.password,
-        profile: { name: userData.name, 
-                   avatar: userData.avatar || GetRandomAvatar() }
+        profile: { name: userData.name,
+                   avatar: userData.avatar || GetRandomAvatar(),
+                   wallet: {
+                     address:keypair.address,
+                     privatekey:keypair.privatekey
+                   }
+        }
       });
 
-      // // email verification
-      // var anavatar = GetRandomAvatar();
-      // Meteor.users.update({_id: id}, {$set:{'avatar': anavatar}});
+      var anavatar = GetRandomAvatar();
+      Meteor.users.update({_id: id}, {$set:{'avatar': anavatar}});
 
       // email verification
       Meteor.users.update({_id: id}, {$set:{'emails.0.verified': true, 'profile.active':true}});
@@ -211,14 +220,9 @@ export const checkTestUsers = function() {
           Roles.addUsersToRoles(id, [role]);
         }
       });
-    });    
+    });
 }
 
-// supported locktypes 
-// 'plainkey' - ask for key at the attendant
-// 'axa-elock' - open lock using bluetooth function on phone
-// 'open-bikelocker' - open lock using keycode on bike locker
-// 'open-keylocker' - open keylocker with given code to get the key
 var createLockCode = function(length) {
   var base = Math.pow(10, length+1);
   var code = Math.floor(base + Math.random() * base)
@@ -228,8 +232,8 @@ var createLockCode = function(length) {
 var createLock = function(locktype, locksettings,object) {
   var lockInfo = {};
 
-  if(locktype!='axa-elock'&&locktype!='open-bikelocker'&&
-     locktype!='open-keylocker'&&locktype!='plainkey') {
+  if(locktype!='axa-elock'&&locktype!='goabout-v1'&&locktype!='skopei-v1'&&locktype!='open-bikelocker'&&
+     locktype!='open-keylocker'&&locktype!='open-elock'&&locktype!='plainkey') {
       // assume plainkey for unknown keytypes
       locktype='plainkey';
   }
@@ -240,11 +244,15 @@ var createLock = function(locktype, locksettings,object) {
   }
 
   if(locktype=='plainkey'||locktype=='open-bikelocker') {
-    lockInfo.settings = Object.assign({keyid: '0000' }, locksettings);  
+    lockInfo.settings = Object.assign({keyid: '0000' }, locksettings);
   } else if(locktype=='open-keylocker') {
-    lockInfo.settings = Object.assign({keylocker: 1, pincode: '1234'}, locksettings);  
+    lockInfo.settings = Object.assign({keylocker: 1, pincode: '1234'}, locksettings);
   } else if(locktype=='axa-elock') {
     lockInfo.settings = Object.assign({connectionname: 'AXA_HALLORONALD', pincode: '11111'}, locksettings);
+  } else if(locktype=='skopei-v1') {
+    lockInfo.settings = Object.assign({elockid: 'xxxxxx'}, locksettings);
+  } else if(locktype=='goabout-v1'||locktype=='open-elock') {
+    lockInfo.settings = Object.assign({elockid: 'xxxxxx', code: 'asdfadsfadsfasdfasdfasdf'}, locksettings);
   }
 
   return lockInfo;
@@ -253,16 +261,17 @@ var createLock = function(locktype, locksettings,object) {
 export const checkTestLocations = function() {
   _.each(testLocations, function (locationData) {
     var locationId;
-    
+
+
     var hereitis=Locations.findOne({title: locationData.title});
     if(hereitis) {
       locationId = hereitis._id;
-    } else { 
+    } else {
       if(!locationData.lat_lng) {
         locationData.lat_lng=Address2LatLng(locationData.address);
       }
 
-      locationId = Locations.insert({ 
+      locationId = Locations.insert({
         title: locationData.title,
         description: locationData.description || '',
         address: locationData.address || '',
@@ -275,7 +284,7 @@ export const checkTestLocations = function() {
     _.each(locationData.providers, function (provider) {
       var hithere=Accounts.findUserByEmail(provider);
       if (hithere) {
-        if(firstproviderid==null) { 
+        if(firstproviderid==null) {
           firstproviderid = hithere._id;
           firstprovidermail=hithere.emails[0].address;
         }
@@ -296,14 +305,22 @@ export const checkTestLocations = function() {
           lockinfo = createLock(bike.locktype, bike.locksettings);
         }
 
-        var priceinfo = { 
+        var priceinfo = {
           value: '0',
           currency: 'euro',
           timeunit: 'day',
-          description: 'tijdelijk gratis' 
+          description: 'tijdelijk gratis'
         };
 
-        var keyid = Objects.insert({ 
+        // assign new keypair to object
+        var keypair = BikeCoin.newKeypair();
+
+        var walletinfo = {
+          address:keypair.address,
+          privatekey:keypair.privatekey
+        }
+
+        var keyid = Objects.insert({
           locationId: locationId,
           title: bike.title,
           description: bike.description,
@@ -313,7 +330,8 @@ export const checkTestLocations = function() {
                    timestamp: timestamp,
                    userDescription: '' },
           lock: lockinfo,
-          price: priceinfo
+          price: priceinfo,
+          wallet: walletinfo
         });
       }
     });
@@ -325,20 +343,20 @@ Meteor.methods({
     // Make sure the user is logged in
     if (!Meteor.userId||!Roles.userIsInRole( this.userId, 'admin' )) throw new Meteor.Error('not-authorized');
 
-    cleanupTestUsers();    
+    cleanupTestUsers();
 
     var description = "Testgebruikers verwijderd door " + getUserDescription(Meteor.user());
-    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);    
+    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);
 
   },
   'testdata.cleanupTestData'(data) {
     // Make sure the user is logged in
     if (!Meteor.userId||!Roles.userIsInRole( this.userId, 'admin' )) throw new Meteor.Error('not-authorized');
 
-    cleanupTestData();    
+    cleanupTestData();
 
     var description = "Testdata verwijderd door " + getUserDescription(Meteor.user());
-    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);    
+    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);
   },
   'testdata.checkTestUsers'(data) {
     // Make sure the user is logged in
@@ -347,7 +365,7 @@ Meteor.methods({
     checkTestUsers();
 
     var description = "Testgebruikers toegevoegd door " + getUserDescription(Meteor.user());
-    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);    
+    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);
   },
   'testdata.checkTestLocations'(data) {
     // Make sure the user is logged in
@@ -356,6 +374,6 @@ Meteor.methods({
     checkTestLocations();
 
     var description = "Testdata toegevoegd door " + getUserDescription(Meteor.user());
-    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);    
+    Meteor.call('transactions.addTransaction', 'ADMIN_CLEANUP_TESTUSERS', description, this.userid, null, null, null);
   }
 });
