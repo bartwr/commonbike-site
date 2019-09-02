@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
 class EditFields extends Component {
@@ -106,7 +105,7 @@ class EditFields extends Component {
         return (
           <div style={s.editline} key={key}>
             <select style={s.control} key={field.fieldname} name={field.fieldname} defaultValue={field.fieldvalue} onChange={this.onFieldChange.bind(this)} >
-                { R.map((option) => this.getOption(option, field) , field.options) }
+                { field.options.map((option) => this.getOption(option, field)) }
             </select>
             <label style={s.label} key={'label_'+field.fieldname} htmlFor={field.fieldname}>{field.label}</label>
           </div>
@@ -155,7 +154,7 @@ class EditFields extends Component {
 
         { this.state.showDetails?
           <form type="" style={ s.editform } ref="theforminquestion">
-            { R.map((field) => this.getField(field, field.label+'.'+field.fieldname||'control', this.actionhandler.bind(this)) , this.props.fields) // || 'control' -> because label has no fieldname
+            { this.props.fields.map((field) => this.getField(field, field.label+'.'+field.fieldname||'control', this.actionhandler.bind(this))) // || 'control' -> because label has no fieldname
             }
             <div style={s.confirmline}>
                 <div />

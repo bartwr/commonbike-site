@@ -1,15 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import ReactDOM from 'react-dom';
-import CheckInOutProcessBase from '../CheckInOutProcess/CheckInOutProcessBase';
-import { StyleProvider } from '../../StyleProvider.js'
+import CheckInOutProcessBase from '/imports/client/components/CheckInOutProcess/CheckInOutProcessBase';
+import { StyleProvider } from '/imports/client/StyleProvider.js'
 
 import { getUserDescription } from '/imports/api/users.js';
 
 // Import components
-import Button from '../Button/Button';
-import CheckInCode from '../CheckInCode/CheckInCode';
-import TextField from '../TextField/TextField.jsx';
+import Button from '/imports/client/components/Button.jsx';
+import CheckInCode from '/imports/client/components/CheckInCode';
+import TextField from '/imports/client/components/TextField.jsx';
 
 class CheckInOutProcessPlainKey extends CheckInOutProcessBase {
   constructor(props) {

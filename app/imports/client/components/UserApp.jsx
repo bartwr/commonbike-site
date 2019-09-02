@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 
 // Import components
-import PageHeader from '../PageHeader/PageHeader.jsx'
-import FeedbackWidget from '../../containers/FeedbackWidget/FeedbackWidget.jsx';
+import PageHeader from '/imports/client/components/PageHeader.jsx'
+import FeedbackWidget from '/imports/client/components/FeedbackWidget.jsx';
 
 // UserApp component - represents the whole app
 export default class UserApp extends Component {

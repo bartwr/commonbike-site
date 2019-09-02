@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
 import { Settings } from '/imports/api/settings.js';
 import L from 'leaflet'
@@ -158,7 +157,7 @@ class LocationsMapComponent extends Component {
 
     this.state.locationMarkersGroup.clearLayers();
 
-    R.map((location) =>  {
+    this.props.locations.map((location) =>  {
       if(!location.lat_lng&&location.address) {
         var ll = Address2LatLng(location.address);
         location.lat_lng= ll;
@@ -190,7 +189,7 @@ class LocationsMapComponent extends Component {
       } else {
         console.log('not lat_lng for ' + location.title)
       }
-    }, this.props.locations);
+    });
 
     // var locationMarkersGroup = L.featureGroup(markers);
     // locationMarkersGroup.on("click", function (event) {
@@ -207,14 +206,14 @@ class LocationsMapComponent extends Component {
         });
 
     var markers = [];
-    R.map((object) => {
+    this.props.objects.map((object) => {
       if(object.lat_lng) {
         var marker = L.marker(object.lat_lng, {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
         marker.bikeLocationId = object._id;
         // markers.push(marker); // .bindPopup(location.title)
         this.state.objectMarkersGroup.addLayer(marker);
       }
-    }, this.props.objects);
+    });
   }
 
   mapChanged(e) {

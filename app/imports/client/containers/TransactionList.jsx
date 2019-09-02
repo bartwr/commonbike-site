@@ -1,16 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import models
-import { Transactions } from '/imports/api/transactions.js'; 
+import { Transactions } from '/imports/api/transactions.js';
 
 // Import components
-import TransactionListComponent from '../../components/TransactionList/TransactionList';
+import TransactionListComponent from '/imports/client/components/TransactionList';
 
 /**
  *  TransactionList
- * 
+ *
  * @param {Object} locations
  * @param {Boolean} isEditable
  */

@@ -1,19 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { Link } from 'react-router';
 import { RedirectTo } from '/client/main'
 
 // Import models
-import { Locations } from '/imports/api/locations.js'; 
+import { Locations } from '/imports/api/locations.js';
 
 // Import components
-import LocationBlock from '../../containers/LocationBlock/LocationBlock';
-import RaisedButton from '../Button/RaisedButton';
+import LocationBlock from '/imports/client/containers/LocationBlock';
+import RaisedButton from '/imports/client/components/RaisedButton';
 
 /**
  *  LocationList
- * 
+ *
  * @param {Object} locations
  * @param {Boolean} isEditable
  */
@@ -36,28 +35,27 @@ class LocationList extends Component {
         <div style={Object.assign({display: 'none'}, this.props.isEditable && {display: 'block'})}>
 
           <p style={s.paragraph}>
-            Op deze pagina kun je de locaties beheren. 
+            Op deze pagina kun je de locaties beheren.
           </p>
 
-          { self.props.canCreateLocations ?  
+          { self.props.canCreateLocations ?
             <p style={s.paragraph}>Klik op <b>Nieuwe locatie</b> of <b><i>pas een titel aan</i></b>.</p>
             :
             <p style={s.paragraph}><b><i>pas een titel aan</i></b>.</p>
           }
 
-          { self.props.canCreateLocations ?  
+          { self.props.canCreateLocations ?
             <RaisedButton onClick={this.newLocation.bind(this)}>Nieuwe locatie</RaisedButton>
             :
             <div />
           }
         </div>
 
-        {R.map((location) =>  <LocationBlock
+        {this.props.locations.map((location) =>  <LocationBlock
                               key={location._id}
                               item={location}
                               isEditable={self.props.isEditable}
-                              onClick={self.props.clickItemHandler} />
-                            , this.props.locations)}
+                              onClick={self.props.clickItemHandler} />)}
 
       </div>
     );

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import models
 import { Settings } from '/imports/api/settings.js';
@@ -8,8 +7,8 @@ import { Locations } from '/imports/api/locations.js';
 import { Objects } from '/imports/api/objects.js';
 
 // Import components
-import LocationsList from '/imports/client/components/LocationsList/LocationsList';
-import LocationsMap from '/imports/client/components/LocationsMap/LocationsMap';
+import LocationsList from '/imports/client/components/LocationsList';
+import LocationsMap from '/imports/client/components/LocationsMap';
 
 /**
  *  LocationList
@@ -99,7 +98,7 @@ class LocationList extends Component {
   render() {
     let locations = undefined;
     if(!this.props.isEditable) {
-      locations = R.filter(this.getVisibleObjectsOnly.bind(this), this.props.locations)
+      locations = this.props.locations.filter(this.getVisibleObjectsOnly.bind(this))
     } else {
       locations = this.props.locations
     }

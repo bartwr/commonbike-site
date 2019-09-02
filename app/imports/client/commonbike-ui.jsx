@@ -1,18 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 
 // Import components
-import AccountsUIWrapper from '/imports/client/containers/AccountsUIWrapper/AccountsUIWrapper.jsx';
-import BackButton from '/imports/client/components/Button/BackButton.jsx';
-import Block from '/imports/client/components/Block/Block.jsx';
-import Button from '/imports/client/components/Button/Button.jsx';
-import RaisedButton from '/imports/client/components/Button/RaisedButton.jsx';
-import Hr from '/imports/client/components/Hr/Hr.jsx';
-import Avatar from '/imports/client/components/Avatar/Avatar.jsx';
-import CheckInCode from '/imports/client/components/CheckInCode/CheckInCode.jsx';
-import LoginForm from '/imports/client/components/LoginForm/LoginForm.jsx';
-import FeedbackWidget from '/imports/client/containers/FeedbackWidget/FeedbackWidget.jsx';
+import AccountsUIWrapper from '/imports/client/containers/AccountsUIWrapper.jsx';
+import BackButton from '/imports/client/components/BackButton.jsx';
+import Block from '/imports/client/components/Block.jsx';
+import Button from '/imports/client/components/Button.jsx';
+import RaisedButton from '/imports/client/components/RaisedButton.jsx';
+import Hr from '/imports/client/components/Hr.jsx';
+import Avatar from '/imports/client/components/Avatar.jsx';
+import CheckInCode from '/imports/client/components/CheckInCode.jsx';
+import LoginForm from '/imports/client/components/LoginForm.jsx';
+import FeedbackWidget from '/imports/client/containers/FeedbackWidget.jsx';
 import MapSummary from '/imports/client/MapSummary.jsx'
-import Balance from '/imports/client/components/Balance/Balance.jsx';
+import Balance from '/imports/client/components/Balance.jsx';
 
 class CommonBikeUI extends Component {
 

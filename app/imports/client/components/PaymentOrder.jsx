@@ -1,5 +1,5 @@
 import React from 'react'
-import RaisedButton from '/imports/client/components/Button/RaisedButton.jsx';
+import RaisedButton from '/imports/client/components/RaisedButton.jsx';
 
 class PaymentOrder extends React.Component {
   constructor(props) {

@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import R from 'ramda';
 
 // Import models
 import { Locations } from '/imports/api/locations.js';
 
 // Import components
-import RaisedButton from '../Button/RaisedButton.jsx';
+import RaisedButton from '/imports/client/components/RaisedButton.jsx';
 
 // helper functions
 MillisectoHHMM = function (ms) {

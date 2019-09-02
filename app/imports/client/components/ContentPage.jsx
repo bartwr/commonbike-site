@@ -1,11 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import components
-import PageHeader from '../PageHeader/PageHeader.jsx'
-import SignUpButton from '../SignUpButton/SignUpButton.jsx'
+import PageHeader from '/imports/client/components/PageHeader.jsx'
+import SignUpButton from '/imports/client/components/SignUpButton.jsx'
 
 class ContentPage extends Component {
 

@@ -2,13 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
-import Future from 'fluture';
 
 // Import components
-import TextField from '../TextField/TextField.jsx';
-import RaisedButton from '../Button/RaisedButton.jsx';
-import Button from '../Button/Button';
+import TextField from '/imports/client/components/TextField.jsx';
+import RaisedButton from '/imports/client/components/RaisedButton.jsx';
+import Button from '/imports/client/components/Button.jsx';
 
 class LoginForm extends Component {
 

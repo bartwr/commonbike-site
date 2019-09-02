@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import R from 'ramda';
 
 // Import components
-import EditFields from '../../components/EditFields/EditFields';
+import EditFields from '/imports/client/components/EditFields';
 
 // Import models
 import { Locations, LocationsSchema, Address2LatLng } from '/imports/api/locations.js';

@@ -2,15 +2,15 @@ import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 
 // Import models
-import { Locations } from '/imports/api/locations.js'; 
-import { Objects } from '/imports/api/objects.js'; 
+import { Locations } from '/imports/api/locations.js';
+import { Objects } from '/imports/api/objects.js';
 
 // Import components
-import ObjectDetailsComponent from '../../components/ObjectDetails/ObjectDetails';
+import ObjectDetailsComponent from '/imports/client/components/ObjectDetails';
 
 /**
  *  ObjectDetails
- * 
+ *
  * @param {Object} locations
  * @param {Boolean} isEditable
  */

@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import R from 'ramda';
 
 // Import components
-import TextField from '../TextField/TextField.jsx';
+import TextField from '/imports/client/components/TextField.jsx';
 
 export default class ManageUserlist extends Component {
   constructor(props) {
@@ -87,12 +86,12 @@ export default class ManageUserlist extends Component {
           <button type="submit" style={s.addicon} ref="adduser" title="add user" />
         </form>
 
-        {R.map((user) =>  <div style={s.lijstitem} key={user._id}>
+        {this.state.userList.map((user) =>  <div style={s.lijstitem} key={user._id}>
                               <span>{user.email}</span>
                               {this.state.userList.length > 1 &&
                               <img style={s.icon}  src={s.images.trashcan} onClick={() => this.removeUser(user._id) } />
                               }
-                          </div>, this.state.userList)}
+                          </div>)}
 
       </div>
     );

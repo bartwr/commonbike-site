@@ -1,11 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
-import { StyleProvider } from '../../StyleProvider.js'
+import { StyleProvider } from '/imports/client/StyleProvider.js'
 
 // Import components
-import Balance from '/imports/client/components/Balance/Balance.jsx';
+import Balance from '/imports/client/components/Balance.jsx';
 
 class Wallet extends Component {
 

@@ -1,14 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
 // Import models
 import { Locations } from '/imports/api/locations.js';
 
 // Import components
-import Block from '../../components/Block/Block';
+import Block from '/imports/client/components/Block';
 
 class LocationBlock extends Component {
 

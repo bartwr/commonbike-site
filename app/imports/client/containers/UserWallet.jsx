@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import components
-import Wallet from '../../components/Wallet/Wallet';
+import Wallet from '/imports/client/components/Wallet';
 
 class UserWallet extends Component {
   constructor(props) {

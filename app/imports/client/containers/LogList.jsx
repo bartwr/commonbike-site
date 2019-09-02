@@ -1,16 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import models
-import { Log } from '/imports/api/log.js'; 
+import { Log } from '/imports/api/log.js';
 
 // Import components
-import LogListComponent from '../../components/LogList/LogList';
+import LogListComponent from '/imports/client/containers/LogList';
 
 /**
  *  LogList
- * 
+ *
  * @param {Object} locations
  * @param {Boolean} isEditable
  */

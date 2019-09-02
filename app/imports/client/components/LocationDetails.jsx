@@ -1,14 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import components
-import EditLocation from '../../containers/EditLocation/EditLocation';
-import RaisedButton from '../Button/RaisedButton.jsx'
-import ObjectBlock from '../../containers/ObjectBlock/ObjectBlock';
-import ManageApiKeys from '../ManageApiKeys/ManageApiKeys';
-import ManageUserlist from '../ManageUserlist/ManageUserlist';
-import MapSummary from '../../MapSummary'
+import EditLocation from '/imports/client/containers/EditLocation';
+import RaisedButton from '/imports/client/components/RaisedButton.jsx'
+import ObjectBlock from '/imports/client/containers/ObjectBlock';
+import ManageApiKeys from '/imports/client/components/ManageApiKeys';
+import ManageUserlist from '/imports/client/components/ManageUserlist';
+import MapSummary from '/imports/client/MapSummary'
 
 class LocationDetails extends Component {
 
@@ -53,15 +52,14 @@ class LocationDetails extends Component {
         </RaisedButton>
 
         { this.props.objects.length != 0 ?
-          R.map((object) =>  <ObjectBlock
+          this.props.objects.map((object) =>  <ObjectBlock
                               key={object._id}
                               item={object}
                               isEditable={this.props.isEditable}
                               onClick={this.props.clickItemHandler}
                               showPrice={true}
                               showState={this.props.isEditable}
-                              showRentalDetails={this.props.isEditable} />
-                            , this.props.objects)
+                              showRentalDetails={this.props.isEditable} />)
           :
           <p style={s.paragraph}>GEEN FIETSEN BESCHIKBAAR</p>
         }

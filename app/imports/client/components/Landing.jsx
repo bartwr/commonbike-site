@@ -1,12 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
 // Import components
-import CommonBikeLogo from '../CommonBikeLogo/CommonBikeLogo.jsx'
-import RaisedButton from '../Button/RaisedButton.jsx';
+import CommonBikeLogo from '/imports/client/components/CommonBikeLogo.jsx'
+import RaisedButton from '/imports/client/components/RaisedButton.jsx';
 
 class Landing extends Component {
 

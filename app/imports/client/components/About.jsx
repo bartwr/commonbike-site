@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
-import SignUpButton from '../SignUpButton/SignUpButton.jsx';
-import Hr from '../Hr/Hr.jsx';
+import SignUpButton from '/imports/client/components/SignUpButton.jsx';
+import Hr from '/imports/client/components/Hr.jsx';
 
 class Join extends Component {
 

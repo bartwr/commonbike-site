@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import components
 import '/imports/api/users.js'
-import AdminUsersListComponent from '../../components/AdminUsersList/AdminUsersList';
+import AdminUsersListComponent from '/imports/client/components/AdminUsersList';
 
 class AdminUsersList extends Component {
   constructor(props) {

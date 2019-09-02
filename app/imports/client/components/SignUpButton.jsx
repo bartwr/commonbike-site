@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { RedirectTo } from '/client/main'
 
 // Import components
-import RaisedButton from '../Button/RaisedButton.jsx'
+import RaisedButton from '/imports/client/components/RaisedButton.jsx'
 
 class SignUpButton extends Component {
 

@@ -2,14 +2,13 @@ import React, { Component, PropTypes } from 'react';
 import { Meteor } from 'meteor/meteor'
 import { createContainer } from 'meteor/react-meteor-data';
 import { Accounts } from 'meteor/accounts-base';
-import AccountsUIWrapper from '/imports/client/containers/AccountsUIWrapper/AccountsUIWrapper.jsx';
+import AccountsUIWrapper from '/imports/client/containers/AccountsUIWrapper.jsx';
 import ReactSwipe from 'react-swipe';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
 // Import templates
-import SquareButton from '../SquareButton/SquareButton.jsx';
-import LoginForm from '../../containers/LoginForm/LoginForm.jsx';
+import SquareButton from '/imports/client/components/SquareButton.jsx';
+import LoginForm from '/imports/client/containers/LoginForm.jsx';
 
 class Login extends Component {
 

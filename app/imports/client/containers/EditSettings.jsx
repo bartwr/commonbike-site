@@ -2,11 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import R from 'ramda';
 import {propTypes} from 'react-router';
 
 // Import components
-import EditFields from '../../components/EditFields/EditFields';
+import EditFields from '/imports/client/components/EditFields';
 
 // Import models
 import { Settings, SettingsSchema, defaultProfileName } from '/imports/api/settings.js';

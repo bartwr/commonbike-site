@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import R from 'ramda';
 
 // Import components
-import TextField from '../TextField/TextField.jsx';
+import TextField from '/imports/client/components/TextField.jsx';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 export default class ManageApiKeys extends Component {
@@ -75,13 +74,13 @@ export default class ManageApiKeys extends Component {
           <button type="submit" style={s.addicon} ref="addApiKey" title="add user" />
         </form>
 
-        {R.map((apikey) =>  <div style={s.lijstitem} key={apikey._id}>
+        {this.state.ApiKeysList.map((apikey) =>  <div style={s.lijstitem} key={apikey._id}>
                               <CopyToClipboard text={apikey.key} onCopy={() => alert(apikey.key + " gekopieerd")} >
                                 <img style={s.icon} src={s.images.clipboard} />
                               </CopyToClipboard>
                               <span>{apikey.name}</span>
                               <img style={s.icon} src={s.images.trashcan} onClick={() => this.removeApiKey(apikey._id) } />
-                            </div>, this.state.ApiKeysList)}
+                            </div>)}
       </div>
     );
   }

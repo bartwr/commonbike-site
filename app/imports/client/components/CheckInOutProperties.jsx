@@ -1,9 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import ContentEditable from 'react-contenteditable';
-import ReactDOM from 'react-dom';
 
 // Import models
-import { Objects } from '/imports/api/objects.js'; 
+import { Objects } from '/imports/api/objects.js';
 
 class CheckInOutProperies extends Component {
 
@@ -51,11 +49,11 @@ class CheckInOutProperies extends Component {
   }
 
   render() {
-      var keycode = ''; 
+      var keycode = '';
       if(this.object&&this.object.lock&&this.object.lock.keycode) {
-        keycode = this.object.lock.keyid; 
+        keycode = this.object.lock.keyid;
       } else {
-        keycode = this.getRandomKeycode()  
+        keycode = this.getRandomKeycode()
       }
 
     return (

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 class LogList extends Component {
 
@@ -13,7 +12,7 @@ class LogList extends Component {
     return (
       <div style={s.base}>
         <div style={s.title}>{this.props.title}</div>
-        {R.map((logitem) => <div key={logitem._id} style={s.centerbox}>{logitem.datetime} - {logitem.description}<br/>{JSON.stringify(logitem.data, 0,4)}</div>, this.props.logitems)}
+        {this.props.logitems.map((logitem) => <div key={logitem._id} style={s.centerbox}>{logitem.datetime} - {logitem.description}<br/>{JSON.stringify(logitem.data, 0,4)}</div>)}
       </div>
     );
   }

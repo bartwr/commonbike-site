@@ -3,14 +3,13 @@ import React, { Component, PropTypes } from 'react';
 
 import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import components
-import CommonBikeLogo from '../CommonBikeLogo/CommonBikeLogo.jsx'
-import CommonBikeLogoDevelopment from '../CommonBikeLogoDevelopment/CommonBikeLogoDevelopment.jsx'
-import BackButton from '../Button/BackButton.jsx'
-import RaisedButton from '../Button/RaisedButton.jsx'
-import Avatar from '../Avatar/Avatar.jsx'
+import CommonBikeLogo from '/imports/client/components/CommonBikeLogo.jsx'
+import CommonBikeLogoDevelopment from '/imports/client/components/CommonBikeLogoDevelopment.jsx'
+import BackButton from '/imports/client/components/BackButton.jsx'
+import RaisedButton from '/imports/client/components/RaisedButton.jsx'
+import Avatar from '/imports/client/components/Avatar.jsx'
 import { RedirectTo } from '/client/main'
 
 class PageHeader extends Component {

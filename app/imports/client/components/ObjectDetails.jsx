@@ -1,25 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
-import { StyleProvider } from '../../StyleProvider.js'
+import { StyleProvider } from '/imports/client/StyleProvider.js'
 
 // Import components
-import EditObject from '../../containers/EditObject/EditObject';
-import RaisedButton from '../Button/RaisedButton.jsx'
-import ObjectBlock from '../../containers/ObjectBlock/ObjectBlock';
-import Button from '../Button/Button';
-import CheckInCode from '../CheckInCode/CheckInCode';
-import MapSummary from '../../MapSummary';
-import CheckInOutProcessPlainKey from '../CheckInOutProcess/CheckInOutProcessPlainKey';
-import CheckInOutProcessAxaELock from '../CheckInOutProcess/CheckInOutProcessAxaELock';
-import CheckInOutProcessOpenKeylocker from '../CheckInOutProcess/CheckInOutProcessOpenKeylocker';
-import CheckInOutProcessOpenBikelocker from '../CheckInOutProcess/CheckInOutProcessOpenBikelocker';
-import CheckInOutProcessOpenELock from '../CheckInOutProcess/CheckInOutProcessOpenELock';
-import CheckInOutProcessSkopeiLock from '../CheckInOutProcess/CheckInOutProcessSkopeiLock';
-import CheckInOutProcessGoAboutLock from '../CheckInOutProcess/CheckInOutProcessGoAboutLock';
-import ManageApiKeys from '../ManageApiKeys/ManageApiKeys';
-import Balance from '/imports/client/components/Balance/Balance.jsx';
+import EditObject from '/imports/client/containers/EditObject';
+import RaisedButton from '/imports/client/components/RaisedButton.jsx'
+import ObjectBlock from '/imports/client/containers/ObjectBlock';
+import Button from '/imports/client/components/Button.jsx';
+import CheckInOutProcessBase from '/imports/client/components/CheckInCode';
+import MapSummary from '/imports/client/MapSummary';
+import CheckInOutProcessPlainKey from '/imports/client/components/CheckInOutProcess/CheckInOutProcessPlainKey';
+import CheckInOutProcessAxaELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessAxaELock';
+import CheckInOutProcessOpenKeylocker from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenKeylocker';
+import CheckInOutProcessOpenBikelocker from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenBikelocker';
+import CheckInOutProcessOpenELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenELock';
+import CheckInOutProcessSkopeiLock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessSkopeiLock';
+import CheckInOutProcessGoAboutLock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessGoAboutLock';
+import ManageApiKeys from '/imports/client/components/ManageApiKeys';
+import Balance from '/imports/client/components/Balance.jsx';
 
 class ObjectDetails extends Component {
 

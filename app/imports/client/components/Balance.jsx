@@ -1,6 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ContentEditable from 'react-contenteditable';
-import ReactDOM from 'react-dom';
 
 // Balance component - Renders an item Balance
 class Balance extends Component {

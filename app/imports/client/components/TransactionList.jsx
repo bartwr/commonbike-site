@@ -1,12 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import models
-import { Transactions } from '/imports/api/transactions.js'; 
+import { Transactions } from '/imports/api/transactions.js';
 
 // Import components
-import TransactionBlock from '../TransactionBlock/TransactionBlock';
+import TransactionBlock from '/imports/client/components/TransactionBlock';
 
 class TransactionList extends Component {
 
@@ -19,7 +18,7 @@ class TransactionList extends Component {
       <div style={s.base}>
         <div style={s.title}>{this.props.title}</div>
 
-        {R.map((object) =>  <TransactionBlock key={object._id} item={object} />, this.props.transactions)}
+        {this.props.transactions.map((object) =>  <TransactionBlock key={object._id} item={object} />, )}
       </div>
     );
   }
@@ -40,7 +39,7 @@ var s = {
     width: '400px',
     margin: '10px auto',
     padding: '5px 0',
-  }  
+  }
 
 }
 

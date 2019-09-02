@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
-import ObjectBlock from '../../containers/ObjectBlock/ObjectBlock';
+import ObjectBlock from '/imports/client/containers/ObjectBlock';
 
 // Import models
-import { Objects } from '/imports/api/locations.js'; 
+import { Objects } from '/imports/api/locations.js';
 
 // Import components
-import Block from '../Block/Block';
+import Block from '/imports/client/components/Block';
 
 class ObjectList extends Component {
 
@@ -24,7 +23,7 @@ class ObjectList extends Component {
         </p>
 
         { this.props.objects.length != 0 ?
-           R.map((object) =>  <ObjectBlock
+           this.props.objects.map((object) =>  <ObjectBlock
                               key={object._id}
                               item={object}
                               isEditable={this.props.isEditable}
@@ -32,10 +31,9 @@ class ObjectList extends Component {
                               showState={this.props.showState}
                               showRentalDetails={this.props.showRentalDetails}
                               showLockDetails={this.props.showLockDetails}
-                              onClick={this.props.clickItemHandler} />
-                            , this.props.objects)
+                              onClick={this.props.clickItemHandler} />)
           :
-          <p style={s.intro}><i><b>{this.props.emptyListMessage}</b></i></p> 
+          <p style={s.intro}><i><b>{this.props.emptyListMessage}</b></i></p>
         }
 
       </div>

@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
 // Import components
-import RaisedButton from '../Button/RaisedButton';
-import '../../../api/users.js';
-import EditSettings from '/imports/client/containers/EditSettings/EditSettings.jsx'
-import ManageApiKeys from '../ManageApiKeys/ManageApiKeys';
+import RaisedButton from '/imports/client/components/RaisedButton';
+import '/imports/api/users.js';
+import EditSettings from '/imports/client/containers/EditSettings.jsx'
+import ManageApiKeys from '/imports/client/components/ManageApiKeys';
 
 class Profile extends Component {
   constructor(props) {

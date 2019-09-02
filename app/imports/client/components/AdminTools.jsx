@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 import { RedirectTo } from '/client/main'
 
 // Import components
-import RaisedButton from '../Button/RaisedButton';
+import RaisedButton from '/imports/client/components/RaisedButton';
 import { getUserDescription } from '/imports/api/users.js';
 
 // import { Backuplist } from '/imports/api/databasetools.js';

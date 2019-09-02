@@ -1,17 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import R from 'ramda';
 
 // Import models
-import { Locations } from '/imports/api/locations.js'; 
-import { Objects } from '/imports/api/objects.js'; 
+import { Locations } from '/imports/api/locations.js';
+import { Objects } from '/imports/api/objects.js';
 
 // Import components
-import ObjectListComponent from '../../components/ObjectList/ObjectList';
+import ObjectListComponent from '/imports/client/containers/ObjectList';
 
 /**
  *  ObjectList
- * 
+ *
  * @param {Object} locations
  * @param {Boolean} isEditable
  */
@@ -27,7 +26,7 @@ class ObjectList extends Component {
       	title={this.props.title}
         objects={this.props.objects}
         clickItemHandler=""
-        isEditable={this.props.isEditable} 
+        isEditable={this.props.isEditable}
         showPrice={this.props.showPrice}
         showState={this.props.showState}
         showRentalDetails={this.props.showRentalDetails}

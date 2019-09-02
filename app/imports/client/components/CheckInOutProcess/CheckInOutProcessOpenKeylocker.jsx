@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import CheckInOutProcessBase from '../CheckInOutProcess/CheckInOutProcessBase';
-import { StyleProvider } from '../../StyleProvider.js'
+import CheckInOutProcessBase from '/imports/client/components/CheckInOutProcess/CheckInOutProcessBase';
+import { StyleProvider } from '/imports/client/StyleProvider.js'
 
 
 // Import components
-import Button from '../Button/Button';
+import Button from '/imports/client/components/Button.jsx';
 
 class CheckInOutProcessOpenKeylocker extends CheckInOutProcessBase {
   constructor(props) {

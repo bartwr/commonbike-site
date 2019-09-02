@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
-import CheckInOutProcessBase from '../CheckInOutProcess/CheckInOutProcessBase';
-import { StyleProvider } from '../../StyleProvider.js'
+import CheckInOutProcessBase from '/imports/client/components/CheckInOutProcess/CheckInOutProcessBase';
+import { StyleProvider } from '/imports/client/StyleProvider.js'
 
 // Import components
-import Button from '../Button/Button';
+import Button from '/imports/client/components/Button.jsx';
 
 class CheckInOutProcessAxaELock extends CheckInOutProcessBase {
   constructor(props) {
@@ -16,7 +16,7 @@ class CheckInOutProcessAxaELock extends CheckInOutProcessBase {
       <div style={s.base}>
       {this.props.object.state.state=='available' ?
         <Button onClick={() => this.setObjectReserved() } buttonStyle="hugeSmallerFont">Reserveer</Button> : <div /> }
-      {this.props.object.state.state=='reserved' ? 
+      {this.props.object.state.state=='reserved' ?
         <div style={s.base}>
           <ul style={s.list}>
             <li style={s.listitem}>Uw fiets ophalen?</li>
@@ -34,7 +34,7 @@ class CheckInOutProcessAxaELock extends CheckInOutProcessBase {
           <Button style={s.button} onClick={() => this.setObjectAvailable() } buttonStyle="hugeSmallerFont">Annuleer Reservering</Button>
       </div>
       : <div /> }
-      {this.props.object.state.state=='inuse' ? 
+      {this.props.object.state.state=='inuse' ?
         <div>
           <Button style={s.button} onClick={() => this.openLock() } buttonStyle="hugeSmallerFont">Open Slot</Button>
           <ul style={s.list}>
@@ -47,7 +47,7 @@ class CheckInOutProcessAxaELock extends CheckInOutProcessBase {
             <li style={s.listitem}>(Gebruik eventueel pincode <b>{this.props.object.lock.settings.pincode})</b></li>
             <li style={s.listitem}>Druk hierboven op de knop <b>Open Slot</b></li>
           </ul>
-          <Button style={s.button} onClick={() => this.setObjectAvailable() } buttonStyle="hugeSmallerFont">Ingeleverd</Button> 
+          <Button style={s.button} onClick={() => this.setObjectAvailable() } buttonStyle="hugeSmallerFont">Ingeleverd</Button>
           <ul style={s.list}>
             <li style={s.listitem}>Uw fiets inleveren?</li>
             <li style={s.listitem}>Plaats uw fiets in het verhuurrek en zet deze op slot</li>
@@ -55,8 +55,8 @@ class CheckInOutProcessAxaELock extends CheckInOutProcessBase {
           </ul>
         </div>
         : <div /> }
-      {this.props.object.state.state=='outoforder' ? 
-          <Button onClick={() => this.setObjectAvailable() } buttonStyle="hugeSmallerFont">Maak Beschikbaar</Button> 
+      {this.props.object.state.state=='outoforder' ?
+          <Button onClick={() => this.setObjectAvailable() } buttonStyle="hugeSmallerFont">Maak Beschikbaar</Button>
         : <div /> }
       </div>
     );

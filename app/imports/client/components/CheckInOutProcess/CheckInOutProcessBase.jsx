@@ -4,7 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { getUserDescription } from '/imports/api/users.js';
 
 // Import components
-import Button from '../Button/Button';
+import Button from '/imports/client/components/Button.jsx';
 
 class CheckInOutProcessBase extends Component {
   constructor(props) {

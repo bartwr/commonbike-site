@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 
 // Import components
-import CommonBikeLogo from '../CommonBikeLogo/CommonBikeLogo.jsx'
-import RaisedButton from '../Button/RaisedButton.jsx'
-import PageHeader from '../PageHeader/PageHeader.jsx'
+import CommonBikeLogo from '/imports/client/components/CommonBikeLogo.jsx'
+import RaisedButton from '/imports/client/components/RaisedButton.jsx'
+import PageHeader from '/imports/client/components/PageHeader.jsx'
 
 class CustomPage extends Component {
 
