@@ -1,19 +1,116 @@
-import React, { Component, PropTypes } from 'react';
-import ContentEditable from 'react-contenteditable';
-import ReactDOM from 'react-dom';
-import { createContainer } from 'meteor/react-meteor-data';
-import { RedirectTo } from '/client/main'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import { withTracker } from 'meteor/react-meteor-data';
+import Typography from '@material-ui/core/Typography';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import Switch from '@material-ui/core/Switch';
+import Divider from '@material-ui/core/Divider';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import Button from '@material-ui/core/Button';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    paddingLeft: 1*theme.spacing.unit,
+    paddingRight: 1*theme.spacing.unit,
+    width: '100%'
+  },
+  details: {
+    flexDirection: 'column',
+  },
+  formheader: {
+    padding: theme.spacing.unit,
+  },
+  headerfield: {
+    margin: theme.spacing.unit,
+  },
+  messagefield: {
+    paddingBottom: 2*theme.spacing.unit,
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+  apikeyFormcontrol: {
+  },
+  apikeyButtonRefresh: {
+    position: 'absolute',
+    right: '40px',
+    bottom: '10px',
+    width: '35px',
+    height: '35px'
+  },
+  apikeyButtonDelete: {
+    position: 'absolute',
+    right: '5px',
+    bottom: '10px',
+    width: '35px',
+    height: '35px'
+  },
+  combo: {
+    margin: 0,
+    marginTop: theme.spacing.unit
+  },
+  yesnoswitch: {
+    margin: theme.spacing.unit
+  },
+  imagepreview: {
+    width: '100%',
+    height: '20vh',
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+  },
+  actionButton: {
+    margin: theme.spacing.unit,
+    align: 'center center',
+  },
+  expandIcon: {
+    position: 'absolute',
+    right: '0px',
+    top: '0px',
+    width: '40px',
+    height: '40px'
+  }
+});
 
 class EditFields extends Component {
 
   constructor(props) {
     super(props);
 
-    this.state = { showDetails: false,
-                   changes: {} }
+
+    this.state = {
+      changes: {},
+      expand: false
+      
+    }
+
+    if(this.props.externalPanelId) {
+      this.state.expand = this.props.externalPanelId==this.props.panelId;
+    } else {
+      this.state.expand = this.props.startOpen;
+    }
   }
 
-  apply() {
+  apply = () => e => {
     if(this.props.apply&&(Object.keys(this.state.changes).length > 0)) {
       // for some types (boolean, ...) the control value needs to be converted
       // to pass the schema check
@@ -23,279 +120,370 @@ class EditFields extends Component {
         if(itemidx!=-1) {
           if(this.props.fields[itemidx].controltype=='yesno') {
             // yesno field: convert back to boolean
-            changes[fieldname] = (changes[fieldname]=='true');
+            // changes[fieldname] = (changes[fieldname]=='true');
           } else if(this.props.fields[itemidx].controltype=='number') {
             // number field: convert back to number
             changes[fieldname] = Number(changes[fieldname]);
+          } else if(this.props.fields[itemidx].controltype=='date') {
+            // date field: convert back to ISO dt string
+            var d = new Date(changes[fieldname]);
+            // var offset = (new Date().getTimezoneOffset() / 60) * -1;
+            // var dateISO = new Date(d.getTime() + offset);
+            changes[fieldname] = d.toISOString();
+          } else {
+            // leave as is
           }
         } else {
-          console.log('field not found!');  // should not happen!
+          console.error('field not found! [ ' + fieldname+ '] ');  // should not happen!
+//          console.log(JSON.stringify(this.props.fields));
         }
       });
 
       if(this.props.apply(changes)) {
-        this.setState( {changes: { }});
+         this.setState( {changes: { }});
       }
     }
   }
 
-  reset(e) {
-    this.refs.theforminquestion.reset();
-    this.setState( {changes: { }, showDetails: false});
+  reset = () => e => {
+    if(this.props.reset&&(Object.keys(this.state.changes).length > 0)) {
+      this.props.reset(changes);
+    }
+
+    this.setState( { changes: { } } );
   }
 
-  onFieldChange(e) {
-    var newChanges = this.state.changes;
-    if(e.target.value!=e.target.defaultValue) {
-      newChanges[e.target.name] = e.target.value;
+  delete = () => e => {
+    if(this.props.delete) {
+      this.props.delete();
+    }
+  }
+
+  onFieldChange = index => e => {
+    let field = this.props.fields[index];
+
+    let newChanges = this.state.changes;
+    let value;
+    switch(field.controltype) {
+      case 'yesno':
+        value =  e.target.checked
+        break;
+      case 'text-array':
+      case 'text-array-readonly':
+        value =  e.target.value.split(';');
+        break;
+      default:
+        value = e.target.value;
+        break;
+    }
+    if(value!=field.fieldvalue) {
+      newChanges[field.fieldname] = value;
     } else {
-      delete newChanges[e.target.name]; // original value is back :-)
+      delete newChanges[field.fieldname]; // original value is back :-)
+    }
+    this.setState( { changes: newChanges } );
+
+    // console.log('state after onfieldchange:', JSON.stringify(this.state), JSON.stringify(e.target.value));
+  }
+
+  createNewAPIKey(index) {
+    let value = Random.hexString( 32 );
+    this.setField(index, value);
+  }
+
+  setField(index, newvalue) {
+    let field = this.props.fields[index];
+
+    let newChanges = this.state.changes;
+    if(newvalue!=field.fieldvalue) {
+      newChanges[field.fieldname] = newvalue;
+    } else {
+      delete newChanges[field.fieldname]; // original value is back :-)
     }
     this.setState( { changes: newChanges } );
   }
 
-  getOption(option, field) {
-    return (
-       <option key={option._id} value={option._id}>{option.title}</option>
-    );
-  }
-
-  getField(field, key, actionhandler) {
+  getField(classes, fieldindex, field, key, actionhandler) {
     switch (field.controltype) {
       case 'header':
         return (
-          <div style={s.header} key={key}>{field.label}</div>
+            <div key={key} className={classes.headerfield}>
+              <Typography key={"typo-"+key} variant="h4" color="inherit">{field.label}</Typography>
+              <Divider />
+            </div>
         );
 
         break;
       case 'message':
         return (
-          <div style={s.message} key={key}>{field.text}</div>
+          <Typography key={"message-"+key} className={classes.message}>{field.label}</Typography>
         );
 
         break;
       case 'text':
-        return (
-          <div style={s.editline} key={key}>
-            <input style={s.control} type='INPUT' key={field.fieldname} name={field.fieldname} defaultValue={field.fieldvalue} onChange={this.onFieldChange.bind(this)} />
-            <label style={s.label} key={'label_'+field.fieldname} htmlFor={field.fieldname}>{field.label}</label>
-          </div>
-        );
-
-        break;
       case 'text-readonly':
+      case 'number':
+      case 'number-readonly':
+        var tmpvalue = this.state.changes[field.fieldname]!=undefined?this.state.changes[field.fieldname]:field.fieldvalue;
+
         return (
-          <div style={s.editline} key={key}>
-            <input style={s.control} type='INPUT' key={field.fieldname} name={field.fieldname} defaultValue={field.fieldvalue} onChange={this.onFieldChange.bind(this)} readOnly />
-            <label style={s.label} key={'label_'+field.fieldname} htmlFor={field.fieldname}>{field.label}</label>
-          </div>
+          <TextField
+            id={key}
+            key={key}
+            label={field.label}
+            className={classes.textfield}
+            value ={tmpvalue}
+            onChange={this.onFieldChange(fieldindex)}
+            margin="normal"
+            disabled={ field.controltype=='text-readonly' || field.controltype=='number-readonly' }/>
         );
 
         break;
-      case 'number':
+      case 'text-array':
+      case 'text-array-readonly':
         return (
-          <div style={s.editline} key={key}>
-            <input style={s.control} type='INPUT' key={field.fieldname} name={field.fieldname} defaultValue={field.fieldvalue.toString()} onChange={this.onFieldChange.bind(this)} />
-            <label style={s.label} key={'label_'+field.fieldname} htmlFor={field.fieldname}>{field.label}</label>
-          </div>
+          <TextField
+            id={key}
+            key={key}
+            label={field.label}
+            className={classes.textfield}
+            value={this.state.changes[field.fieldname]!=undefined?this.state.changes[field.fieldname]:field.fieldvalue.join(';')}
+            onChange={this.onFieldChange(fieldindex)}
+            margin="normal"
+            disabled={ field.controltype=='text-array-readonly' }/>
         );
 
+        break;
+      case 'date':
+        let value;
+        if(this.state.changes[field.fieldname]!=undefined) {
+          value=this.state.changes[field.fieldname]
+        } else {
+          value = new Date(field.fieldvalue).toISOString().substr(0, 10);
+        }
+
+        return (
+          <TextField
+            id={key}
+            key={key}
+            label={field.label}
+            type="date"
+            className={classes.textfield}
+            value={value}
+            onChange={this.onFieldChange(fieldindex)}
+            margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }} />
+        );
         break;
       case 'combo':
         return (
-          <div style={s.editline} key={key}>
-            <select style={s.control} key={field.fieldname} name={field.fieldname} defaultValue={field.fieldvalue} onChange={this.onFieldChange.bind(this)} >
-                { field.options.map((option) => this.getOption(option, field)) }
-            </select>
-            <label style={s.label} key={'label_'+field.fieldname} htmlFor={field.fieldname}>{field.label}</label>
-          </div>
+          <FormControl className={classes.combo} key={key}>
+          <InputLabel shrink htmlFor={key}>{field.label}</InputLabel>
+          <Select
+            value={this.state.changes[field.fieldname]||field.fieldvalue}
+            onChange={this.onFieldChange(fieldindex)}
+            inputProps={{
+              name: key,
+              id: key,
+            }}
+          >
+          { field.options.map((option) => (<MenuItem key={'option-' + option._id} value={option._id}>{option.title}</MenuItem>)) }
+          </Select>
+         </FormControl>
+        )
+        break;
+      case 'apikey':
+        return (
+          <FormControl className={classes.apikeyFormcontrol} key={key}>
+            <TextField
+              id={key}
+              key={key}
+              label={field.label}
+              className={classes.textfield}
+              value={this.state.changes[field.fieldname]!=undefined?this.state.changes[field.fieldname]:field.fieldvalue}
+              onChange={this.onFieldChange(fieldindex)}
+              margin="normal"
+              disabled={ field.controltype=='text-readonly' }/>
+            <RefreshIcon className={classes.apikeyButtonRefresh} key={'new_apikey_'+field.fieldname} onClick={()=>this.createNewAPIKey(fieldindex)} />
+            <DeleteIcon  className={classes.apikeyButtonDelete} key={'clear+apikey_'+field.fieldname} onClick={()=>this.setField(fieldindex, '')} />
+          </FormControl>
         );
-
         break;
       case 'yesno':
         return (
-          <div style={s.editline} key={key}>
-            <select style={s.control} key={field.fieldname} name={field.fieldname} defaultValue={field.fieldvalue.toString()} onChange={this.onFieldChange.bind(this)} >
-                <option key={'key.option.true'} value={true}>Ja</option>
-                <option key={'key.option.false'} value={false}>Nee</option>
-            </select>
-            <label style={s.label} key={'label_'+field.fieldname} htmlFor={field.fieldname}>{field.label}</label>
-          </div>
-        );
+          <FormControlLabel
+            key={key}
+            value={field.label}
+            control={
+              <Switch className={classes.yesnoswitch} name={key}
+                onChange={this.onFieldChange(fieldindex)}
+                checked={this.state.changes[field.fieldname]!=undefined?this.state.changes[field.fieldname]:field.fieldvalue}
+                color="primary" />
+            }
+            label={field.label}
+            labelPlacement="end" />
+       )
+       break;
+       return (
+         <FormControlLabel
+           key={key}
+           value={field.label}
+           control={
+             <Switch className={classes.yesnoswitch} name={key}
+               onChange={this.onFieldChange(fieldindex)}
+               checked={this.state.changes[field.fieldname]!=undefined?this.state.changes[field.fieldname]:field.fieldvalue}
+               color="primary" />
+           }
+           label={field.label}
+           labelPlacement="end" />
+      )
+      break;
+   case 'image-preview':
+     if(field.fieldvalue && field.fieldvalue!='') {
+       return (
+         <div
+           className={classes.imagepreview}
+           style={{backgroundImage: 'url(' + field.fieldvalue + ')'}}
+           key={key} />);
+     } else {
+        return null;
+     }
+     break;
+   case 'clientside-action':
+       let idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
+       // console.log(field.fieldname + ' is using handler ' + idx);
 
-        break;
+       return (
+         <Button
+         className={classes.actionButton}
+         key={'csa_'+field.fieldname}
+         onClick={idx!=undefined?this.props.handlers[idx].action.bind(this):null}
+         variant='contained'
+         >{field.label}</Button>
+       );
+
+       break;
       case 'serverside-action':
         return (
-          <div style={s.editline} key={key}>
-            <img style={s.controlicon} src={s.images.yes} onClick={()=>{actionhandler(field.fieldname)}} />
-            <label style={s.label} key={'label_'+field.fieldname} htmlFor={field.fieldname}>{field.label}</label>
-          </div>
+          <Button
+          className={classes.actionButton}
+          key={'ssa_'+field.fieldname}
+          onClick={()=>{actionhandler(field.fieldname)}}
+          variant='contained'
+          >{field.label}</Button>
         );
 
         break;
       default:
-        return (<div />);
+        return (<div key={"unknown-"+key} />);
         break;
     }
   }
 
   actionhandler(name) {
-    console.log('calling ' + name);
+    // console.log('calling ' + name);
     Meteor.call(name);
   }
 
-  render() {
-    return (
-      <div style={s.box}>
-        <div style={s.titelbox}>
-          {this.props.title}
-          <img src={ s.images.details } style={s.editicon} alt="" onClick={() => this.setState(prevState => ({ showDetails: ! prevState.showDetails}))} />
-        </div>
+  toggleExpansion = () => {
+    // always open? Ignore state
+    if(this.props.enableCollapse==false) return {};
 
-        { this.state.showDetails?
-          <form type="" style={ s.editform } ref="theforminquestion">
-            { this.props.fields.map((field) => this.getField(field, field.label+'.'+field.fieldname||'control', this.actionhandler.bind(this))) // || 'control' -> because label has no fieldname
-            }
-            <div style={s.confirmline}>
-                <div />
-                <img src={s.images.yes} style={s.icon} onClick={this.apply.bind(this)} hidden={Object.keys(this.state.changes).length==0}/>
-                <img src={s.images.no} style={s.icon} onClick={this.reset.bind(this)} />
-            </div>
-          </form>
-          :null
-        }
+    // determine new state
+    let newexpand = false;
+    if(this.props.externalPanelId) {
+      newexpand = (this.props.externalPanelId!=this.props.panelId); // use external state
+    } else {
+      newexpand = !this.state.expand; // use internal state
+    }
+    this.setState({ expand: newexpand });
+
+    // signal parent that state has changed
+    if(this.props.handleExpansion) {
+      this.props.handleExpansion(this.props.panelId, newexpand);
+    }
+  };
+
+  render() {
+    const { classes } = this.props;
+
+    let enablebuttons = Object.keys(this.state.changes).length>0;
+
+    let open = false;
+    if(this.props.externalPanelId) {
+      open=this.props.externalPanelId==this.props.panelId;
+    } else {
+      open=this.state.expand==true;
+    }
+
+    return (
+      <div>
+        <ExpansionPanel expanded={open||this.props.enableCollapse==false} onChange={this.toggleExpansion}>
+          <ExpansionPanelSummary expandIcon={this.props.enableCollapse==true?<ExpandMoreIcon />:null}>
+            <Typography variant="h6">{ this.props.title }</Typography>
+          </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.details}>
+                {
+                  this.props.fields.map((field,index) => this.getField(classes, index, field, field.controltype+'-'+index, this.actionhandler.bind(this))) // || 'control' -> because lab4
+                }
+                <div style={{textAlign:'center'}}>
+                <Button className={classes.actionButton} disabled={!enablebuttons} variant='contained' onClick={this.apply()}>APPLY</Button>
+                <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>RESET</Button>
+                { this.props.delete !== false ?
+                    <Button className={classes.actionButton} disabled={false} variant='outlined' onClick={this.delete()}>DELETE</Button>
+                  :
+                    null
+                }
+                </div>
+            </ExpansionPanelDetails>
+        </ExpansionPanel>
       </div>
+
     );
   }
 }
 
-var s = {
-  box: {
-    border: '2px solid black',
-    backgroundColor: '#fff',
-    width: '100%',
-    marginTop: '10px',
-    marginRight: 'auto',
-    marginBottom: '20px',
-    marginLeft: 'auto',
-    maxWidth: '400px',
-    color: '#000',
-  },
-  titelbox: {
-    border: 'none',
-    display: 'block',
-    backgroundColor: '#000',
-    color: '#ffffff',
-    padding: '10px',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: '20px',
-  },
-  editform: {
-    paddingTop: '10px'
-  },
-  container: {
-    background: '#fff',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-
-    fontWeight: 'smaller',
-    lineHeight: 'smaller',
-    padding: '10px',
-    maxWidth: '100%',
-    width: '400px',
-    margin: '20px auto',
-    borderBottom: 'solid 5px #bc8311',
-    textAlign: 'left',
-  },
-  editline: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    maxWidth: '100%',
-    margin: '0.2em',
-  },
-  confirmline: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  header: {
-    textAlign: 'left',
-    fontWeight: 'bold',
-    fontSize: '14px',
-    width: '100%',
-    borderTop: '2px solid black',
-    padding: '5px',
-    margin: '0 0 5px 0'
-  },
-  message: {
-    textAlign: 'center',
-    fontSize: '14px',
-    width: '100%',
-    padding: '5px',
-    margin: '0 0 5px 0'
-  },
-  label: {
-    order: '1',
-    width: '6em',
-    paddingRight: '0.2em',
-    textAlign: 'left',
-    },
-  control: {
-    order: '2',
-    flex: '1 1 auto',
-    textAlign: 'left'
-  },
-  controlicon: {
-    order: '2',
-    // flex: '1 1 auto',
-    textAlign: 'left',
-    height:' 64px',
-    width:'49px'
-  },
-  icon: {
-    width:'49px',
-    height:' 64px'
-  },
-  editicon: {
-    width:'32px',
-    height:' auto'
-  },
-  images: {
-    details: '/files/IconsButtons/more-48.png', // https://cdn1.iconfinder.com/data/icons/general-9/500/more-48.png
-    yes: '/files/IconsButtons/Tick_Mark_Dark-128.png', // 'https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Tick_Mark_Dark-128.png',
-    no: '/files/IconsButtons/Close_Icon_Dark-128.png' // 'https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Close_Icon_Dark-128.png'
-  },
-}
-
 EditFields.propTypes = {
   title: PropTypes.string,
-  fields: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-              fieldname: React.PropTypes.string,
-              fieldvalue: React.PropTypes.oneOfType([
-                React.PropTypes.string,
-                React.PropTypes.number,
-                React.PropTypes.bool]),
-              controltype: React.PropTypes.string,
-              label: React.PropTypes.string
+  fields: PropTypes.arrayOf(
+            PropTypes.shape({
+              fieldname: PropTypes.string,
+              fieldvalue: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.number,
+                PropTypes.bool]),
+              controltype: PropTypes.string,
+              label: PropTypes.string
             })
           ),
-  handlers: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-              name: React.PropTypes.string,
+  handlers: PropTypes.arrayOf(
+            PropTypes.shape({
+              name: PropTypes.string,
               functionname:PropTypes.func
             })
           ),
-  apply: PropTypes.func
+  apply: PropTypes.func,
+  reset: PropTypes.func,
+  delete: PropTypes.oneOfType([
+            PropTypes.func,
+            PropTypes.bool]),
+  handleExpansion: PropTypes.func,
+  panelId: PropTypes.string,
+  enableCollapse: PropTypes.bool,
+  startOpen: PropTypes.bool,
+  externalPanelId: PropTypes.string
 };
 
 EditFields.defaultProps = {
-  title: 'INSTELLINGEN',
+  title: '',
   fields: [],
-  handlers: []
+  handlers: [],
+  panelId: 'editfields-panel',
+  enableCollapse: true,
+  startOpen: false,
+  delete: false
 }
 
-export default EditFields
+export default withStyles(styles)(EditFields);

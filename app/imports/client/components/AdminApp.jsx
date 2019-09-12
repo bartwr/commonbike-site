@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 
 // AdminApp component - represents the whole app
 export default class AdminApp extends Component {

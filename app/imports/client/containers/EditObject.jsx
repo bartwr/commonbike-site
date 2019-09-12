@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
@@ -56,15 +57,15 @@ class EditObject extends Component {
 	          label: 'Pincode'
 	  		}
 	  	]
-    } else if(lockType=='skopei-v1') {
-      fields = [
-        {
-            fieldname: 'lock.settings.elockid',
-            fieldvalue: this.props.object.lock.settings.elockid,
-            controltype: 'text',
-            label: 'lock id'
-        }
-      ]
+    // } else if(lockType=='skopei-v1') {
+    //   fields = [
+    //     {
+    //         fieldname: 'lock.settings.elockid',
+    //         fieldvalue: this.props.object.lock.settings.elockid,
+    //         controltype: 'text',
+    //         label: 'lock id'
+    //     }
+    //   ]
     } else if(lockType=='goabout-v1'||lockType=='open-elock') {
       fields = [
         {
@@ -207,9 +208,11 @@ class EditObject extends Component {
   getRentalFields() {
     var fields = [];
     var lockType = this.props.object.lock.type;
-    if(lockType=='skopei-v1') { return this.getRentalFieldsSkopeiLock(); }
-    else if (lockType=='open-bikelocker') { return this.getRentalFieldsOpenBikeLocker(); }
-    else {
+    // if(lockType=='skopei-v1') { return this.getRentalFieldsSkopeiLock(); } else
+    
+    if (lockType=='open-bikelocker') {
+      return this.getRentalFieldsOpenBikeLocker();
+    } else {
       // nog geen rental fields gedefinieerd
     }
 

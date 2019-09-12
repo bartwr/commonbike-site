@@ -1,0 +1,16 @@
+## how to get this working
+
+make your test server (laptop) accessible from the internet
+-> mapped router port 7777 to laptop local port 3000
+
+setup the BL10 to use your own createServer -> send SMS to lock
+server,1,<serverurl>,7777,0#
+[usage -> server,url(0)/ip address(1),serverurl/ip,port,tcp(0)/udp(1)#]
+
+speedup heartbeat  -> send SMS to lock
+hbt,1#
+[usage -> hbt,interval in minutes#]
+
+start server
+node index.js
+

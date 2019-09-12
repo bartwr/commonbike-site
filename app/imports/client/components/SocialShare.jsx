@@ -1,5 +1,6 @@
 // Import libraries & helpers
-import React, { Component, PropTypes } from 'react';
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 
 class SocialShare extends Component  {
 

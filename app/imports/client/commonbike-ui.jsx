@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 
 // Import components
 import AccountsUIWrapper from '/imports/client/containers/AccountsUIWrapper.jsx';

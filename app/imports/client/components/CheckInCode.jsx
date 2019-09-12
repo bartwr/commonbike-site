@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 
 CheckInCode = (props) =>
   <div style={Object.assign({}, s.base, props.style)}>

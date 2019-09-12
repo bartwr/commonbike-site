@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
 import { RedirectTo } from '/client/main'
 import { StyleProvider } from '/imports/client/StyleProvider.js'
@@ -15,7 +16,7 @@ import CheckInOutProcessAxaELock from '/imports/client/components/CheckInOutProc
 import CheckInOutProcessOpenKeylocker from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenKeylocker';
 import CheckInOutProcessOpenBikelocker from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenBikelocker';
 import CheckInOutProcessOpenELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenELock';
-import CheckInOutProcessSkopeiLock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessSkopeiLock';
+// import CheckInOutProcessSkopeiLock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessSkopeiLock';
 import CheckInOutProcessGoAboutLock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessGoAboutLock';
 import ManageApiKeys from '/imports/client/components/ManageApiKeys';
 import Balance from '/imports/client/components/Balance.jsx';
@@ -80,9 +81,9 @@ class ObjectDetails extends Component {
       return <CheckInOutProcessAxaELock
           object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
 
-    else if(lockType=='skopei-v1')
-      return <CheckInOutProcessSkopeiLock
-          object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
+    // else if(lockType=='skopei-v1')
+    //   return <CheckInOutProcessSkopeiLock
+    //       object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
 
     else if(lockType=='goabout-v1')
       return <CheckInOutProcessGoAboutLock

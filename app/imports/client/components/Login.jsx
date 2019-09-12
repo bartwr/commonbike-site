@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, } from 'react';
+import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor'
 import { createContainer } from 'meteor/react-meteor-data';
 import { Accounts } from 'meteor/accounts-base';
 import AccountsUIWrapper from '/imports/client/containers/AccountsUIWrapper.jsx';
-import ReactSwipe from 'react-swipe';
 import { RedirectTo } from '/client/main'
 
 // Import templates

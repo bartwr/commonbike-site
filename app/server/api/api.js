@@ -59,6 +59,8 @@ lockerAPI = {
     }
   },
   handleRequest: function( request, response, resource, method ) {
+    console.log('incoming request on the locker API!');
+    
     var connection = lockerAPI.connection( request );
     if ( !connection.error ) {
       lockerAPI.methods[ resource ]( response, connection );
@@ -212,24 +214,24 @@ lockerAPI = {
 };
 
 //
-const paymentAPI = {
-  handleRequest: function(req, res) {
-    res.statusCode = 200 // res.writeHead(200, { 'Content-Type': 'text/plain' })
-    res.end()
-
-    const externalPaymentId = req.body.id
-    check(externalPaymentId, String)
-    let paymentOrder = Payments.findOne({externalPaymentId: externalPaymentId})
-    if (!paymentOrder) {
-      console.error('Unknown externalPaymentId', externalPaymentId)
-      return
-    }
-
-    // console.log('FOUND PAYMENTORDER', paymentOrder)
-    // console.log('visited payment webhook: UpdatePaymentOrder', externalPaymentId)
-    UpdatePaymentOrder(paymentOrder)
-  }
-}
+// const paymentAPI = {
+//   handleRequest: function(req, res) {
+//     res.statusCode = 200 // res.writeHead(200, { 'Content-Type': 'text/plain' })
+//     res.end()
+//
+//     const externalPaymentId = req.body.id
+//     check(externalPaymentId, String)
+//     let paymentOrder = Payments.findOne({externalPaymentId: externalPaymentId})
+//     if (!paymentOrder) {
+//       console.error('Unknown externalPaymentId', externalPaymentId)
+//       return
+//     }
+//
+//     // console.log('FOUND PAYMENTORDER', paymentOrder)
+//     // console.log('visited payment webhook: UpdatePaymentOrder', externalPaymentId)
+//     UpdatePaymentOrder(paymentOrder)
+//   }
+// }
 
 //
 var bodyParser = require("body-parser");
@@ -249,6 +251,6 @@ WebApp.connectHandlers
         lockerAPI.handleRequest( req, res, 'object' );
       }
     })
-    .use('/api/payment/webhook/mollie/v1', function (req, res) {
-      paymentAPI.handleRequest(req, res)
-    })
+    // .use('/api/payment/webhook/mollie/v1', function (req, res) {
+    //   paymentAPI.handleRequest(req, res)
+    // })
