@@ -3,7 +3,7 @@
 // parse code borrowed from https://gitlab.com/elyez/concox
 
 const net = require('net');
-// const util = require('./util')
+const util = require('./util')
 const crc16 = require('crc16-itu')
 
 const parse = (socket, data, callback) => {
