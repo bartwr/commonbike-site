@@ -3,8 +3,14 @@
 // parse code borrowed from https://gitlab.com/elyez/concox
 
 const net = require('net');
-// const util = require('./util')
+const util = require('./util')
 const crc16 = require('crc16-itu')
+
+// const parseheartbeat = (socket, data, callback) => {
+// }
+//
+// const parselogin = (socket, data, callback) => {
+// }
 
 const parse = (socket, data, callback) => {
   let gps = {
@@ -104,28 +110,50 @@ const doit = (socket, data, next) => {
           serialNo = buf.substr(-12, 4);
       }
       /***** HEARTBEAT *****/
-      else if (cmd == '13') {
+      else if (cmd == '23') {
           console.log('heartbeat!')
           update(socket, buf);
           serialNo = buf.substr(-12,4);
       }
       /***** LOCATION PACKET *****/
-      else if (cmd == '12') {
+      else if (cmd == '32') {
           console.log('location!')
           data.id = socket.name;
           var parseData = parse(socket, buf);
           data = Object.assign(data, parseData);
           next();
       }
+      /***** Online command response *****/
+      else if (cmd == '21') {
+          console.log('online command response!')
+          data.id = socket.name;
+          var parseData = parse(socket, buf);
+          next();
+      }
       /***** ALARM PACKET *****/
-      else if (cmd == '16') {
-          console.log('alarm!')
+      else if (cmd == '33') {
+          console.log('location information (alarm)')
+          data.id = socket.name;
+          var parseData = parse(socket, buf);
+          next();
+      }
+      /***** ALARM PACKET *****/
+      else if (cmd == '80') {
+          console.log('Online command')
+          data.id = socket.name;
+          next();
+      }
+      /***** ALARM PACKET *****/
+      else if (cmd == '80') {
+          console.log('information transmission packet')
           data.id = socket.name;
           var parseData = parse(socket, buf);
           data = Object.assign(data, parseData);
           serialNo = buf.substr(-12, 4);
           next();
-      } else {
+      }
+      else {
+        
         console.log('unhandled command %s', cmd);
       }
 

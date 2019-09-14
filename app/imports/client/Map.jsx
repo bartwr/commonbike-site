@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
 import L from 'leaflet'
 import { Settings } from '/imports/api/settings.js';
@@ -122,10 +123,10 @@ Map.defaultProps = {
   width: window.innerWidth,
   height: window.innerHeight-32,
   item: {
-    address: 'Moreelsepark 65, Utrecht, Netherlands',
+    address: 'Jaarbeursplein, Utrecht, Netherlands',
     title: 'Seats2meet',
     description: 'Utrecht CS',
-    lat_lng: [52.08906, 5.11343]
+    lat_lng: [52.088304, 5.107243]
   },
   style: "mapbox.streets" ,
   accessToken: "pk.eyJ1IjoiZXJpY3ZycCIsImEiOiJjaWhraHE5ajIwNmRqdGpqN2h2ZXhqMnRsIn0.1FBWllDyQ_nSlHFE2jMLDA"
