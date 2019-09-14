@@ -85,6 +85,76 @@ const update = (socket, data) => {
   socket.statusInfo = current;
 }
 
+// sendCommand()
+// 
+// For documentation, see:
+// 'BL10 GPS tracker communication protocolV1.0.8  20180408.pdf'
+const sendCommand = (command) => {
+  let messageCount = 1;
+
+  const startBit = new Buffer([0x78, 0x78]);
+  const protocolNumber = new Buffer([0x80]);
+  // Information on content
+  const commandContent = Buffer.from(command, 'ascii');
+  const serverFlagBit = new Buffer([0x00, 0x00, 0x00, 0x00]);
+  const lengthOfCommand = new Buffer([serverFlagBit.length + commandContent.length]);// serverFlagBit + command content length
+  const language = new Buffer([0x02]);// English
+  // 
+  const informationSerialNumber = new Buffer([0x00, messageCount]);
+
+  const lengthOfDataBit = new Buffer([
+    protocolNumber.length
+    + Buffer.concat([
+      lengthOfCommand,
+      serverFlagBit,
+      commandContent,
+      language
+    ]).length
+    + informationSerialNumber.length
+    + 2// errorCheck = 2 bytes
+  ])
+
+  const errorCheck = crc16(
+    new Buffer.concat([
+      lengthOfDataBit,
+      protocolNumber,
+      lengthOfCommand,
+      serverFlagBit,
+      commandContent,
+      language,
+      informationSerialNumber
+    ]),
+    'hex'
+  ).toString(16)
+
+  const stopBit = new Buffer([0x0D, 0x0A]);
+
+  console.log(new Buffer.concat([
+      lengthOfDataBit,
+      protocolNumber,
+      lengthOfCommand,
+      serverFlagBit,
+      commandContent,
+      language,
+      informationSerialNumber,
+      errorCheck,
+      stopBit
+    ]).toString('hex'))
+
+  return new Buffer.concat([
+    lengthOfDataBit,
+    protocolNumber,
+    lengthOfCommand,
+    serverFlagBit,
+    commandContent,
+    language,
+    informationSerialNumber,
+    errorCheck,
+    stopBit
+  ])
+
+}
+
 const doit = (socket, data, next) => {
   const buf = data.toString('hex');
   // console.log(buf);
@@ -145,12 +215,17 @@ var server = net.createServer(function(socket) {
 
   socket.on('data', function(data) {
     let next;
-    // var string = (data.toString());
-    // console.log(string)
+    var string = (data.toString());
+    console.log(string)
     
     doit(socket, data, next);
     
   });
+  console.log('GOING TO WRITE...')
+  console.log(sendCommand('UNLOCK#'));
+  socket.write(
+    sendCommand('UNLOCK#')
+  );
 	socket.write('Echo server\r\n');
 	socket.pipe(socket);
 });
