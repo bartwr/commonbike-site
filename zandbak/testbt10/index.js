@@ -104,7 +104,7 @@ const doit = (socket, data, next) => {
           serialNo = buf.substr(-12, 4);
       }
       /***** HEARTBEAT *****/
-      else if (cmd == '13') {
+      else if (cmd == '13' || cmd == '23') {
           console.log('heartbeat!')
           update(socket, buf);
           serialNo = buf.substr(-12,4);
@@ -157,8 +157,8 @@ var server = net.createServer(function(socket) {
 
 console.log('starting server on port')
 
-let port = 3000;                // listening port
-let serverip = '192.168.178.124'; // external IP address for this server
+let port = 9020;                // listening port
+let serverip = '0.0.0.0'; // external IP address for this server
 
 console.log('starting server on %s:%s', serverip, port);
 server.listen(port, serverip);
