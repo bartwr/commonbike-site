@@ -105,55 +105,46 @@ const sendCommand = (command) => {
   const lengthOfDataBit = new Buffer([
     protocolNumber.length
     + Buffer.concat([
-      lengthOfCommand,
+      new Buffer([lengthOfCommand.length]),
       serverFlagBit,
       commandContent,
-      language
+      // language
     ]).length
     + informationSerialNumber.length
     + 2// errorCheck = 2 bytes
   ])
 
-  const errorCheck = crc16(
+  const hexstring = crc16(
     new Buffer.concat([
       lengthOfDataBit,
       protocolNumber,
       lengthOfCommand,
       serverFlagBit,
       commandContent,
-      language,
+      // language,
       informationSerialNumber
-    ]),
-    'hex'
-  ).toString(16)
+    ])
+  ).toString(16);
 
+  const errorCheck = new Buffer(hexstring, 'hex');
   const stopBit = new Buffer([0x0D, 0x0A]);
 
-  console.log(new Buffer.concat([
-      lengthOfDataBit,
-      protocolNumber,
-      lengthOfCommand,
-      serverFlagBit,
-      commandContent,
-      language,
-      informationSerialNumber,
-      errorCheck,
-      stopBit
-    ]).toString('hex'))
-
   return new Buffer.concat([
+    startBit,
     lengthOfDataBit,
     protocolNumber,
     lengthOfCommand,
     serverFlagBit,
     commandContent,
-    language,
+    // language,
     informationSerialNumber,
     errorCheck,
     stopBit
   ])
 
 }
+
+sendCommand('UNLOCK#');
 
 const doit = (socket, data, next) => {
   const buf = data.toString('hex');
