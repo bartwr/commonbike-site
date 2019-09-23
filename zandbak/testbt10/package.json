@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "crc16-itu": "^1.0.6"
+    "crc16-itu": "^1.0.6",
+    "dateformat": "^3.0.3"
   }
 }

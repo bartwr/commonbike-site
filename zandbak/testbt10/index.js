@@ -86,6 +86,17 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
       socket.name = cmdinfo.imei;
       
       console.log("login from %s (model: %s / tz: %s)", cmdinfo.imei, cmdinfo.modelcode, cmdinfo.timezone);
+      
+      if (serialNo) {
+        const utcdatetime = dateformat(now, 'yymmddHHMMss', true);
+        const content = `01${utcdatetime}00${serialNo+1}`;
+        content = util.decimalToHexString(content.length) + content;
+        const crcCheck = crc16(content, 'hex').toString(16);
+        let str = new Buffer(`7878${content}${'0000'.substr(0, 4 - crcCheck.length) + crcCheck}0D0A`, 'hex');
+        console.log('replying with ' + str);
+        socket.write(str);
+      }
+      
       break;
     case '21': // online command response
       let info = {
@@ -156,12 +167,32 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
     default:
       console.log("unhandled command %s from %s (%s)", cmd, socket.name, infocontent)
       break;
-    case 98:
-      let itpinfo = {
-        modulenumber1: infocontent.substr(0,1*2),
-        modulelength: util.hex2int(infocontent.substr(1*2,2*2))
-      }
+    case '98':
       
+      let moduleidx=1;
+      let startidx=0;
+      let itpinfo = {};
+      while (startidx<infocontent.length) {
+        let typehex=infocontent.substr(startidx*2,1*2);
+        let moduletype='unknown'+moduleidx;
+        switch(typehex) {
+          case '00': moduletype='IMEI'; break;
+          case '01': moduletype='IMSI'; break;
+          case '02': moduletype='ICCID'; break;
+          case '03': moduletype='ChipID'; break;
+          case '04': moduletype='BluetoothMac'; break;
+        }
+        
+        let modulelength=util.hex2int(infocontent.substr((startidx + 1)*2,2*2));
+        if(modulelength>0) {
+          console.log('found entry of type %s of %s bytes', typehex, modulelength)
+          itpinfo[moduletype]=infocontent.substr((startidx + 3)*2, modulelength*2);
+        }
+
+        startidx+=3+modulelength;
+        moduleidx+=1;
+      }
+    
       console.log('information transmission %o', itpinfo);
       break;
   }
@@ -211,40 +242,41 @@ let dummysocket = {
     }
 }
 
-processInfoContent('32', data_32, 1, dummysocket);
+// processInfoContent('32', data_32, 1, dummysocket);
+processInfoContent('98', data_98, 1, dummysocket);
 
 
-var server = net.createServer(function(socket) {
-  // console.log('incoming connection from %s',  socket.remoteAddress);
-  socket.on('data', function(data) {
-    const buf = data.toString('hex');
-    const cmdSplit = buf.split(/(?=7878|7979)/gi)
-    cmdSplit.map( buf => {
-      processSinglePacket(socket, buf);
-    });
-
-    if('name' in socket) {
-
-    }
-  });
-  //  // console.log('GOING TO WRITE...')
-  // // console.log(createSendCommand('UNLOCK#'));
-  // console.log(createSendCommand('WHERE#'));
-  socket.write(
-    // createSendCommand('UNLOCK#')
-    // createSendCommand('LJDW#');
-    createSendCommand('WHERE#')
-    // createSendCommand('GPSON#')
-  );
-	// socket.write('Echo server\r\n');
-	// socket.pipe(socket);
-});
-
-console.log('starting server on port')
-
-let port = 9020;                // listening port
-let serverip = '0.0.0.0'; // external IP address for this server
-
-console.log('starting server on %s:%s', serverip, port);
-server.listen(port, serverip);
+// var server = net.createServer(function(socket) {
+//   // console.log('incoming connection from %s',  socket.remoteAddress);
+//   socket.on('data', function(data) {
+//     const buf = data.toString('hex');
+//     const cmdSplit = buf.split(/(?=7878|7979)/gi)
+//     cmdSplit.map( buf => {
+//       processSinglePacket(socket, buf);
+//     });
+//
+//     if('name' in socket) {
+//
+//     }
+//   });
+//   //  // console.log('GOING TO WRITE...')
+//   // // console.log(createSendCommand('UNLOCK#'));
+//   // console.log(createSendCommand('WHERE#'));
+//   socket.write(
+//     // createSendCommand('UNLOCK#')
+//     // createSendCommand('LJDW#');
+//     createSendCommand('WHERE#')
+//     // createSendCommand('GPSON#')
+//   );
+// 	// socket.write('Echo server\r\n');
+// 	// socket.pipe(socket);
+// });
+//
+// console.log('starting server on port')
+//
+// let port = 9020;                // listening port
+// let serverip = '0.0.0.0'; // external IP address for this server
+//
+// console.log('starting server on %s:%s', serverip, port);
+// server.listen(port, serverip);
 
