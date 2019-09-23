@@ -246,37 +246,37 @@ let dummysocket = {
 processInfoContent('98', data_98, 1, dummysocket);
 
 
-// var server = net.createServer(function(socket) {
-//   // console.log('incoming connection from %s',  socket.remoteAddress);
-//   socket.on('data', function(data) {
-//     const buf = data.toString('hex');
-//     const cmdSplit = buf.split(/(?=7878|7979)/gi)
-//     cmdSplit.map( buf => {
-//       processSinglePacket(socket, buf);
-//     });
-//
-//     if('name' in socket) {
-//
-//     }
-//   });
-//   //  // console.log('GOING TO WRITE...')
-//   // // console.log(createSendCommand('UNLOCK#'));
-//   // console.log(createSendCommand('WHERE#'));
-//   socket.write(
-//     // createSendCommand('UNLOCK#')
-//     // createSendCommand('LJDW#');
-//     createSendCommand('WHERE#')
-//     // createSendCommand('GPSON#')
-//   );
-// 	// socket.write('Echo server\r\n');
-// 	// socket.pipe(socket);
-// });
-//
-// console.log('starting server on port')
-//
-// let port = 9020;                // listening port
-// let serverip = '0.0.0.0'; // external IP address for this server
-//
-// console.log('starting server on %s:%s', serverip, port);
-// server.listen(port, serverip);
+var server = net.createServer(function(socket) {
+  // console.log('incoming connection from %s',  socket.remoteAddress);
+  socket.on('data', function(data) {
+    const buf = data.toString('hex');
+    const cmdSplit = buf.split(/(?=7878|7979)/gi)
+    cmdSplit.map( buf => {
+      processSinglePacket(socket, buf);
+    });
+
+    if('name' in socket) {
+
+    }
+  });
+  //  // console.log('GOING TO WRITE...')
+  // // console.log(createSendCommand('UNLOCK#'));
+  // console.log(createSendCommand('WHERE#'));
+  socket.write(
+    // createSendCommand('UNLOCK#')
+    // createSendCommand('LJDW#');
+    createSendCommand('WHERE#')
+    // createSendCommand('GPSON#')
+  );
+	// socket.write('Echo server\r\n');
+	// socket.pipe(socket);
+});
+
+console.log('starting server on port')
+
+let port = 9020;                // listening port
+let serverip = '0.0.0.0'; // external IP address for this server
+
+console.log('starting server on %s:%s', serverip, port);
+server.listen(port, serverip);
 
