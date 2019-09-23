@@ -204,40 +204,6 @@ const processSinglePacket = (socket, buf) => {
 let data_98 = '0000080355951092273478010008020404100132537002000a8931440301450430341f03001055e98ebf946befbc7507672f0c6035bb040006c4a82807ecc105000630303030303006001020572f52364b3f473050415811632d2b07001d47423131305f31305f413144455f4432335f52305f5630325f57494649';
 let data_32 = '13091710262e000900cc0400de006eb7332400de0044172500de0085902300de0042741a00de00eb051800de00e7fc1400de00e7fd11000000';
 
-// var server = net.createServer(function(socket) {
-//   // console.log('incoming connection from %s',  socket.remoteAddress);
-//   socket.on('data', function(data) {
-//     const buf = data.toString('hex');
-//     const cmdSplit = buf.split(/(?=7878|7979)/gi)
-//     cmdSplit.map( buf => {
-//       processSinglePacket(socket, buf);
-//     });
-//
-//     if('name' in socket) {
-//
-//     }
-//   });
-//   //  // console.log('GOING TO WRITE...')
-//   // // console.log(createSendCommand('UNLOCK#'));
-//   // console.log(createSendCommand('WHERE#'));
-//   socket.write(
-//     // createSendCommand('UNLOCK#')
-//     // createSendCommand('LJDW#');
-//     createSendCommand('WHERE#')
-//     // createSendCommand('GPSON#')
-//   );
-// 	// socket.write('Echo server\r\n');
-// 	// socket.pipe(socket);
-// });
-//
-// console.log('starting server on port')
-//
-// let port = 9020;                // listening port
-// let serverip = '0.0.0.0'; // external IP address for this server
-//
-// console.log('starting server on %s:%s', serverip, port);
-// server.listen(port, serverip);
-
 let dummysocket = {
     name: 'dummy-socket',
     write:(info) => {
@@ -246,3 +212,39 @@ let dummysocket = {
 }
 
 processInfoContent('32', data_32, 1, dummysocket);
+
+
+var server = net.createServer(function(socket) {
+  // console.log('incoming connection from %s',  socket.remoteAddress);
+  socket.on('data', function(data) {
+    const buf = data.toString('hex');
+    const cmdSplit = buf.split(/(?=7878|7979)/gi)
+    cmdSplit.map( buf => {
+      processSinglePacket(socket, buf);
+    });
+
+    if('name' in socket) {
+
+    }
+  });
+  //  // console.log('GOING TO WRITE...')
+  // // console.log(createSendCommand('UNLOCK#'));
+  // console.log(createSendCommand('WHERE#'));
+  socket.write(
+    // createSendCommand('UNLOCK#')
+    // createSendCommand('LJDW#');
+    createSendCommand('WHERE#')
+    // createSendCommand('GPSON#')
+  );
+	// socket.write('Echo server\r\n');
+	// socket.pipe(socket);
+});
+
+console.log('starting server on port')
+
+let port = 9020;                // listening port
+let serverip = '0.0.0.0'; // external IP address for this server
+
+console.log('starting server on %s:%s', serverip, port);
+server.listen(port, serverip);
+
