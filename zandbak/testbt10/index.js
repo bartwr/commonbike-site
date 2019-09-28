@@ -5,7 +5,8 @@
 const net = require('net');
 const util = require('./util')
 const crc16 = require('crc16-itu')
-
+const dateFormat = require('dateformat');
+const fs = require('fs');
 var locks = [];
 
 var locks = {};
@@ -88,24 +89,24 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
       console.log("login from %s (model: %s / tz: %s)", cmdinfo.imei, cmdinfo.modelcode, cmdinfo.timezone);
       
       if (serialNo) {
-        const utcdatetime = dateformat(now, 'yymmddHHMMss', true);
-        const content = `01${utcdatetime}00${serialNo+1}`;
+        const utcdatetime = dateFormat(new Date(), 'yymmddHHMMss', true);
+        let content = `01${utcdatetime}00${serialNo+1}`;
         content = util.decimalToHexString(content.length) + content;
         const crcCheck = crc16(content, 'hex').toString(16);
-        let str = new Buffer(`7878${content}${'0000'.substr(0, 4 - crcCheck.length) + crcCheck}0D0A`, 'hex');
-        console.log('replying with ' + str);
+        let response = `7878${content}${'0000'.substr(0, 4 - crcCheck.length) + crcCheck}0D0A`
+        let str = new Buffer(response, 'hex');
+        console.log('replying with ' + response);
         socket.write(str);
       }
       
       break;
     case '21': // online command response
       let info = {
-        length: infocontent.substr(0*2,4*2),
-        flagbit: infocontent.substr(4*2,1*2),
-        content: infocontent.substr(5*2),
+        length: infocontent.substr(0*2,1),
+        content: new Buffer(infocontent.substr(5*2), 'hex'),
       }
-      console.log("command response from %s (length: %s / flagbit: %s)", socket.name, info.totallength, info.flagbit);
-      
+      console.log("command response from %s (length: %s) [%s]", socket.name, info.length, info.content);
+      console.log("source string: %s", new Buffer(infocontent, 'hex'));
       break;
     case '23': // heartbeat package
       let terminalinfo = util.hex2bin(infocontent.substr(0,1*2));
@@ -130,7 +131,7 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         gsmstrength: gsmstrength
       }
   
-      console.log("heartbeat from %s (locked: %s / charging: %s / gpspositioning: %s / voltage: %s / gsm signal: %s)", socket.name, hbtinfo.locked, hbtinfo.charging, hbtinfo.gpspositioning, hbtinfo.voltage, hbtinfo.gsmstrength);
+      // console.log("heartbeat from %s (locked: %s / charging: %s / gpspositioning: %s / voltage: %s / gsm signal: %s)", socket.name, hbtinfo.locked, hbtinfo.charging, hbtinfo.gpspositioning, hbtinfo.voltage, hbtinfo.gsmstrength);
       break;
     case '32':  // normal location
     case '32':  // alarm location
@@ -186,7 +187,10 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         let modulelength=util.hex2int(infocontent.substr((startidx + 1)*2,2*2));
         if(modulelength>0) {
           console.log('found entry of type %s of %s bytes', typehex, modulelength)
-          itpinfo[moduletype]=infocontent.substr((startidx + 3)*2, modulelength*2);
+          let tmpstr=infocontent.substr((startidx + 3)*2, modulelength*2);
+          itpinfo[moduletype]=tmpstr;
+          let buffer = new Buffer(infocontent.substr((startidx + 3)*2, modulelength*2),'hex');
+          console.log("data: %s", buffer)
         }
 
         startidx+=3+modulelength;
@@ -202,8 +206,26 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
     
     const content = `05${cmd}${serialNo}`;
     const crcCheck = crc16(content, 'hex').toString(16);
-    let str = new Buffer(`7878${content}${'0000'.substr(0, 4 - crcCheck.length) + crcCheck}0D0A`, 'hex');
+    let response = `7878${content}${'0000'.substr(0, 4 - crcCheck.length) + crcCheck}0D0A`;
+    let str = new Buffer(response, 'hex');
     socket.write(str);
+    console.log("sending %s", response)
+
+    if(parseInt(serialNo)%100==2) {
+      console.log("++++++++++asking for location+++++++++++++++++++++++++++++++++");
+      // socket.write(createSendCommand('RESET#')); // reboot lock
+      // socket.write(createSendCommand('PARAM#'));
+//      socket.write(createSendCommand('LJDW#'));
+      // socket.write(createSendCommand('WHERE#'));
+      // socket.write(createSendCommand('GTIMER,3#'));
+      socket.write(createSendCommand('GPSON#'));
+      // socket.write(createSendCommand('GTIMER#'));
+      // socket.write(createSendCommand('LJDW#'));
+    }
+    if(parseInt(serialNo)%100==5) {
+      socket.write(createSendCommand('LJDW#'));
+    }
+    
   }
 }
 
@@ -229,6 +251,10 @@ const processSinglePacket = (socket, buf) => {
   
   if(serialNo!='') {
     processInfoContent(cmd, infocontent, serialNo, socket)
+    let line = socket.name + ";" + serialNo + ";" + cmd + ";" + infocontent+"\n";
+    fs.appendFile('received-commands.txt', line, function (err) {
+      if (err) throw err;
+    });
   }
 }
 
@@ -242,9 +268,8 @@ let dummysocket = {
     }
 }
 
-// processInfoContent('32', data_32, 1, dummysocket);
-processInfoContent('98', data_98, 1, dummysocket);
-
+// // processInfoContent('32', data_32, 1, dummysocket);
+// processInfoContent('98', data_98, 1, dummysocket);
 
 var server = net.createServer(function(socket) {
   // console.log('incoming connection from %s',  socket.remoteAddress);
@@ -262,14 +287,18 @@ var server = net.createServer(function(socket) {
   //  // console.log('GOING TO WRITE...')
   // // console.log(createSendCommand('UNLOCK#'));
   // console.log(createSendCommand('WHERE#'));
-  socket.write(
-    // createSendCommand('UNLOCK#')
-    // createSendCommand('LJDW#');
-    createSendCommand('WHERE#')
-    // createSendCommand('GPSON#')
-  );
+  // socket.write(createSendCommand('GPSON#'));
+  // socket.write(createSendCommand('LJDW#'));
+  // createSendCommand('UNLOCK#')
+  // createSendCommand('WHERE#')
+  // createSendCommand('GPSON#')
+
 	// socket.write('Echo server\r\n');
 	// socket.pipe(socket);
+  
+  socket.on('error', function(data) {
+    console.log("%o",data);
+  })
 });
 
 console.log('starting server on port')
