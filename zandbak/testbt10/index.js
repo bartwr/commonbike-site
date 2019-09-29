@@ -134,9 +134,12 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
       // console.log("heartbeat from %s (locked: %s / charging: %s / gpspositioning: %s / voltage: %s / gsm signal: %s)", socket.name, hbtinfo.locked, hbtinfo.charging, hbtinfo.gpspositioning, hbtinfo.voltage, hbtinfo.gsmstrength);
       break;
     case '32':  // normal location
-    case '32':  // alarm location
-      let infolength=util.hex2int(infocontent.substr(6*2,1*2));
+    case '33':  // alarm location
+      let infolength=12; // util.hex2int(infocontent.substr(6*2,1*2));
       let gpsinfo;
+      
+      console.log('baseinfo lat %s %s',infocontent.substr(8*2,4*2), util.hex2int(infocontent.substr(8*2,4*2)));
+      
       if(infolength==12) {
         gpsinfo = {
           gpstime   : util.toTime(infocontent.substr(0*2,2), infocontent.substr(1*2,2), infocontent.substr(2*2,2), infocontent.substr(3*2,2), infocontent.substr(4*2,2), infocontent.substr(5*2,2), 'hex'),
@@ -232,15 +235,18 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
 const processSinglePacket = (socket, buf) => {
   
   let cmd = '';
+  let length = 0;
   let infocontent = '';
   let serialNo = '';
-  if (buf.substr(0,4)=='7878') {
+  if (buf.substr(0,2*2)=='7878') {
     // size stored in 1 byte
+    length = util.hex2int(buf.substr(2*2,1*2));
     cmd = buf.substr(3*2,1*2);
     infocontent = buf.substr(4*2, buf.length-11*2);
     serialNo = buf.substr(-6*2, 2*2);
   } else if(buf.substr(0,4)=='7979') {
     // size stored in 2 bytes
+    length = util.hex2int(buf.substr(3*2,1*2));
     cmd = buf.substr(4*2,1*2);
     infocontent = buf.substr(5*2, buf.length-11*2);
     serialNo = buf.substr(-6*2, 2*2);
@@ -248,6 +254,8 @@ const processSinglePacket = (socket, buf) => {
     // don't know what to do. Don't reply
     serialNo='';
   }
+  
+  console.log('got %s / l: %s / actual: %s', cmd, length, buf.length);
   
   if(serialNo!='') {
     processInfoContent(cmd, infocontent, serialNo, socket)
@@ -258,8 +266,10 @@ const processSinglePacket = (socket, buf) => {
   }
 }
 
-let data_98 = '0000080355951092273478010008020404100132537002000a8931440301450430341f03001055e98ebf946befbc7507672f0c6035bb040006c4a82807ecc105000630303030303006001020572f52364b3f473050415811632d2b07001d47423131305f31305f413144455f4432335f52305f5630325f57494649';
-let data_32 = '13091710262e000900cc0400de006eb7332400de0044172500de0085902300de0042741a00de00eb051800de00e7fc1400de00e7fd11000000';
+// let data_98 = '0000080355951092273478010008020404100132537002000a8931440301450430341f03001055e98ebf946befbc7507672f0c6035bb040006c4a82807ecc105000630303030303006001020572f52364b3f473050415811632d2b07001d47423131305f31305f413144455f4432335f52305f5630325f57494649';
+// let data_32_protocol = '7979006F33110314090608000901CC00287D001F400E24287D001F7107287D001E3F060000000000000000000000000000000000000000000000003100367605BB5D4600873631875B48CC7B353661A64C00E04B8CBF584F78A1065415DE4F0087461B9D84';
+// let data32 = '13091c072602000900cc0400de006eb72f2400de006eb51e00de0085901d00de0042741500de00eb051400de00b5af1300de00eb0610000000';
+// let data_32 = '13091710262e000900cc0400de006eb7332400de0044172500de0085902300de0042741a00de00eb051800de00e7fc1400de00e7fd11000000';
 
 let dummysocket = {
     name: 'dummy-socket',
@@ -268,8 +278,31 @@ let dummysocket = {
     }
 }
 
-// // processInfoContent('32', data_32, 1, dummysocket);
+const doFindLatLong = (data) => {
+  for(let i=0; i<(data.length/2)-7; i++) {
+    console.log("%s - %s/%s - %s, %s", i, data.substr(i*2,4*2), data.substr((i+4)*2,4*2), parseFloat(util.hex2int(data.substr(i*2,4*2)) / 1800000), parseFloat(util.hex2int(data.substr((i+4)*2,4*2)) / 1800000))
+  }
+}
+
+const doTestRun = () => {
+  var contents = fs.readFileSync('received-commands.txt', 'utf-8')
+  // console.log(contents);
+  const lines = contents.split('\n');
+  lines.forEach((line,index)=> {
+    let [imei, sequence, command, infoContent ] = line.split(';')
+    // console.log(command, index);
+    if((command=='32')) {
+      console.log("%s - %s - %s, %s", index, imei, command, infoContent);
+      processInfoContent(command, infoContent, 1, dummysocket);
+    }
+  });
+};
+
+// doTestRun();
+// doFindLatLong(data_32_protocol);
 // processInfoContent('98', data_98, 1, dummysocket);
+// processSinglePacket(dummysocket, data_32_protocol);
+// processInfoContent('32', data_32, 1, dummysocket);
 
 var server = net.createServer(function(socket) {
   // console.log('incoming connection from %s',  socket.remoteAddress);
@@ -295,7 +328,7 @@ var server = net.createServer(function(socket) {
 
 	// socket.write('Echo server\r\n');
 	// socket.pipe(socket);
-  
+
   socket.on('error', function(data) {
     console.log("%o",data);
   })
@@ -309,3 +342,12 @@ let serverip = '0.0.0.0'; // external IP address for this server
 console.log('starting server on %s:%s', serverip, port);
 server.listen(port, serverip);
 
+// let test='01c8e2cc';
+//
+// let buf = Buffer.from(test, 'ascii');
+// console.log(test,buf);
+// // console.log(v);
+// // console.log(parseFloat(util.hex2int(test) / 1800000));
+//
+// var bufInt = (buf.readUInt32BE(0) << 8) + buf.readUInt32BE(4);
+// console.log(bufInt)
