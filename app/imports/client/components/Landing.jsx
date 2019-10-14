@@ -24,16 +24,16 @@ class Landing extends Component {
         <CommonBikeLogo style={s.logo} />
 
         <p style={s.introText}>
-          Welkom bij het nieuwe fiets-deel-systeem van Nederland. Wij maken bike sharing leuk en gemakkelijk. Ons doel: overal en altijd een fiets voor iedereen.
+          Welcome at the new bike-sharing-system of the Netherlands. We are making bike sharing fun and easy. Our goal: everywhere and allways a bike available for everyone.
         </p>
 
         <div style={s.bottomWrapper}>
           <p>
-            <a style={s.smallText} onClick={() => RedirectTo('/join')}>euhm, maar hoe werkt dat dan?</a>
+            <a style={s.smallText} onClick={() => RedirectTo('/join')}>eh, how does it work?</a>
           </p>
 
     			<RaisedButton onClick={RedirectTo.bind(this, '/locations')}>
-    				Waar kan ik fietsen?
+    				Where can I hire a bike?
     			</RaisedButton>
         </div>
 
