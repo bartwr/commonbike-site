@@ -22,7 +22,7 @@ class Wallet extends Component {
       <div style={s.base}>
         <Balance label="SALDO" address={this.props.address} providerurl={this.props.providerurl} /> : <div />
 
-        <Button onClick={() => this.buyBikeCoin(100) } buttonStyle="hugeSmallerFont">BUY 100 BIKECOIN</Button>
+        <Button onClick={() => this.buyBikeCoin(100) } buttonStyle="hugeSmallerFont">BUY 100 BIKECOIN or LISK??</Button>
       </div>
     );
   }

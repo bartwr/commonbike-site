@@ -28,7 +28,7 @@ SignUpButton.propTypes = {
 };
 
 SignUpButton.defaultProps = {
-  buttonText: 'Gaaf, meld me aan!'
+  buttonText: 'Great, I like to join!'
 };
 
 export default SignUpButton;

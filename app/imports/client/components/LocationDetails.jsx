@@ -49,7 +49,7 @@ class LocationDetails extends Component {
           :null */}
 
         <RaisedButton style={Object.assign({display: 'none'}, this.props.isEditable && {display: 'block'})} onClick={this.newObject.bind(this)}>
-          NIEUWE FIETS
+          NEW BIKE
         </RaisedButton>
 
         { this.props.objects.length != 0 ?
@@ -62,7 +62,7 @@ class LocationDetails extends Component {
                               showState={this.props.isEditable}
                               showRentalDetails={this.props.isEditable} />)
           :
-          <p style={s.paragraph}>GEEN FIETSEN BESCHIKBAAR</p>
+          <p style={s.paragraph}>NO BIKES AVAILABLE</p>
         }
 
 

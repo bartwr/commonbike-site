@@ -28,7 +28,7 @@ class UserDetails extends Component {
     if(!readonly) {
       return(
         <img src={imagesrc} style={s.icon} alt="toggle" onClick={() => {
-          if(warning && !isOn && ! confirm('Weet je zeker dat je deze gebruiker admin rechten wilt geven?')) {
+          if(warning && !isOn && ! confirm('Are you sure you want to give this user admin rights?')) {
             return;
           }
 
@@ -83,7 +83,7 @@ class UserDetails extends Component {
                 <li style={s.listitem}>{name}</li>
                 <li style={s.listitem}>{email}</li>
                 <li style={s.listitem}>{publickey}</li>
-                <li style={s.listitem}>Admin: { this.getToggleButton('currentuser.setAdmin', user._id, isAdmin, readonly, 'Weet je zeker dat je deze gebruiker admin rechten wilt geven?') }</li>
+                <li style={s.listitem}>Admin: { this.getToggleButton('currentuser.setAdmin', user._id, isAdmin, readonly, 'Are you sure you want to give this user admin rights?') }</li>
                 <li style={s.listitem}>Active: { this.getToggleButton('currentuser.setActive', user._id, isActive, readonly) }</li>
                 <li style={s.listitem}>Add locations: { this.getToggleButton('currentuser.canCreateLocations', user._id, canCreateLocations, false) }</li>
               </ul>

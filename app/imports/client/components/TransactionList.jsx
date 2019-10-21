@@ -53,7 +53,7 @@ TransactionList.propTypes = {
 };
 
 TransactionList.defaultProps = {
-  title: "Bekijk hier jouw geschiedenis",
+  title: "Review your history",
   transactions: {},
 }
 
