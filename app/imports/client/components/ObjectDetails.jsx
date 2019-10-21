@@ -53,7 +53,7 @@ class ObjectDetails extends Component {
       return (
         <div style={s.base}>
           <ul style={s.list}>
-            <li style={s.listitem,s.mediumFont}>NIET BESCHIKBAAR</li>
+            <li style={s.listitem,s.mediumFont}>NOT AVAILABLE</li>
           </ul>
         </div>
       );
@@ -63,7 +63,7 @@ class ObjectDetails extends Component {
 
     // If not logged in: refer to login page
     if( ! this.props.currentUser)
-      return <Button onClick={RedirectTo.bind(this, '/login?redirectTo=/bike/details/'+this.props.object._id)}>Log in om te reserveren</Button>
+      return <Button onClick={RedirectTo.bind(this, '/login?redirectTo=/bike/details/'+this.props.object._id)}>Login to reserve</Button>
 
     else if(lockType=='open-bikelocker')
       return <CheckInOutProcessOpenBikelocker

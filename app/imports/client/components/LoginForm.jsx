@@ -62,14 +62,14 @@ class LoginForm extends Component {
       <form style={s.base} onSubmit={this.submitForm.bind(this)} method="post">
 
         <div style={s.label}>E-mailadres</div>
-        <TextField type="email" ref="email" placeholder="Je e-mailadres" name="email" style={s.textField} onChange={this.handleChange.bind(this)} />
+        <TextField type="email" ref="email" placeholder="Your e-mailadress" name="email" style={s.textField} onChange={this.handleChange.bind(this)} />
 
         <div style={s.label}>Wachtwoord</div>
-        <TextField type="password" ref="password" placeholder="Vul een uniek wachtwoord in" name="password" style={s.textField} />
+        <TextField type="password" ref="password" placeholder="Fill in an unique password" name="password" style={s.textField} />
 
         <div style={Object.assign({display: 'block', maxWidth: '100%'}, this.state.user && {display: 'none'})}>
           <div style={s.label}>Herhaal je wachtwoord</div>
-          <TextField type="password" ref="password2" placeholder="Herhaal je wachtwoord" name="password2" style={s.textField} />
+          <TextField type="password" ref="password2" placeholder="Repeat your " name="password2" style={s.textField} />
         </div>
 
         <Button style={s.button} type='submit'>Meld me aan</Button>

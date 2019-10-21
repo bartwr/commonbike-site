@@ -36,17 +36,17 @@ class LocationList extends Component {
         <div style={Object.assign({display: 'none'}, this.props.isEditable && {display: 'block'})}>
 
           <p style={s.paragraph}>
-            Op deze pagina kun je de locaties beheren.
+            On this page you can manage the locations.
           </p>
 
           { self.props.canCreateLocations ?
-            <p style={s.paragraph}>Klik op <b>Nieuwe locatie</b> of <b><i>pas een titel aan</i></b>.</p>
+            <p style={s.paragraph}>Click on <b>New location</b> or <b><i>edit at title</i></b>.</p>
             :
-            <p style={s.paragraph}><b><i>pas een titel aan</i></b>.</p>
+            <p style={s.paragraph}><b><i>change a title</i></b>.</p>
           }
 
           { self.props.canCreateLocations ?
-            <RaisedButton onClick={this.newLocation.bind(this)}>Nieuwe locatie</RaisedButton>
+            <RaisedButton onClick={this.newLocation.bind(this)}>New lacation</RaisedButton>
             :
             <div />
           }

@@ -19,7 +19,7 @@ class AdminTools extends Component {
   }
 
   clearTransactions() {
-    if( !confirm('Weet je zeker dat je de complete transactie historie wilt wissen? Dit kan niet ongedaan gemaakt worden.')) {
+    if( !confirm('Are you sure you want to erase the complete transaction history? This can not be undone.')) {
       return;
     }
 
@@ -27,43 +27,43 @@ class AdminTools extends Component {
   }
 
   cleanTestUsers() {
-    if( !confirm('Weet je zeker dat je alle testgebruikers wilt verwijderen? Dit kan niet ongedaan gemaakt worden.')) {
+    if( !confirm('Are you sure you want to remove all testusers? This can not be undone.')) {
       return;
     }
 
     Meteor.call('testdata.cleanupTestUsers');
 
-    alert('De testgebruikers zijn verwijderd!');
+    alert('All testusers are removed!');
   }
 
   cleanTestData() {
-    if( !confirm('Weet je zeker dat je alle testdata wilt verwijderen? Dit kan niet ongedaan gemaakt worden.')) {
+    if( !confirm('Are you sure you want to remove all testdata? This can not be undone.')) {
       return;
     }
 
     Meteor.call('testdata.cleanupTestData');
 
-    alert('De testdata is verwijderd!');
+    alert('All testdata is removed!');
   }
 
   insertTestUsers() {
-    if( !confirm('Weet je zeker dat je de testgebruikers wilt toevoegen? Doe dit nooit op de productieserver.')) {
+    if( !confirm('Are you sure you waqnt to add testusers? Never do this on a productionserver.')) {
       return;
     }
 
     Meteor.call('testdata.checkTestUsers');
 
-    alert('De testgebruikers zijn toegevoegd!');
+    alert('The testusers have been added!');
   }
 
   insertTestData() {
-    if( !confirm('Weet je zeker dat je de testdata wilt toevoegen? Doe dit nooit op de productieserver.')) {
+    if( !confirm('Are you sure you want to add testdata? Never do this on a productionserver.')) {
       return;
     }
 
     Meteor.call('testdata.checkTestLocations');
 
-    alert('De testdata is toegevoegd!');
+    alert('The testdata has been added!');
   }
 
   showLog() {
@@ -86,24 +86,24 @@ class AdminTools extends Component {
     return (
       <div style={s.base}>
         <div style={s.centerbox}>
-          <RaisedButton onClick={this.showAllTransactions.bind(this)}>ALLE TRANSACTIES TONEN</RaisedButton>
+          <RaisedButton onClick={this.showAllTransactions.bind(this)}>SHOW ALL TRANSACTIONS</RaisedButton>
 
-          <RaisedButton onClick={this.clearTransactions.bind(this)}>TRANSACTIES OPSCHONEN</RaisedButton>
+          <RaisedButton onClick={this.clearTransactions.bind(this)}>CLEANUP ALL TRANSACTIONS</RaisedButton>
         </div>
 
         <div style={s.centerbox}>
 
-          <RaisedButton onClick={this.cleanTestUsers.bind(this)}>TESTGEBRUIKERS VERWIJDEREN</RaisedButton>
+          <RaisedButton onClick={this.cleanTestUsers.bind(this)}>REMOVE TESTUSERS</RaisedButton>
 
-          <RaisedButton onClick={this.cleanTestData.bind(this)}>TESTDATA VERWIJDEREN</RaisedButton>
+          <RaisedButton onClick={this.cleanTestData.bind(this)}>REMOVE TESTDATA</RaisedButton>
 
-          <RaisedButton onClick={this.insertTestUsers.bind(this)}>TESTGEBRUIKERS TOEVOEGEN</RaisedButton>
+          <RaisedButton onClick={this.insertTestUsers.bind(this)}>ADD TESTUSERS</RaisedButton>
 
-          <RaisedButton onClick={this.insertTestData.bind(this)}>TESTDATA TOEVOEGEN</RaisedButton>
+          <RaisedButton onClick={this.insertTestData.bind(this)}>ADD TESTDATA</RaisedButton>
 
         </div>
         <div style={s.centerbox}>
-          <RaisedButton onClick={this.showLog.bind(this)}>LOG TONEN</RaisedButton>
+          <RaisedButton onClick={this.showLog.bind(this)}>SHOW LOG</RaisedButton>
         </div>
       </div>
     );

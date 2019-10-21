@@ -66,7 +66,7 @@ export default class ManageUserlist extends Component {
     return (
       <div style={s.box}>
         <div style={s.titel}>
-          BEHEERDERS
+          ADMINISTRATORS
           <img src={ s.images.details } style={s.icon} alt="" onClick={() => this.setState(prevState => ({ showDetails: ! prevState.showDetails}))} />
         </div>
 

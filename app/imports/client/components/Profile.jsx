@@ -60,7 +60,7 @@ class Profile extends Component {
     if( ! this.props.isEditable) return;
 
     var imageUrl =
-      prompt('Wat is de URL van de nieuwe avatar? Wil je geen nieuwe avatar toevoegen, klik dan op Annuleren/Cancel')
+      prompt('What is he URL of the new avatar? Do you want to add an avatar, Click on Annul/Cancel')
 
     if(imageUrl) {
       Meteor.call('currentuser.update_avatar', imageUrl);
@@ -78,7 +78,7 @@ class Profile extends Component {
     }
 
     if(show) {
-      return ( <RaisedButton onClick={this.locations.bind(this)}>MIJN LOCATIES</RaisedButton> )
+      return ( <RaisedButton onClick={this.locations.bind(this)}>MY LOCATIONS</RaisedButton> )
     } else {
       return ( <div /> )
     }
@@ -94,7 +94,7 @@ class Profile extends Component {
     }
 
     if(show) {
-      return ( <RaisedButton onClick={this.rentals.bind(this)}>MIJN VERHUUR</RaisedButton> )
+      return ( <RaisedButton onClick={this.rentals.bind(this)}>MY RENTAL</RaisedButton> )
     } else {
       return ( <div /> )
     }
@@ -102,7 +102,7 @@ class Profile extends Component {
 
   getManageUsersButton() {
     if(Roles.userIsInRole( Meteor.userId(), 'admin' )) {
-      return ( <RaisedButton onClick={this.manageusers.bind(this)}>GEBRUIKERSBEHEER</RaisedButton> )
+      return ( <RaisedButton onClick={this.manageusers.bind(this)}>USER ADMINISTRATION</RaisedButton> )
     } else {
       return ( <div /> )
     }
@@ -118,7 +118,7 @@ class Profile extends Component {
 
   getAdminToolsButton() {
     if(Roles.userIsInRole( Meteor.userId(), 'admin' )) {
-      return ( <RaisedButton onClick={this.admintools.bind(this)}>BEHEERDERSFUNCTIES</RaisedButton> )
+      return ( <RaisedButton onClick={this.admintools.bind(this)}>ADMIN FUCTIONS</RaisedButton> )
     } else {
       return ( <div /> )
     }
@@ -142,13 +142,13 @@ class Profile extends Component {
             { this.getUserPersonalia() }
           </p>
 
-          <RaisedButton onClick={() => RedirectTo('/locations')}>ZOEK</RaisedButton>
+          <RaisedButton onClick={() => RedirectTo('/locations')}>SEARCH</RaisedButton>
 
-          <RaisedButton onClick={this.reservations.bind(this)}>FIETS</RaisedButton>
+          <RaisedButton onClick={this.reservations.bind(this)}>BIKE</RaisedButton>
 
-          <RaisedButton onClick={this.transactions.bind(this)}>GESCHIEDENIS</RaisedButton>
+          <RaisedButton onClick={this.transactions.bind(this)}>HISTORY</RaisedButton>
 
-          <RaisedButton onClick={this.wallet.bind(this)}>PORTEMONNEE</RaisedButton>
+          <RaisedButton onClick={this.wallet.bind(this)}>WALLET</RaisedButton>
 
           { this.getMyLocationsButton() }
 
@@ -162,7 +162,7 @@ class Profile extends Component {
 
           { this.getAdminToolsButton() }
 
-          <RaisedButton onClick={this.logout.bind(this)}>LOG UIT</RaisedButton>
+          <RaisedButton onClick={this.logout.bind(this)}>LOG OUT</RaisedButton>
         </div>
 
       </div>

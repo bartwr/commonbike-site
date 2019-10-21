@@ -41,11 +41,11 @@ class Login extends Component {
         <div style={s.intro}>
 
           <p>
-            Wil je als eerste<br />de CommonBike app uitproberen?
+            Do you want to be one of the first<br />to try Lisk.bike?
           </p>
 
           <p>
-            Log in met je favoriete account
+            Log in with your favorite account
           </p>
 
         </div>
@@ -58,7 +58,7 @@ class Login extends Component {
         </div>
 
         <p>
-          Of meld je aan met je mailadres
+          Or use your email adress
         </p>
 
         <div style={{textAlign: 'center'}}>
@@ -72,12 +72,12 @@ class Login extends Component {
   renderTeaser() {
     return (
       <div style={Object.assign({padding: '20px'}, s.base)}>
-        <p>Leuk dat je mee wilt doen!</p>
-        <p>We zijn gestart met een besloten gebruikersgroep in Leiden.<p>
-        </p><a style={s.anchor} href="mailto:info@commonbike.com">Mail ons</a> als je nu al mee wilt fietsen en testen.</p>
-        <p>We sturen je als eerste een bericht als we uitbreiden.</p>
-        <p><a style={s.anchor} href="http://commonbike.com/" target="_blank"><i>Hoe werkt CommonBike?</i></a></p>
-        <p><button onClick={this.logout}>Uitloggen</button></p>
+        <p>Great you want to join us</p>
+        <p>Further explanatory text.<p>
+        </p><a style={s.anchor} href="mailto:info@commonbike.com">Mail us</a> if you want to help us test.</p>
+        <p>You will be the first we'll notify when the next fase starts.</p>
+        <p><a style={s.anchor} href="http://commonbike.com/" target="_blank"><i>How does it work?</i></a></p>
+        <p><button onClick={this.logout}>Logout</button></p>
       </div>
     )
   }
