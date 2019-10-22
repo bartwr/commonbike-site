@@ -7,8 +7,6 @@ const util = require('./util')
 const crc16 = require('crc16-itu')
 const dateFormat = require('dateformat');
 const fs = require('fs');
-var locks = [];
-
 var locks = {};
 
 // createSendCommand()
@@ -71,22 +69,36 @@ const createSendCommand = (command) => {
 }
 
 const processInfoContent = (cmd, infocontent, serialNo, socket) => {
-  console.log("==== processing %s/%s", cmd, infocontent)
-  let response = '';
-    
+  // console.log("==== processing %s/%s", cmd, infocontent)
+  if(cmd=='01') { // process login command -> should always come first
+    // TODO: decode timezone info
+    let imei = infocontent.substr(0,8*2);
+    socket.lockid = imei;
+
+    if(!(socket.lockid in locks)) {
+      console.log('create new lock with ID %s', socket.lockid);
+      locks[socket.lockid]={
+        lockid: socket.lockid
+      }
+    }
+  } else {
+    if(!"lockid" in socket) {
+      console.warn("received command on unnamed socket. Ignoring command");
+      return; // should not happen!
+    }
+  }
+  
+  let thelock = locks[socket.lockid];
+  
+  thelock.lastts = dateFormat(new Date(), 'yymmddHHMMss', true);
+  thelock.lastserial =  serialNo;
+  
   switch(cmd) {
     case '01':  // login packet
-      let cmdinfo = {
-        imei: infocontent.substr(0,8*2),
-        modelcode: infocontent.substr(8*2,2*2),
-        timezone: infocontent.substr(10*2,2*2),
-      }
+      thelock.modelcode =  infocontent.substr(8*2,2*2);
+      thelock.timezone =  infocontent.substr(10*2,2*2); // TODO: decode timezone info
       
-      // TODO: decode timezone info
-      
-      socket.name = cmdinfo.imei;
-      
-      console.log("login from %s (model: %s / tz: %s)", cmdinfo.imei, cmdinfo.modelcode, cmdinfo.timezone);
+      // console.log("login from %s (model: %s / tz: %s)", cmdinfo.imei, cmdinfo.modelcode, cmdinfo.timezone);
       
       if (serialNo) {
         const utcdatetime = dateFormat(new Date(), 'yymmddHHMMss', true);
@@ -95,7 +107,7 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         const crcCheck = crc16(content, 'hex').toString(16);
         let response = `7878${content}${'0000'.substr(0, 4 - crcCheck.length) + crcCheck}0D0A`
         let str = new Buffer(response, 'hex');
-        console.log('replying with ' + response);
+        // console.log('replying with ' + response);
         socket.write(str);
       }
       
@@ -105,8 +117,8 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         length: infocontent.substr(0*2,1),
         content: new Buffer(infocontent.substr(5*2), 'hex'),
       }
-      console.log("command response from %s (length: %s) [%s]", socket.name, info.length, info.content);
-      console.log("source string: %s", new Buffer(infocontent, 'hex'));
+      // console.log("command response from %s (length: %s) [%s]", socket.lockid, info.length, info.content);
+      // console.log("source string: %s", new Buffer(infocontent, 'hex'));
       break;
     case '23': // heartbeat package
       let terminalinfo = util.hex2bin(infocontent.substr(0,1*2));
@@ -123,7 +135,8 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         case '04': gsmstrength = 'strong'; break;
       }
       
-      let hbtinfo = {
+      thelock.hbtinfo = {
+        lastdt: dateFormat(new Date(), 'yymmddHHMMss', true),
         locked: terminalinfo.substr(7,1)=='1',
         charging: terminalinfo.substr(5,1)=='1',
         gpspositioning: terminalinfo.substr(1,1)=='1',
@@ -131,14 +144,16 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         gsmstrength: gsmstrength
       }
   
-      // console.log("heartbeat from %s (locked: %s / charging: %s / gpspositioning: %s / voltage: %s / gsm signal: %s)", socket.name, hbtinfo.locked, hbtinfo.charging, hbtinfo.gpspositioning, hbtinfo.voltage, hbtinfo.gsmstrength);
+      // console.log("heartbeat from %s (locked: %s / charging: %s / gpspositioning: %s / voltage: %s / gsm signal: %s)", socket.lockid, hbtinfo.locked, hbtinfo.charging, hbtinfo.gpspositioning, hbtinfo.voltage, hbtinfo.gsmstrength);
       break;
     case '32':  // normal location
     case '33':  // alarm location
-      let infolength=12; // util.hex2int(infocontent.substr(6*2,1*2));
-      let gpsinfo;
+      let infolength = util.hex2int(infocontent.substr(6*2,1*2));
+      let gpsinfo = {
+        gpstime   : util.toTime(infocontent.substr(0*2,2), infocontent.substr(1*2,2), infocontent.substr(2*2,2), infocontent.substr(3*2,2), infocontent.substr(4*2,2), infocontent.substr(5*2,2), 'hex'),
+      }
       
-      console.log('baseinfo lat %s %s',infocontent.substr(8*2,4*2), util.hex2int(infocontent.substr(8*2,4*2)));
+      // console.log('baseinfo la/t %s %s',infocontent.substr(8*2,4*2), util.hex2int(infocontent.substr(8*2,4*2)));
       
       if(infolength==12) {
         gpsinfo = {
@@ -151,7 +166,7 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
           speed     : util.hex2int(infocontent.substr(16*2,1*2)),
           coursestatus : infocontent.substr(17*2,2*2),
           received  : new Date().toISOString(),
-        };
+        }
         // TODO: decodeMBSL/MCC/MNC/CI/RSSI and rest
         
         // let status='unknown';
@@ -162,14 +177,14 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         //
         // }
 
-        console.log("location from %s (%s)", socket.name, JSON.stringify(gpsinfo));
+        console.log("location from %s (%s)", socket.lockid, JSON.stringify(gpsinfo));
       } else {
-        console.log("empty location record from %s", socket.name);
+        // console.log("empty location record from %s", socket.lockid);
       }
     
       break;
     default:
-      console.log("unhandled command %s from %s (%s)", cmd, socket.name, infocontent)
+      console.log("unhandled command %s from %s (%s)", cmd, socket.lockid, infocontent)
       break;
     case '98':
       
@@ -189,45 +204,45 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         
         let modulelength=util.hex2int(infocontent.substr((startidx + 1)*2,2*2));
         if(modulelength>0) {
-          console.log('found entry of type %s of %s bytes', typehex, modulelength)
+          // console.log('found entry of type %s of %s bytes', typehex, modulelength)
           let tmpstr=infocontent.substr((startidx + 3)*2, modulelength*2);
           itpinfo[moduletype]=tmpstr;
           let buffer = new Buffer(infocontent.substr((startidx + 3)*2, modulelength*2),'hex');
-          console.log("data: %s", buffer)
+          // console.log("data: %s", buffer)
         }
 
         startidx+=3+modulelength;
         moduleidx+=1;
       }
     
-      console.log('information transmission %o', itpinfo);
+      // console.log('information transmission %o', itpinfo);
       break;
   }
 
   if (serialNo) {
-    console.log('got serial number #%s', serialNo);
+    // console.log('got serial number #%s', serialNo);
     
     const content = `05${cmd}${serialNo}`;
     const crcCheck = crc16(content, 'hex').toString(16);
     let response = `7878${content}${'0000'.substr(0, 4 - crcCheck.length) + crcCheck}0D0A`;
     let str = new Buffer(response, 'hex');
     socket.write(str);
-    console.log("sending %s", response)
+    //console.log("sending %s", response)
 
-    if(parseInt(serialNo)%100==2) {
-      console.log("++++++++++asking for location+++++++++++++++++++++++++++++++++");
-      // socket.write(createSendCommand('RESET#')); // reboot lock
-      // socket.write(createSendCommand('PARAM#'));
-//      socket.write(createSendCommand('LJDW#'));
-      // socket.write(createSendCommand('WHERE#'));
-      // socket.write(createSendCommand('GTIMER,3#'));
-      socket.write(createSendCommand('GPSON#'));
-      // socket.write(createSendCommand('GTIMER#'));
-      // socket.write(createSendCommand('LJDW#'));
-    }
-    if(parseInt(serialNo)%100==5) {
-      socket.write(createSendCommand('LJDW#'));
-    }
+    // if(parseInt(serialNo)%100==2) {
+    //   // console.log("++++++++++asking for location+++++++++++++++++++++++++++++++++");
+    //   // socket.write(createSendCommand('RESET#')); // reboot lock
+    //   // socket.write(createSendCommand('PARAM#'));
+    //   // socket.write(createSendCommand('LJDW#'));
+    //   // socket.write(createSendCommand('WHERE#'));
+    //   // socket.write(createSendCommand('GTIMER,3#'));
+    //   // socket.write(createSendCommand('GPSON#'));
+    //   // socket.write(createSendCommand('GTIMER#'));
+    //   // socket.write(createSendCommand('LJDW#'));
+    // }
+    // if(parseInt(serialNo)%100==5) {
+    //   socket.write(createSendCommand('LJDW#'));
+    // }
     
   }
 }
@@ -259,22 +274,121 @@ const processSinglePacket = (socket, buf) => {
   
   if(serialNo!='') {
     processInfoContent(cmd, infocontent, serialNo, socket)
-    let line = socket.name + ";" + serialNo + ";" + cmd + ";" + infocontent+"\n";
+    let line = socket.lockid + ";" + serialNo + ";" + cmd + ";" + infocontent+"\n";
     fs.appendFile('received-commands.txt', line, function (err) {
       if (err) throw err;
     });
   }
 }
 
-// let data_98 = '0000080355951092273478010008020404100132537002000a8931440301450430341f03001055e98ebf946befbc7507672f0c6035bb040006c4a82807ecc105000630303030303006001020572f52364b3f473050415811632d2b07001d47423131305f31305f413144455f4432335f52305f5630325f57494649';
-// let data_32_protocol = '7979006F33110314090608000901CC00287D001F400E24287D001F7107287D001E3F060000000000000000000000000000000000000000000000003100367605BB5D4600873631875B48CC7B353661A64C00E04B8CBF584F78A1065415DE4F0087461B9D84';
-// let data32 = '13091c072602000900cc0400de006eb72f2400de006eb51e00de0085901d00de0042741500de00eb051400de00b5af1300de00eb0610000000';
-// let data_32 = '13091710262e000900cc0400de006eb7332400de0044172500de0085902300de0042741a00de00eb051800de00e7fc1400de00e7fd11000000';
+const dumpStatus = () => {
+  let output = '';
+  if(locks.length==0) return output;
+  
+  // get all keys from all locks in tmplock
+  let tmplock = {};
+  Object.keys(locks).forEach((key)=>{tmplocks = Object.assign(tmplock, locks[key])});
+  
+  let lines = Object.keys(tmplock).map((key)=>{
+      let line = new String(30,' ').substr(0, 30 - key.length) + key
+      Object.keys(locks).forEach((lockkey)=>{
+        // console.log("%s - %s: %s", lockkey, key, locks[lockkey][key]);
+        let value = (locks[lockkey][key]||'').toString();
+        line+='     ' + new String(25,' ').substr(0, 25 - value.length) + value;
+      })
 
+      console.log(line);
+      return line;
+  })
+  
+  return lines.join('\n');
+}
+
+// var server = net.createServer(function(socket) {
+//   // console.log('incoming connection from %s',  socket.remoteAddress);
+//   socket.on('data', function(data) {
+//     const buf = data.toString('hex');
+//     const cmdSplit = buf.split(/(?=7878|7979)/gi)
+//     cmdSplit.map( buf => {
+//       processSinglePacket(socket, buf);
+//     });
+//
+//     if('lockid' in socket) {
+//
+//     }
+//   });
+//   //  // console.log('GOING TO WRITE...')
+//   // // console.log(createSendCommand('UNLOCK#'));
+//   // console.log(createSendCommand('WHERE#'));
+//   // socket.write(createSendCommand('GPSON#'));
+//   // socket.write(createSendCommand('LJDW#'));
+//   createSendCommand('UNLOCK#')
+//   // createSendCommand('WHERE#')
+//   // createSendCommand('GPSON#')
+//
+// 	// socket.write('Echo server\r\n');
+// 	// socket.pipe(socket);
+//
+//   socket.on('error', function(data) {
+//     console.log("%o",data);
+//   })// var server = net.createServer(function(socket) {
+//   // console.log('incoming connection from %s',  socket.remoteAddress);
+//   socket.on('data', function(data) {
+//     const buf = data.toString('hex');
+//     const cmdSplit = buf.split(/(?=7878|7979)/gi)
+//     cmdSplit.map( buf => {
+//       processSinglePacket(socket, buf);
+//     });
+//
+//     if('lockid' in socket) {
+//
+//     }
+//   });
+//   //  // console.log('GOING TO WRITE...')
+//   // // console.log(createSendCommand('UNLOCK#'));
+//   // console.log(createSendCommand('WHERE#'));
+//   // socket.write(createSendCommand('GPSON#'));
+//   // socket.write(createSendCommand('LJDW#'));
+//   // createSendCommand('UNLOCK#')
+//   // createSendCommand('WHERE#')
+//   // createSendCommand('GPSON#')
+//
+// 	// socket.write('Echo server\r\n');
+// 	// socket.pipe(socket);
+//
+//   socket.on('error', function(data) {
+//     console.log("%o",data);
+//   })
+// });
+//
+// console.log('starting server on port')
+//
+// let port = 9020;                // listening port
+// let serverip = '0.0.0.0'; // external IP address for this server
+//
+// console.log('starting server on %s:%s', serverip, port);
+// server.listen(port, serverip);
+
+// });
+//
+// console.log('starting server on port')
+//
+// let port = 9020;                // listening port
+// let serverip = '0.0.0.0'; // external IP address for this server
+//
+// console.log('starting server on %s:%s', serverip, port);
+// server.listen(port, serverip);
+
+
+// // let data_98 = '0000080355951092273478010008020404100132537002000a8931440301450430341f03001055e98ebf946befbc7507672f0c6035bb040006c4a82807ecc105000630303030303006001020572f52364b3f473050415811632d2b07001d47423131305f31305f413144455f4432335f52305f5630325f57494649';
+// let data_32_protocol = '7979006F33110314090608000901CC00287D001F400E24287D001F7107287D001E3F060000000000000000000000000000000000000000000000003100367605BB5D4600873631875B48CC7B353661A64C00E04B8CBF584F78A1065415DE4F0087461B9D84';
+// // let data32 = '13091c072602000900cc0400de006eb72f2400de006eb51e00de0085901d00de0042741500de00eb051400de00b5af1300de00eb0610000000';
+// // let data_32 = '13091710262e000900cc0400de006eb7332400de0044172500de0085902300de0042741a00de00eb051800de00e7fc1400de00e7fd11000000';
+//
 let dummysocket = {
-    name: 'dummy-socket',
+    lockid: 'dummy-socket',
     write:(info) => {
-      console.log('socket writes %s', info.toString('hex'));
+      // console.log('socket writes %s', info.toString('hex'));
     }
 }
 
@@ -285,12 +399,18 @@ const doFindLatLong = (data) => {
 }
 
 const doTestRun = () => {
-  var contents = fs.readFileSync('received-commands.txt', 'utf-8')
+  let filename = '20191020-received-commands-app-lisk-bike.txt';
+  // let filename = 'received-commands.txt';
+  var contents = fs.readFileSync(filename, 'utf-8')
   // console.log(contents);
   const lines = contents.split('\n');
   lines.forEach((line,index)=> {
     let [imei, sequence, command, infoContent ] = line.split(';')
-    // console.log(command, index);
+    console.log(command, index);
+    if((command=='01')) {
+      console.log("%s - %s - %s, %s", index, imei, command, infoContent);
+      processInfoContent(command, infoContent, 1, dummysocket);
+    }
     if((command=='32')) {
       console.log("%s - %s - %s, %s", index, imei, command, infoContent);
       processInfoContent(command, infoContent, 1, dummysocket);
@@ -298,49 +418,12 @@ const doTestRun = () => {
   });
 };
 
-// doTestRun();
+//
+doTestRun();
 // doFindLatLong(data_32_protocol);
 // processInfoContent('98', data_98, 1, dummysocket);
 // processSinglePacket(dummysocket, data_32_protocol);
 // processInfoContent('32', data_32, 1, dummysocket);
-
-var server = net.createServer(function(socket) {
-  // console.log('incoming connection from %s',  socket.remoteAddress);
-  socket.on('data', function(data) {
-    const buf = data.toString('hex');
-    const cmdSplit = buf.split(/(?=7878|7979)/gi)
-    cmdSplit.map( buf => {
-      processSinglePacket(socket, buf);
-    });
-
-    if('name' in socket) {
-
-    }
-  });
-  //  // console.log('GOING TO WRITE...')
-  // // console.log(createSendCommand('UNLOCK#'));
-  // console.log(createSendCommand('WHERE#'));
-  // socket.write(createSendCommand('GPSON#'));
-  // socket.write(createSendCommand('LJDW#'));
-  // createSendCommand('UNLOCK#')
-  // createSendCommand('WHERE#')
-  // createSendCommand('GPSON#')
-
-	// socket.write('Echo server\r\n');
-	// socket.pipe(socket);
-
-  socket.on('error', function(data) {
-    console.log("%o",data);
-  })
-});
-
-console.log('starting server on port')
-
-let port = 9020;                // listening port
-let serverip = '0.0.0.0'; // external IP address for this server
-
-console.log('starting server on %s:%s', serverip, port);
-server.listen(port, serverip);
 
 // let test='01c8e2cc';
 //
@@ -351,3 +434,27 @@ server.listen(port, serverip);
 //
 // var bufInt = (buf.readUInt32BE(0) << 8) + buf.readUInt32BE(4);
 // console.log(bufInt)
+
+// const parse = (data) => {
+//   let gps = {
+//       gpstime   : util.toTime(data.substr(10,2), data.substr(12,2), data.substr(14,2), data.substr(16,2), data.substr(18,2), data.substr(20,2), 'hex'),
+//       satellite : util.hex2int(data.substr(23,1)),
+//       longitude : parseFloat(util.hex2int(data.substr(32,8)) / 1800000),
+//       latitude  : parseFloat(util.hex2int(data.substr(24,8)) / 1800000),
+//       altitude  : 0,
+//       speed     : util.hex2int(data.substr(38,2)),
+//       heading   : 0,
+//       mileage   : 0,
+//       event     : 0,
+//       input     : '00000000',
+//       output    : '00000000',
+//       location  : '',
+//       received  : new Date().toISOString(),
+//       others    : {}
+//   };
+//
+//   console.log(gps);
+// }
+//
+// parse(data_32_protocol);
+//
