@@ -124,6 +124,24 @@ export const CoinSettingsSchema = new SimpleSchema({
 // for now there is only one set of settings. Later on profilename can be used later
 // to use different settings for different instances
 
+export const DevelopmentOptionsSchema = new SimpleSchema({
+	'showTestButtons': {
+    type: Boolean,
+    label: "Show Test Buttons",
+    defaultValue: 'false'
+  },
+	'forwardRequests': {
+		type: Boolean,
+    label: "Forward incoming requests",
+    defaultValue: 'false'
+	},
+	'forwardRequestsURL': {
+		type: String,
+    label: "Forwarding Destination URL",
+    defaultValue: 'http://luggage.dyndns.tv:7777'
+	}
+});
+
 export const SettingsSchema = new SimpleSchema({
   _id: {
   	type: String,
@@ -158,6 +176,9 @@ export const SettingsSchema = new SimpleSchema({
 	bikecoin: {
 	    type: CoinSettingsSchema
   },
+	developmentOptions: {
+		type: DevelopmentOptionsSchema
+	},
 });
 
 if (Meteor.isServer) {
@@ -199,6 +220,11 @@ if (Meteor.isServer) {
 							privatekey: ''
 						}
 					},
+					developmentOptions: {
+						showTestButtons: false,
+						forwardRequests: false,
+						forwardRequestsURL: 'http://luggage.dyndns.tv:7777'
+					},
 	    	}
 
 				try {
@@ -225,6 +251,17 @@ if (Meteor.isServer) {
 				}
 				if("goabout" in settings) {
 			    Settings.update(settings._id, {$unset:{ goabout: "" }});
+				}
+
+				if("developmentOptions" in settings == false) {
+					settings.developmentOptions = {
+						showTestButtons: false,
+						forwardRequests: false,
+						forwardRequestsURL: "http://luggage.dyndns.tv:7777"
+					}
+				
+					console.log("added Development options to settings")
+					Settings.update(settings._id, settings, {validate: false});
 				}
 
 		    try {

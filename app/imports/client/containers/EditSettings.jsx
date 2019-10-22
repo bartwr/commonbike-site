@@ -152,6 +152,28 @@ class EditSettings extends Component {
       },
       {
           controltype: 'header',
+          label: 'Development Options'
+      },
+      {
+          fieldname: 'developmentOptions.showTestButtons',
+          fieldvalue: this.props.settings.developmentOptions.showTestButtons,
+          controltype: 'yesno',
+          label: 'Show Test buttons'
+      },
+      {
+          fieldname: 'developmentOptions.forwardRequests',
+          fieldvalue: this.props.settings.developmentOptions.forwardRequests,
+          controltype: 'yesno',
+          label: 'Forward API requests (debugmode)'
+      },
+      {
+          fieldname: 'developmentOptions.forwardRequestsURL',
+          fieldvalue: this.props.settings.developmentOptions.forwardRequestsURL,
+          controltype: 'text',
+          label: 'Forward API requests URL'
+      },
+      {
+          controltype: 'header',
           label: ''
       },
   	]
