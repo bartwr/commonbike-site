@@ -154,9 +154,9 @@ class LocationsMapComponent extends Component {
   }
 
   initializeLocationsMarkers() {
-    var markers = [];
-
     this.state.locationMarkersGroup.clearLayers();
+    
+    if(!this.props.locations) return;
 
     this.props.locations.map((location) =>  {
       if(!location.lat_lng&&location.address) {
@@ -200,13 +200,14 @@ class LocationsMapComponent extends Component {
   }
 
   initializeObjectsMarkers() {
+    if(!this.props.objects) return;
+    
   // create custom icon
     var bikeIcon = L.icon({
         iconUrl: '/files/ObjectDetails/marker.svg',
         iconSize: [16, 16], // size of the icon
         });
 
-    var markers = [];
     this.props.objects.map((object) => {
       if(object.lat_lng) {
         var marker = L.marker(object.lat_lng, {icon: bikeIcon, zIndexOffset: -900}); // bike object marker

@@ -145,7 +145,7 @@ class AppRoutes extends React.Component {
   render() {
     return (
      <Switch>
-      <Route exact path='/' component={UserAppLanding}/>
+      <Route exact path='/' component={UserAppLocationsMap}/>
       <Route path='/about' component={UserAppAbout}/>
       <Route path='/join' component={UserAppJoin}/>
 
