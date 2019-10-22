@@ -36,7 +36,7 @@ class PageHeader extends Component {
       <div style={s.base}>
         <div style={s.flex}>
           <BackButton />
-          <a onClick={() => RedirectTo('/locations')} style={{display: 'flex'}}>{this.getLogo()}</a>
+          <a onClick={() => RedirectTo('/')} style={{display: 'flex'}}>{this.getLogo()}</a>
           { Meteor.userId() ? <a onClick={this.gotoProfile.bind(this)}><Avatar /></a> : <div /> }
         </div>
         {this.props.children}

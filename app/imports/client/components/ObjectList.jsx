@@ -4,7 +4,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import ObjectBlock from '/imports/client/containers/ObjectBlock';
 
 // Import models
-import { Objects } from '/imports/api/locations.js';
+import { Objects } from '/imports/api/objects.js';
 
 // Import components
 import Block from '/imports/client/components/Block';
@@ -16,6 +16,10 @@ class ObjectList extends Component {
   }
 
   render() {
+    if(!this.props.objects ) return (null);
+    
+    console.log("*** objects %o", this.props.objects)
+
     return (
       <div style={s.base}>
 
@@ -54,11 +58,11 @@ var s = {
     padding: '0 70px',
     margin: '0 auto',
     maxWidth: '400px',
-    textAlign: 'left',
-    minHeight: '80px',
+    textAlign: 'center',
+    minHeight: '40px',
     fontSize: '1.2em',
     fontWeight: '500',
-    background: 'url("/files/ObjectList/marker.svg") 0 0 / auto 60px no-repeat',
+    // background: 'url("/files/ObjectList/marker.svg") 0 0 / auto 60px no-repeat',
   },
 
 }
@@ -77,9 +81,9 @@ ObjectList.propTypes = {
 };
 
 ObjectList.defaultProps = {
-  title: "Bekijk hier jouw reserveringen",
+  title: "SELECT A BIKE",
   emptyListMessage: "",
-  objects: {},
+  objects: [],
   clickItemHandler: '',
 
   methodsBaseName: "",

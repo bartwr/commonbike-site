@@ -22,9 +22,8 @@ class CheckInOutProcessBase extends Component {
     if(!this.validStates().includes(newState)) {
       return;
     }
-    var rentalInfo = {};
     var user = getUserDescription(Meteor.user());
-    Meteor.call('objects.setState', this.props.object._id, Meteor.userId(), this.props.object.locationId, newState, user, rentalInfo);
+    Meteor.call('objects.setState', this.props.object._id, Meteor.userId(), newState, user);
   }
 
   setObjectReserved() {

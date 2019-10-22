@@ -2,22 +2,18 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base'
 
 import { Settings } from '/imports/api/settings.js';
-import '/imports/api/transactions.js';
 import '/imports/api/users.js'
 import BikeCoin from '/imports/api/bikecoin.js'
-import { Locations, toGeoJSONPoint, Address2GeoJSONPoint } from '/imports/api/locations.js';
 import { Objects } from '/imports/api/objects.js';
 import '/imports/api/api-keys.js'
 import { Log } from '/imports/api/log.js'
 import '/imports/server/testdata.js'
 import '/imports/api/databasetools.js';
-import '/imports/api/integrations/goabout.js';
-import '/server/api/paymentservices/mollie.js'; // methods
+// import '/server/api/paymentservices/mollie.js'; // methods
 
 Meteor.startup(() => {
 	// code to run on server at startup
-
-	// fix all 'old' objects in the production database
+	
 	if(false) {
 		var myObjects = Objects.find().fetch();
 		_.each(myObjects, function (objectData) {
@@ -59,35 +55,12 @@ Meteor.startup(() => {
 	}
 
 	if(true) {
-		var myLocations = Locations.find().fetch();
-		_.each(myLocations, function (locationData) {
-			if(locationData.coordinates) {
-		    Locations.update(locationData._id, {$unset:{ coordinates: "" }});
-			}
-			if(locationData.point) {
-		    Locations.update(locationData._id, {$unset:{ point: "" }});
-			}
-			if(locationData.loc) {
-		    Locations.update(locationData._id, {$unset:{ loc: "" }});
-			}
-
-			if(!locationData.locationType) {
-				locationData.locationType = 'commonbike'
-				locationData.externalId = ''
-
-				Locations.update(locationData._id, locationData, {validate: false});
-			}
-		});
-
 		_.each(myObjects, function (objectData) {
 			if(objectData.coordinates) {
 		    Objects.update(objectData._id, {$unset:{ coordinates: "" }});
 			}
 			if(objectData.point) {
 		    Objects.update(objectData._id, {$unset:{ point: "" }});
-			}
-			if(objectData.loc) {
-		    Locations.update(objectData._id, {$unset:{ loc: "" }});
 			}
 		});
 	}
@@ -103,8 +76,8 @@ Meteor.startup(() => {
 		if(!user.profile || !user.profile.avatar) {
 			Meteor.users.update(user._id, {$set : { 'profile.avatar' : '' }});
 		}
-		if(!user.profile || !user.profile.cancreatelocations) {
-			Meteor.users.update(user._id, {$set : { 'profile.cancreatelocations' : 'false' }});
+		if(!user.profile || !user.profile.cancreateobjects) {
+			Meteor.users.update(user._id, {$set : { 'profile.cancreateobjects' : 'false' }});
 		}
 
 		if(!user.profile || !user.profile.wallet) {

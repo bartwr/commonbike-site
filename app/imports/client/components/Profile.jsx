@@ -18,8 +18,8 @@ class Profile extends Component {
     RedirectTo('/objects')
   }
 
-  locations() {
-    RedirectTo('/admin/locations')
+  objects() {
+    RedirectTo('/admin/ojects')
   }
 
   wallet() {
@@ -28,10 +28,6 @@ class Profile extends Component {
 
   rentals() {
     RedirectTo('/admin/rentals')
-  }
-
-  transactions() {
-    RedirectTo('/transactions')
   }
 
   manageusers() {
@@ -67,18 +63,18 @@ class Profile extends Component {
     }
   }
 
-  getMyLocationsButton() {
+  getMyObjectsButton() {
     // bestaande providers en gebruikers met rechten kunnen locaties beheren
     var show = this.props.currentUser && this.props.currentUser.profile &&
-                        (this.props.currentUser.profile.provider_locations ||
-                         this.props.currentUser.profile.cancreatelocations)
-
+                        (this.props.currentUser.profile.provider_objects ||
+                         this.props.currentUser.profile.cancreateobjects)
+  
     if(Roles.userIsInRole( Meteor.userId(), 'admin')) {
-      show = true; // administrators can always manage locations
+      show = true; // administrators can always manage objects
     }
-
+  
     if(show) {
-      return ( <RaisedButton onClick={this.locations.bind(this)}>MY LOCATIONS</RaisedButton> )
+      return ( <RaisedButton onClick={this.objects.bind(this)}>MY LOCATIONS</RaisedButton> )
     } else {
       return ( <div /> )
     }
@@ -86,8 +82,8 @@ class Profile extends Component {
 
   getMyRentalsButton() {
     var show = this.props.currentUser && this.props.currentUser.profile &&
-               (this.props.currentUser.profile.provider_locations ||
-                this.props.currentUser.profile.cancreatelocations)
+               (this.props.currentUser.profile.provider_objects ||
+                this.props.currentUser.profile.cancreateobjects)
 
     if(Roles.userIsInRole( Meteor.userId(), 'admin')) {
       show = true; // administrators can always manage locations
@@ -142,15 +138,13 @@ class Profile extends Component {
             { this.getUserPersonalia() }
           </p>
 
-          <RaisedButton onClick={() => RedirectTo('/locations')}>SEARCH</RaisedButton>
+          <RaisedButton onClick={() => RedirectTo('/')}>SEARCH</RaisedButton>
 
           <RaisedButton onClick={this.reservations.bind(this)}>BIKE</RaisedButton>
 
-          <RaisedButton onClick={this.transactions.bind(this)}>HISTORY</RaisedButton>
-
           <RaisedButton onClick={this.wallet.bind(this)}>WALLET</RaisedButton>
 
-          { this.getMyLocationsButton() }
+          { this.getMyObjectsButton() }
 
           { this.getMyRentalsButton() }
 

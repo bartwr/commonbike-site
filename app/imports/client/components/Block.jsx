@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 
-// Import models
-import { Locations } from '/imports/api/locations.js';
-
 // Import components
 import RaisedButton from '/imports/client/components/RaisedButton.jsx';
 
@@ -57,14 +54,13 @@ class Block extends Component {
   }
 
   rentalDetails2Text(item) {
-    var userDescription = item.state.userDescription || 'anonymous';
     var duur = '';
     var nu = new Date().valueOf();
     if(item&&item.state) {
       duur = MillisectoHHMM(nu - item.state.timestamp);
     }
 
-    return userDescription + ' (' + duur + ')';
+    return 'rented for ' + duur + ' hours';
   }
 
   lockDetailsToText(item) {

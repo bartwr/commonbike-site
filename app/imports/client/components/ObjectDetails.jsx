@@ -12,12 +12,7 @@ import Button from '/imports/client/components/Button.jsx';
 import CheckInOutProcessBase from '/imports/client/components/CheckInCode';
 import MapSummary from '/imports/client/MapSummary';
 import CheckInOutProcessPlainKey from '/imports/client/components/CheckInOutProcess/CheckInOutProcessPlainKey';
-import CheckInOutProcessAxaELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessAxaELock';
-import CheckInOutProcessOpenKeylocker from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenKeylocker';
-import CheckInOutProcessOpenBikelocker from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenBikelocker';
 import CheckInOutProcessOpenELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenELock';
-// import CheckInOutProcessSkopeiLock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessSkopeiLock';
-import CheckInOutProcessGoAboutLock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessGoAboutLock';
 import ManageApiKeys from '/imports/client/components/ManageApiKeys';
 import Balance from '/imports/client/components/Balance.jsx';
 
@@ -65,29 +60,13 @@ class ObjectDetails extends Component {
     if( ! this.props.currentUser)
       return <Button onClick={RedirectTo.bind(this, '/login?redirectTo=/bike/details/'+this.props.object._id)}>Login to reserve</Button>
 
-    else if(lockType=='open-bikelocker')
-      return <CheckInOutProcessOpenBikelocker
-          object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-
     else if(lockType=='open-elock')
       return <CheckInOutProcessOpenELock
           object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
 
-    else if(lockType=='open-keylocker')
-      return <CheckInOutProcessOpenKeylocker
-          object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-
-    else if(lockType=='axa-elock')
-      return <CheckInOutProcessAxaELock
-          object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-
-    // else if(lockType=='skopei-v1')
-    //   return <CheckInOutProcessSkopeiLock
-    //       object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-
-    else if(lockType=='goabout-v1')
-      return <CheckInOutProcessGoAboutLock
-          object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
+  else if(lockType=='concox-bl10')
+    return <CheckInOutProcessConcoxBL10
+        object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
 
     else
       return <CheckInOutProcessPlainKey

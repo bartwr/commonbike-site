@@ -74,9 +74,9 @@ class Login extends Component {
       <div style={Object.assign({padding: '20px'}, s.base)}>
         <p>Great you want to join us</p>
         <p>Further explanatory text.<p>
-        </p><a style={s.anchor} href="mailto:info@commonbike.com">Mail us</a> if you want to help us test.</p>
-        <p>You will be the first we'll notify when the next fase starts.</p>
-        <p><a style={s.anchor} href="http://commonbike.com/" target="_blank"><i>How does it work?</i></a></p>
+        </p><a style={s.anchor} href="mailto:info@lisk.bike">Mail us</a> if you want to help us test.</p>
+        <p>You will be the first we will notify when the next fase starts.</p>
+        <p><a style={s.anchor} href="http://lisk.bike/" target="_blank"><i>How does it work?</i></a></p>
         <p><button onClick={this.logout}>Logout</button></p>
       </div>
     )
@@ -93,8 +93,7 @@ class Login extends Component {
 
     return (
       <div style={s.base}>
-        {currentUser ? (active ? RedirectTo(this.props.redirectTo ? this.props.redirectTo : '/locations') : this.renderTeaser())
-                                : this.renderIntro()}
+        {currentUser ? (active ? RedirectTo(this.props.redirectTo ? this.props.redirectTo : '/') : this.renderTeaser())                             : this.renderIntro()}
 
       </div>
     );

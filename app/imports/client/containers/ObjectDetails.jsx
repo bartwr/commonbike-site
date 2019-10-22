@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { createContainer } from 'meteor/react-meteor-data';
 
 // Import models
-import { Locations } from '/imports/api/locations.js';
+// import { Locations } from '/imports/api/locations.js';
 import { Objects } from '/imports/api/objects.js';
 
 // Import components

@@ -52,12 +52,7 @@ class CheckInOutProcessOpenELock extends CheckInOutProcessBase {
       return;
     }
 
-    var rentalInfo = {
-      'cardhash': '00000000',
-      'pincode': ''
-    };
-    var user = getUserDescription(Meteor.user());
-    Meteor.call('objects.setState', this.props.object._id, Meteor.userId(), this.props.object.locationId,newState, user, rentalInfo);
+    Meteor.call('objects.setState', this.props.object._id, Meteor.userId(), newState);
   }
 
   setObjectState(newState) {

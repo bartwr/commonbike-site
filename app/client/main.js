@@ -18,9 +18,8 @@ import Login from '/imports/client/components/Login.jsx'
 import CustomPage from '/imports/client/components/CustomPage.jsx'
 import Profile from '/imports/client/components/Profile.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
+// import LocationsMap from '/imports/client/components/LocationsMap.jsx'
 import LocationsOverview from '/imports/client/containers/LocationsOverview.jsx'
-import LocationDetails from '/imports/client/containers/LocationDetails.jsx'
-import TransactionList from '/imports/client/containers/TransactionList.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
 import ObjectList from '/imports/client/containers/ObjectList.jsx'
 import ObjectDetails from '/imports/client/containers/ObjectDetails.jsx'
@@ -41,20 +40,10 @@ const UserAppLogin = ({match}) => {
 const UserAppProfile = () => (<UserApp content={<div><Profile isEditable="true" /></div>} />)
 const UserAppUserWallet = () => (<UserApp content={<div><UserWallet /></div>} />)
 
-const UserAppLocationsOverview = () => (<UserApp showPageHeader={false} content={<LocationsOverview />} />)
-const UserAppLocationDetails = ({match}) => {
-  return (
-    <UserApp content={<LocationDetails locationId={match.params.locationId} background="#fff"/>} />
-  )
-}
-
-const UserAppLocationsMap = () => (<UserApp content={<LocationsMap />} />)
+// const UserAppLocationsMap = () => (<UserApp content={<LocationsMap />} />)
+const UserAppLocationsOverview = () => (<UserApp content={<LocationsOverview />} />)
 
 const UserAppObjectList = () => (<UserApp content={<ObjectList showPrice={true} showState={true} />} />)
-
-const UserAppTransactionList = () => (<UserApp content={<TransactionList />} />)
-
-const AdminAppTransactionList = () => (<UserApp content={<TransactionList admin="true" />} />)
 
 const AdminAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
 
@@ -74,13 +63,6 @@ const UserAppCustomAdminPageObjectDetails = ({match}) => {
 const UserAppCustomPageObjectDetailsCheckin = ({match}) => {
   return (
     <UserApp content={<CustomPage backgroundColor="#f9f9f9"><ObjectDetails objectId={match.params.objectId} checkedIn={true}/></CustomPage>} />
-  )
-}
-
-const UserAppAdminLocationsOverview = () => (<UserApp content={<LocationsOverview isEditable="true" />} />)
-const UserAppAdminLocationDetails = ({match}) => {
-  return (
-    <UserApp content={<LocationDetails locationId={match.params.locationId} isEditable="true"/>} />
   )
 }
 
@@ -145,33 +127,26 @@ class AppRoutes extends React.Component {
   render() {
     return (
      <Switch>
-      <Route exact path='/' component={UserAppLocationsMap}/>
+      <Route exact path='/' component={UserAppLocationsOverview}/>
       <Route path='/about' component={UserAppAbout}/>
       <Route path='/join' component={UserAppJoin}/>
 
       <Route path='/login' component={UserAppLogin}/>
-      <Route path='/locations' component={UserAppLocationsOverview}/>
-      <Route path='/map' component={UserAppLocationsMap}/>
       <Route path='/objects' component={UserAppObjectList}/>
       <Route path='/wallet' component={UserAppUserWallet}/>
-      <Route path='/location/:locationId' component={UserAppLocationDetails}/>
       <Route path='/bike/details/:objectId' component={UserAppCustomPageObjectDetails}/>
 
       <RouteWhenLoggedIn path='/profile' component={UserAppProfile}/>
-      <RouteWhenLoggedIn path='/transactions' component={UserAppTransactionList}/>
       <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppCustomPageObjectDetailsCheckin}/>
       <RouteWhenLoggedIn path='/commonbike-ui' component={CommonBikeUI}/>
 
       <RouteWhenLoggedIn path='/payment/:internalPaymentId' component={PaymentOrder}/>
 
-      <RouteWhenLoggedIn path='/admin/locations' component={UserAppAdminLocationsOverview}/>
       <RouteWhenLoggedIn path='/admin/rentals' component={UserAppRentalList}/>
-      <RouteWhenLoggedIn path='/admin/location/:locationId' component={UserAppAdminLocationDetails}/>
       <RouteWhenLoggedIn path='/admin/bike/details/:objectId' component={UserAppCustomAdminPageObjectDetails}/>
 
       <RouteWhenAdmin path='/admin/users' component={UserAppAdminAdminUsersList}/>
       <RouteWhenAdmin path='/admin/admintools' component={UserAppAdminAdminTools}/>
-      <RouteWhenAdmin path='/admin/transactions' component={AdminAppTransactionList}/>
       <RouteWhenLoggedIn path='/admin/log' component={AdminAppLogList}/>
 
       <Route component={NoMatch}/>

@@ -30,7 +30,7 @@ class CheckInOutProcessPlainKey extends CheckInOutProcessBase {
 
     var userDescription = getUserDescription(Meteor.user());
     var description='Locatiecode ' + ReactDOM.findDOMNode(this.refs.code).value + ' ingevoerd door gebruiker ' + userDescription;
-    Meteor.call('transactions.addTransaction', 'ENTER_LOCATIONCODE', description, Meteor.userId(), this.props.object.locationId, this.props.object._id);
+    console.log(description);
   }
 
   renderButtonsForUser() {

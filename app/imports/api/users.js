@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo';
 import { Accounts } from 'meteor/accounts-base'
-import { Integrations } from '/imports/api/integrations.js';
 import { getSettingsServerSide } from '/imports/api/settings.js';
 import { CoinSchema } from '/imports/api/bikecoinschema.js';
 
@@ -21,7 +20,7 @@ export const UserProfileSchema = new SimpleSchema({
     label: "Avatar",
     defaultValue: ''
   },
-  cancreatelocations: {
+  cancreateobjects: {
     type: Boolean,
     label: "Can Create Locations",
     defaultValue: 'false'
@@ -132,7 +131,7 @@ if(Meteor.isServer) {
       Meteor.users.update(userId, {$set : data});
 
       if(isActive) {
-        Integrations.slack.sendNotification('Er is een nieuwe deelnemer geactiveerd!');
+        console.log('New user actived');
       }
     },
     'currentuser.setAdmin'(userId, isActive) {
@@ -150,7 +149,7 @@ if(Meteor.isServer) {
         Roles.removeUsersFromRoles(userId, ['admin']);
       }
     },
-    'currentuser.canCreateLocations'(userId, isActive) {
+    'currentuser.cancreateobjects'(userId, isActive) {
       if(!this.userId) {
         return
       }
@@ -159,7 +158,7 @@ if(Meteor.isServer) {
         return
       }
 
-      Meteor.users.update(userId, {$set : { 'profile.cancreatelocations' : isActive }});
+      Meteor.users.update(userId, {$set : { 'profile.cancreateobjects' : isActive }});
     },
     'currentuser.AutoOnboard'() {
       if(!this.userId) {
@@ -179,8 +178,6 @@ if(Meteor.isServer) {
                                                                     }
                                                 }
                                         });
-
-      Integrations.slack.sendNotification('Er is een nieuwe deelnemer geactiveerd!');
     }
   })
 }

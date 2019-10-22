@@ -70,63 +70,6 @@ class EditSettings extends Component {
   		},
       {
           controltype: 'header',
-          label: 'Slack'
-      },
-  		{
-          fieldname: 'slack.notify',
-          fieldvalue: this.props.settings.slack.notify,
-          controltype: 'combo',
-          label: 'Notify',
-          controltype: 'yesno'
-  		},
-  		{
-          fieldname: 'slack.address',
-          fieldvalue: this.props.settings.slack.address,
-          controltype: 'text',
-          label: 'Address'
-  		},
-      {
-          fieldname: 'slack.channel',
-          fieldvalue: this.props.settings.slack.channel,
-          controltype: 'text',
-          label: 'Channel'
-      },
-      {
-          fieldname: 'slack.name',
-          fieldvalue: this.props.settings.slack.name,
-          controltype: 'text',
-          label: 'Name'
-      },
-      {
-          fieldname: 'slack.icon_emoji',
-          fieldvalue: this.props.settings.slack.icon_emoji,
-          controltype: 'text',
-          label: 'Emoji'
-      },
-      {
-          controltype: 'header',
-          label: 'Veiligstallen'
-      },
-      {
-          fieldname: 'veiligstallen.visible',
-          fieldvalue: this.props.settings.veiligstallen.visible,
-          label: 'Visible',
-          controltype: 'yesno'
-      },
-      {
-          fieldname: 'veiligstallen.kmlURL',
-          fieldvalue: this.props.settings.veiligstallen.kmlURL,
-          controltype: 'text',
-          label: 'kmlURL'
-      },
-      {
-          fieldname: 'veiligstallen.kmlLastDownloadTimestamp',
-          fieldvalue: this.props.settings.veiligstallen.kmlLastDownloadTimestamp,
-          controltype: 'number',
-          label: 'timestamp of last download'
-      },
-      {
-          controltype: 'header',
           label: 'Automatic Onboarding'
       },
   		{
@@ -145,56 +88,6 @@ class EditSettings extends Component {
           fieldvalue: this.props.settings.backup.location,
           controltype: 'text',
           label: 'storage directory'
-      },
-      {
-          controltype: 'header',
-          label: 'Skopei Integration'
-      },
-      {
-          fieldname: 'skopei.enabled',
-          fieldvalue: this.props.settings.skopei.enabled,
-          label: 'Enabled',
-          controltype: 'yesno'
-      },
-      {
-          fieldname: 'skopei.clientid',
-          fieldvalue: this.props.settings.skopei.clientid,
-          controltype: 'text',
-          label: 'Client ID'
-      },
-      {
-          fieldname: 'skopei.clientkey',
-          fieldvalue: this.props.settings.skopei.clientkey,
-          controltype: 'text',
-          label: 'Client Key'
-      },
-      {
-          controltype: 'header',
-          label: 'GoAbout Integration'
-      },
-      {
-          fieldname: 'goabout.enabled',
-          fieldvalue: this.props.settings.goabout.enabled,
-          label: 'Enabled',
-          controltype: 'yesno'
-      },
-      {
-          fieldname: 'goabout.clientid',
-          fieldvalue: this.props.settings.goabout.clientid,
-          controltype: 'text',
-          label: 'Client ID'
-      },
-      {
-          fieldname: 'goabout.clientsecret',
-          fieldvalue: this.props.settings.goabout.clientsecret,
-          controltype: 'text',
-          label: 'Client Secret'
-      },
-      {
-          fieldname: 'goabout.userbearertoken',
-          fieldvalue: this.props.settings.goabout.userbearertoken,
-          controltype: 'text',
-          label: 'User Bearer Token'
       },
       {
           controltype: 'header',

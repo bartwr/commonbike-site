@@ -4,19 +4,12 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 // Import models
 import { Settings } from '/imports/api/settings.js';
-import { Locations } from '/imports/api/locations.js';
-import { Objects } from '/imports/api/objects.js';
+import { Objects, createObject } from '/imports/api/objects.js';
 
 // Import components
-import LocationsList from '/imports/client/components/LocationsList';
+import ObjectList from '/imports/client/components/ObjectList';
 import LocationsMap from '/imports/client/components/LocationsMap';
 
-/**
- *  LocationList
- *
- * @param {Object} locations
- * @param {Boolean} isEditable
- */
 class LocationList extends Component {
 
   constructor(props) {
@@ -25,30 +18,21 @@ class LocationList extends Component {
     this.state = { mapBoundaries: null }
   }
 
-  /**
-   *  newLocationHandler
-   *
-   * Adds a new location to the database having the title "_Een nieuwe locatie"
-   */
-  newLocationHandler() {
-    var locationName = prompt('Wat is de naam van de nieuwe locatie?');
+  newObjectHandler() {
+    var newName = prompt('Enter a name for the new bike');
 
-    if(locationName){
-      Meteor.call('locations.insert', {
-        title: locationName,
-        imageUrl: '/files/IconsButtons/Location-26-512.png' // https://cdn2.iconfinder.com/data/icons/location-3/128/Location-26-512.png
-      }, this.newLocationAdded.bind(this));
+    if(newName){
+      Meteor.call('objects.insert', createObject(newName), this.newObjectAdded.bind(this));
     }
   }
-
-  newLocationAdded(error, result) {
+  newObjectAdded(error, result) {
     // Re-subscribe is necessary: otherwise the location does not show up
     // in the provider's location list without a full page reload (there is no
     // subscription relation with the user table that maintains the list
     // of managed locations per user)
-    Meteor.subscribe('locations', this.props.isEditable);
+    Meteor.subscribe('objects', this.props.isEditable);
 
-    alert('De locatie is toegevoegd aan de lijst.');
+    alert('The bike has been added to the system');
   }
 
   /*
@@ -59,7 +43,7 @@ class LocationList extends Component {
   getVisibleObjectsOnly(object) {
 
     // Every object needs a lat/lng
-    if( ! object.lat_lng)
+    if( ! object.state.lat_lng)
       return false;
 
     // If mapBoundaries is not set: exclude this object
@@ -83,13 +67,13 @@ class LocationList extends Component {
     this.setState({ mapBoundaries: boundaries })
   }
 
-  getMap(locations) {
+  getMap() {
     if(!this.props.isEditable) {
       return (
-        <LocationsMap locations={locations}
-                        objects={this.props.objects}
-                        settings={this.props.settings}
-                        mapChanged={this.mapChanged.bind(this)} />
+        <LocationsMap
+          objects={this.props.objects}
+          settings={this.props.settings}
+          mapChanged={this.mapChanged.bind(this)} />
       );
     } else {
       return (<div />);
@@ -97,20 +81,13 @@ class LocationList extends Component {
   }
 
   render() {
-    let locations = undefined;
-    if(!this.props.isEditable) {
-      locations = this.props.locations.filter(this.getVisibleObjectsOnly.bind(this))
-    } else {
-      locations = this.props.locations
-    }
-
     return (
       <div>
-       { this.getMap(locations)}
-       <LocationsList locations={locations}
-                        isEditable={this.props.isEditable}
-                        newLocationHandler={this.newLocationHandler.bind(this)}
-                        canCreateLocations={this.props.canCreateLocations} />
+       { this.getMap()}
+       <ObjectList isEditable={this.props.isEditable}
+        objects={this.props.objects}
+        newObjectHandler={this.newObjectHandler.bind(this)}
+        canCreateObjects={this.props.cancreateobjects} />
       </div>
     );
   }
@@ -127,7 +104,6 @@ var s = {
 }
 
 LocationList.propTypes = {
-  locations: PropTypes.array,
   isEditable: PropTypes.any,
   newLocation: PropTypes.any,
 //  locHandle:  PropTypes.any
@@ -135,26 +111,27 @@ LocationList.propTypes = {
 
 LocationList.defaultProps = {
   isEditable: false,
-  newLocation: null
+  newObject: null
   //locHandle: null
 }
 
 export default createContainer((props) => {
-  Meteor.subscribe('locations', props.isEditable)
-  Meteor.subscribe('objects', false);
   Meteor.subscribe('settings', false);
+  Meteor.subscribe('objects');
 
-  var user=Meteor.user();
-  var canCreateLocations = false;
-  if(user&&user.profile&&user.profile.cancreatelocations) {
-    canCreateLocations = user.profile.cancreatelocations
+  const user=Meteor.user();
+  let cancreateobjects = false;
+  if(user&&user.profile&&user.profile.cancreateobjects) {
+    cancreateobjects = user.profile.cancreateobjects || false;
   }
+  
+  let objects = Objects.find({}, { sort: {title: 1} }).fetch();
+  console.log("Locationsoverview - objects: %o", objects);
 
   return {
     currentUser: Meteor.user(),
-    locations: Locations.find({}, { sort: {title: 1} }).fetch(),
-    objects: Objects.find({}, { sort: {title: 1} }).fetch(),
+    objects,
     settings: Settings.findOne({}),
-    canCreateLocations: canCreateLocations
+    cancreateobjects
   };
 }, LocationList);

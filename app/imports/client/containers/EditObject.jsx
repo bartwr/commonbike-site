@@ -10,7 +10,6 @@ import EditFields from '/imports/client/components/EditFields';
 
 // Import models
 import { Objects, ObjectsSchema } from '/imports/api/objects.js';
-import { Locations } from '/imports/api/locations.js';
 
 class EditObject extends Component {
 
@@ -27,46 +26,7 @@ class EditObject extends Component {
   getLockFields() {
   	var fields = [];
     var lockType = this.props.object.lock.type;
-	if(lockType=='open-keylocker') {
-  		fields = [
-	  		{
-	          fieldname: 'lock.settings.keylocker',
-	          fieldvalue: this.props.object.lock.settings.keylocker,
-	          controltype: 'text',
-	          label: 'Kluisje #'
-	  		},
-	  		{
-	          fieldname: 'lock.settings.pincode',
-	          fieldvalue: this.props.object.lock.settings.pincode,
-	          controltype: 'text',
-	          label: 'Pincode'
-	  		}
-	  	];
-    } else if(lockType=='axa-elock') {
-  		fields = [
-	  		{
-	          fieldname: 'lock.settings.connectionname',
-	          fieldvalue: this.props.object.lock.settings.connectionname,
-	          controltype: 'text',
-	          label: 'Verbinding'
-	  		},
-	  		{
-	          fieldname: 'lock.settings.pincode',
-	          fieldvalue: this.props.object.lock.settings.pincode,
-	          controltype: 'text',
-	          label: 'Pincode'
-	  		}
-	  	]
-    // } else if(lockType=='skopei-v1') {
-    //   fields = [
-    //     {
-    //         fieldname: 'lock.settings.elockid',
-    //         fieldvalue: this.props.object.lock.settings.elockid,
-    //         controltype: 'text',
-    //         label: 'lock id'
-    //     }
-    //   ]
-    } else if(lockType=='goabout-v1'||lockType=='open-elock') {
+    if(lockType=='open-elock') {
       fields = [
         {
             fieldname: 'lock.settings.elockid',
@@ -90,130 +50,17 @@ class EditObject extends Component {
 	          label: 'Sleutelnr.'
 	  		}
 	  	]
-    } else if(lockType=='open-bikelocker') {
+    } else if(lockType=='concox-bl10') {
       fields = [
-        {
-            fieldname: 'lock.settings.callbackurl',
-            fieldvalue: this.props.object.lock.settings.callbackurl,
-            controltype: 'text',
-            label: 'Callback URL'
-        }
+        // {
+        //     fieldname: 'lock.settings.callbackurl',
+        //     fieldvalue: this.props.object.lock.settings.callbackurl,
+        //     controltype: 'text',
+        //     label: 'Callback URL'
+        // }
       ]
     } else {
-    	// onbekend type slot
-    }
-
-    return fields;
-  }
-
-  getRentalFieldsSkopeiLock() {
-    var fields = [];
-    var lockType = this.props.object.lock.type;
-
-    if(!this.props.object.state.rentalInfo||!this.props.object.state.rentalInfo.externalid) {
-      fields = [
-        {
-            controltype: 'header',
-            label: 'Verhuur (Skopei slot)'
-        },
-        {
-            controltype: 'message',
-            text: 'Niet verhuurd'
-        },
-      ]
-
-      return fields;  // no reservation info
-    }
-
-    fields = [
-      {
-          controltype: 'header',
-          label: 'Verhuur (Skopei slot)'
-      },
-      {
-          fieldname: 'state.rentalInfo.externalid',
-          fieldvalue: this.props.object.state.rentalInfo.externalid,
-          controltype: 'text',
-          label: 'External ID'
-      },
-      {
-          fieldname: 'state.rentalInfo.datestart',
-          fieldvalue: this.props.object.state.rentalInfo.datestart,
-          controltype: 'text',
-          label: 'Date Start'
-      },
-      {
-          fieldname: 'state.rentalInfo.dateend',
-          fieldvalue: this.props.object.state.rentalInfo.dateend,
-          controltype: 'text',
-          label: 'Date End'
-      },
-      {
-          fieldname: 'state.rentalInfo.code',
-          fieldvalue: this.props.object.state.rentalInfo.code,
-          controltype: 'text',
-          label: 'Code'
-      },
-      {
-          fieldname: 'state.rentalInfo.pincode',
-          fieldvalue: this.props.object.state.rentalInfo.pincode,
-          controltype: 'text',
-          label: 'Pincode'
-      }
-    ]
-
-    return fields;
-  }
-
-  getRentalFieldsOpenBikeLocker() {
-    var fields = [];
-
-    if(!this.props.object.state.rentalInfo||!this.props.object.state.rentalInfo.pincode) {
-      fields = [
-        {
-            controltype: 'header',
-            label: 'Verhuur (Kluis)'
-        },
-        {
-            controltype: 'message',
-            text: 'Niet in gebruik'
-        },
-      ]
-
-      return fields;  // no reservation info
-    }
-
-    fields = [
-      {
-          controltype: 'header',
-          label: 'Verhuur (Kluis)'
-      },
-      {
-          fieldname: 'state.rentalInfo.pincode',
-          fieldvalue: this.props.object.state.rentalInfo.pincode,
-          controltype: 'text',
-          label: 'Pincode'
-      },
-      {
-          fieldname: 'state.rentalInfo.cardhash',
-          fieldvalue: this.props.object.state.rentalInfo.cardhash,
-          controltype: 'text',
-          label: 'Kaart code'
-      }
-    ]
-
-    return fields;
-  }
-
-  getRentalFields() {
-    var fields = [];
-    var lockType = this.props.object.lock.type;
-    // if(lockType=='skopei-v1') { return this.getRentalFieldsSkopeiLock(); } else
-    
-    if (lockType=='open-bikelocker') {
-      return this.getRentalFieldsOpenBikeLocker();
-    } else {
-      // nog geen rental fields gedefinieerd
+      console.error('unknown lock type %s', lockType)
     }
 
     return fields;
@@ -248,12 +95,8 @@ class EditObject extends Component {
   	}
 
   	var validLocations = Locations.find({},{fields:{_id:1, title:1}}).fetch();
-  	var lockTypes = [ { _id: 'open-bikelocker', title: 'open-bikelocker'},
-  	                  { _id: 'open-keylocker', title: 'open-keylocker'},
-  	                  { _id: 'axa-elock', title: 'AXA e-lock'},
-                      { _id: 'skopei-v1', title: 'Skopei e-lock'},
-                      { _id: 'goabout-v1', title: 'GoAbout e-lock'},
-                      { _id: 'open-elock', title: 'CommonBike e-lock'},
+  	var lockTypes = [ { _id: 'concox-bl10', title: 'Concox BL10 e-lock'},
+                      { _id: 'open-elock', title: 'Open e-lock'},
                     	{ _id: 'plainkey', title: 'sleutel'}];
   	var timeUnits = [ { _id: 'day', title: 'dag'},
   	                  { _id: 'halfday', title: 'dagdeel'},
@@ -340,12 +183,6 @@ class EditObject extends Component {
           controltype: 'text-readonly',
           label: 'timestamp'
   		},
-      {
-          fieldname: 'state.userDescription',
-          fieldvalue: this.props.object.state.userDescription,
-          controltype: 'text-readonly',
-          label: 'beschrijving gebruiker'
-  		},
   		{
           controltype: 'header',
           label: 'Slot'
@@ -360,8 +197,6 @@ class EditObject extends Component {
   	]
 
   	fields = fields.concat(this.getLockFields());
-
-    fields = fields.concat(this.getRentalFields());
 
     fields = fields.concat(this.getCoinFields());
 

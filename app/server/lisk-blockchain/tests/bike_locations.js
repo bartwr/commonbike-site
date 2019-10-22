@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 
 const CreateBikeTransaction = require('../transactions/create-bike');
 
-// const account = JSON.parse(fs.readFileSync('./accounts/'+process.argv[2]+'.json')); 
+// const account = JSON.parse(fs.readFileSync('./accounts/'+process.argv[2]+'.json'));
 const url = `http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}/api/transactions?type=${CreateBikeTransaction.TYPE}`;
 // console.log(url);
 

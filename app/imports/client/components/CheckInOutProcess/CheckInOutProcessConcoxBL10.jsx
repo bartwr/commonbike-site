@@ -7,7 +7,7 @@ import { StyleProvider } from '/imports/client/StyleProvider.js'
 // Import components
 import Button from '/imports/client/components/Button.jsx';
 
-class CheckInOutProcessAxaELock extends CheckInOutProcessBase {
+class CheckInOutProcessConcoxBL10 extends CheckInOutProcessBase {
   constructor(props) {
     super(props);
   }
@@ -66,16 +66,16 @@ class CheckInOutProcessAxaELock extends CheckInOutProcessBase {
 
 var s = StyleProvider.getInstance().checkInOutProcess;
 
-CheckInOutProcessAxaELock.propTypes = {
+CheckInOutProcessConcoxBL10.propTypes = {
   locationId: PropTypes.string,
   object: PropTypes.object,
   isProvider: PropTypes.any
 };
 
-CheckInOutProcessAxaELock.defaultProps = {
+CheckInOutProcessConcoxBL10.defaultProps = {
   locationId: null,
   object: null,
   isProvider: false
 }
 
-export default CheckInOutProcessAxaELock;
+export default CheckInOutProcessConcoxBL10;

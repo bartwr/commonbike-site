@@ -38,10 +38,6 @@ class Join extends Component {
         </p>
 
         <p>
-          On <a href="http://slack.common.bike" target="_blank">Slack</a>, Trello (ask on Slack) and <a href="https://github.com/CommonBike/commonbike-site" target="_blank">GitHub</a> you can see all people involved. Slack is for a broad community that want to stay up to date. Trello is for people who'd like to be involved in the 'business development' project. Github is for coders, designers and testers.
-        </p>
-
-        <p>
           <b>Owners of things</b>
         </p>
 

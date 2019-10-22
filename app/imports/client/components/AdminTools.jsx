@@ -14,18 +14,6 @@ class AdminTools extends Component {
     super(props);
   }
 
-  showAllTransactions() {
-    RedirectTo('/admin/transactions');
-  }
-
-  clearTransactions() {
-    if( !confirm('Are you sure you want to erase the complete transaction history? This can not be undone.')) {
-      return;
-    }
-
-    Meteor.call('transactions.clearAll');
-  }
-
   cleanTestUsers() {
     if( !confirm('Are you sure you want to remove all testusers? This can not be undone.')) {
       return;
@@ -47,7 +35,7 @@ class AdminTools extends Component {
   }
 
   insertTestUsers() {
-    if( !confirm('Are you sure you waqnt to add testusers? Never do this on a productionserver.')) {
+    if( !confirm('Are you sure you want to add testusers? Never do this on a production server.')) {
       return;
     }
 
@@ -57,11 +45,11 @@ class AdminTools extends Component {
   }
 
   insertTestData() {
-    if( !confirm('Are you sure you want to add testdata? Never do this on a productionserver.')) {
+    if( !confirm('Are you sure you want to add testdata? Never do this on a production server.')) {
       return;
     }
 
-    Meteor.call('testdata.checkTestLocations');
+    Meteor.call('testdata.checkTestObjects');
 
     alert('The testdata has been added!');
   }
@@ -85,12 +73,6 @@ class AdminTools extends Component {
   render() {
     return (
       <div style={s.base}>
-        <div style={s.centerbox}>
-          <RaisedButton onClick={this.showAllTransactions.bind(this)}>SHOW ALL TRANSACTIONS</RaisedButton>
-
-          <RaisedButton onClick={this.clearTransactions.bind(this)}>CLEANUP ALL TRANSACTIONS</RaisedButton>
-        </div>
-
         <div style={s.centerbox}>
 
           <RaisedButton onClick={this.cleanTestUsers.bind(this)}>REMOVE TESTUSERS</RaisedButton>

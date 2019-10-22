@@ -83,11 +83,7 @@ lockerAPI = {
         username: '',
       }
 
-      if(object.state.rentalInfo&&object.state.rentalInfo.cardhash) {
-        objectinfo.cardhash = object.state.rentalInfo.cardhash;
-      } else {
-        objectinfo.cardhash = '';
-      }
+      objectinfo.cardhash = '';
 
       var hasData   = lockerAPI.utility.hasData( connection.data );
       if(!hasData) {
@@ -129,9 +125,7 @@ lockerAPI = {
             'state.state': action,
             'state.userId': userId,
             'state.userDescription': description,
-            'state.timestamp': timestamp,
-            'state.rentalInfo.cardhash': cardhash,
-            'state.rentalInfo.pincode': pincode
+            'state.timestamp': timestamp
         }
 
         switch(action) {
@@ -143,12 +137,12 @@ lockerAPI = {
 
             var object = Objects.findOne(connection.owner, {title:1, 'state.state':1 });
             var description = getStateChangeNeatDescription(object.title, newState);
-            Meteor.call('transactions.changeStateForObject', newState, description, object._id, null);
+            console.log(description)
 
             objectinfo.state = object.state.state;
             objectinfo.timestamp = object.state.timestamp;
             objectinfo.username = '';
-            objectinfo.cardhash = object.state.rentalInfo.cardhash;
+            objectinfo.cardhash = '';
 
             lockerAPI.utility.response( response, 200, objectinfo );
 
@@ -162,13 +156,12 @@ lockerAPI = {
                 'state.userId': null,
                 'state.state': newState,
                 'state.timestamp': timestamp,
-                'state.userDescription': '',
-                'state.rentalInfo': {} }
+                'state.userDescription': '' }
             });
 
             var object = Objects.findOne(connection.owner, {title:1, 'state.state':1 });
             var description = getStateChangeNeatDescription(object.title, newState);
-            Meteor.call('transactions.changeStateForObject', newState, description, object._id, null);
+            console.log(description)
 
             objectinfo.state = object.state.state;
             objectinfo.timestamp = object.state.timestamp;

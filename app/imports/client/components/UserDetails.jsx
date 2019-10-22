@@ -46,13 +46,13 @@ class UserDetails extends Component {
     var name = '';
     var isActive = false;
     var picture = '';
-    var canCreateLocations = false;
+    var cancreateobjects = false;
     var publickey = '';
     if (user.profile) {
         name = user.profile.name||'anoniem'
         isActive = user.profile.active|| false
         picture = user.profile.avatar|| ''
-        canCreateLocations = user.profile.cancreatelocations|| false
+        cancreateobjects = user.profile.cancreateobjects|| false
         publickey = user.profile.wallet && user.profile.wallet.address|| ''
         if(publickey!='') publickey=publickey.substring(0,10)+'.....'
     }
@@ -85,7 +85,7 @@ class UserDetails extends Component {
                 <li style={s.listitem}>{publickey}</li>
                 <li style={s.listitem}>Admin: { this.getToggleButton('currentuser.setAdmin', user._id, isAdmin, readonly, 'Are you sure you want to give this user admin rights?') }</li>
                 <li style={s.listitem}>Active: { this.getToggleButton('currentuser.setActive', user._id, isActive, readonly) }</li>
-                <li style={s.listitem}>Add locations: { this.getToggleButton('currentuser.canCreateLocations', user._id, canCreateLocations, false) }</li>
+                <li style={s.listitem}>Add locations: { this.getToggleButton('currentuser.cancreateobjects', user._id, cancreateobjects, false) }</li>
               </ul>
             }
           </div>

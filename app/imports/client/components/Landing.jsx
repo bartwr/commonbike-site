@@ -32,7 +32,7 @@ class Landing extends Component {
             <a style={s.smallText} onClick={() => RedirectTo('/join')}>ehm, how does it work?</a>
           </p>
 
-    			<RaisedButton onClick={RedirectTo.bind(this, '/locations')}>
+    			<RaisedButton onClick={RedirectTo.bind(this, '/')}>
     				Where can I hire a bike?
     			</RaisedButton>
         </div>
