@@ -1,12 +1,12 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 
-class CommonBikeLogo extends Component {
+class LiskBikeLogo extends Component {
 
   render() {
     return (
-      <div style={Object.assign({}, s.base, this.props.style, this.props.type == 'common' && {backgroundImage: 'url("/files/PageHeader/common-white.svg")'})}>
-        CommonBike
+      <div style={Object.assign({}, s.base, this.props.style, {backgroundImage: 'url("/files/PageHeader/lisk-white.svg")'})}>
+        Lisk.Bike
       </div>
     );
   }
@@ -18,7 +18,7 @@ var s = {
     lineHeight: 'default',
     color: '#fff',
     fontWeight: 'bold',
-    backgroundImage: 'url("/files/PageHeader/commonbike-white.svg")',
+    backgroundImage: 'url("/files/PageHeader/lisk-white.svg")',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
@@ -26,4 +26,4 @@ var s = {
   },
 }
 
-export default CommonBikeLogo;
+export default LiskBikeLogo;

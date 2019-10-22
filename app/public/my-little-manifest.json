@@ -1,7 +1,7 @@
 {
-  "name": "CommonBike",
-  "shortname": "CommonBike",
-  "description": "Want to have a bike - everywhere?",
+  "name": "Lisk.Bike",
+  "shortname": "Lisk.Bike",
+  "description": "Bikes on the blockchain",
   "icons": [
     {
       "src": "favicon/favicon.png",

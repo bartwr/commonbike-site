@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 // Import components
 import PageHeader from '/imports/client/components/PageHeader.jsx'
-import FeedbackWidget from '/imports/client/components/FeedbackWidget.jsx';
 
 // UserApp component - represents the whole app
 export default class UserApp extends Component {
@@ -13,13 +12,9 @@ export default class UserApp extends Component {
       <div style={Object.assign({}, s.base, {background: this.props.background})}>
         {this.props.showPageHeader ? <PageHeader /> : null}
         {this.props.content}
-        <FeedbackWidget />
       </div>
     );
   }
-  
-
-
 }
 
 UserApp.propTypes = {

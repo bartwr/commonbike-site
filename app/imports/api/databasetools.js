@@ -14,7 +14,7 @@ if (Meteor.isServer) {
 
 			var date = new Date();
 
-	    return 'commonbike_' + date.getFullYear() +
+	    return 'liskbike_' + date.getFullYear() +
 	           pad(date.getMonth() + 1) +
 	           pad(date.getDate()) + '_' +
 	           pad(date.getHours()) +

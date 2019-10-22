@@ -73,7 +73,7 @@ export const BackupSchema = new SimpleSchema({
   'location': {
     type: String,
     label: "Backup Location",
-    defaultValue: '~/backup-commonbike'
+    defaultValue: '~/backup-liskbike'
   }
 });
 
@@ -240,19 +240,6 @@ if (Meteor.isServer) {
 		    var description = 'Standaard instellingen aangemaakt';
 				console.log(description);
 	    } else {
-				if("slack" in settings) {
-			    Settings.update(settings._id, {$unset:{ slack: "" }});
-				}
-				if("veiligstallen" in settings) {
-			    Settings.update(settings._id, {$unset:{ veiligstallen: "" }});
-				}
-				if("Skopei" in settings) {
-			    Settings.update(settings._id, {$unset:{ Skopei: "" }});
-				}
-				if("goabout" in settings) {
-			    Settings.update(settings._id, {$unset:{ goabout: "" }});
-				}
-
 				if("developmentOptions" in settings == false) {
 					settings.developmentOptions = {
 						showTestButtons: false,

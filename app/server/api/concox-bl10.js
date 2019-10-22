@@ -46,7 +46,6 @@ const util = require('./concox-bl10-util')
 const crc16 = require('crc16-itu')
 const dateFormat = require('dateformat');
 const fs = require('fs');
-var locks = {};
 
 // createSendCommand()
 //
@@ -113,13 +112,6 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
     // TODO: decode timezone info
     let imei = infocontent.substr(0,8*2);
     socket.lockid = imei;
-
-    if(!(socket.lockid in locks)) {
-      console.log('create new lock with ID %s', socket.lockid);
-      locks[socket.lockid]={
-        lockid: socket.lockid
-      }
-    }
   } else {
     if(!"lockid" in socket) {
       console.warn("received command on unnamed socket. Ignoring command");
@@ -190,10 +182,12 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
       
       if(theLock!=undefined) {
         Objects.update(theLock._id, {$set: {
-            'state.state': hbtinfo.locked==false? 'available': 'inuse',
-            'lock.battery': hbtinfo.voltage,
-            'lock.charging': hbtinfo.charging==true}
-          });
+          'state.state': hbtinfo.locked==false? 'available': 'inuse',
+          'lock.battery': hbtinfo.voltage,
+          'lock.charging': hbtinfo.charging==true}
+        });
+        
+        // write lock state to blockchain if changed
       }
   
       // console.log("heartbeat from %s (locked: %s / charging: %s / gpspositioning: %s / voltage: %s / gsm signal: %s)", socket.lockid, hbtinfo.locked, hbtinfo.charging, hbtinfo.gpspositioning, hbtinfo.voltage, hbtinfo.gsmstrength);
@@ -337,27 +331,4 @@ export const processSinglePacket = (socket, buf) => {
       if (err) throw err;
     });
   }
-}
-
-const dumpStatus = () => {
-  let output = '';
-  if(locks.length==0) return output;
-  
-  // get all keys from all locks in tmplock
-  let tmplock = {};
-  Object.keys(locks).forEach((key)=>{tmplocks = Object.assign(tmplock, locks[key])});
-  
-  let lines = Object.keys(tmplock).map((key)=>{
-      let line = new String(30,' ').substr(0, 30 - key.length) + key
-      Object.keys(locks).forEach((lockkey)=>{
-        // console.log("%s - %s: %s", lockkey, key, locks[lockkey][key]);
-        let value = (locks[lockkey][key]||'').toString();
-        line+='     ' + new String(25,' ').substr(0, 25 - value.length) + value;
-      })
-
-      console.log(line);
-      return line;
-  })
-  
-  return lines.join('\n');
 }

@@ -10,9 +10,6 @@ import Settings from '/imports/api/settings.js';
 import BikeCoin from '/imports/api/bikecoin.js'
 
 import UserApp from '/imports/client/components/UserApp.jsx'
-import Landing from '/imports/client/components/Landing.jsx'
-import Join from '/imports/client/components/Join.jsx'
-import About from '/imports/client/components/About.jsx'
 import ContentPage from '/imports/client/components/ContentPage.jsx'
 import Login from '/imports/client/components/Login.jsx'
 import CustomPage from '/imports/client/components/CustomPage.jsx'
@@ -23,15 +20,11 @@ import LocationsOverview from '/imports/client/containers/LocationsOverview.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
 import ObjectList from '/imports/client/containers/ObjectList.jsx'
 import ObjectDetails from '/imports/client/containers/ObjectDetails.jsx'
-import CommonBikeUI from '/imports/client/commonbike-ui.jsx'
 import AdminTools from '/imports/client/components/AdminTools.jsx'
 import LogList from '/imports/client/containers/LogList.jsx'
 import PaymentOrder from '/imports/client/components/PaymentOrder.jsx'
 import NoMatch from '/imports/client/components/NoMatch.jsx'
 
-const UserAppLanding = () => (<UserApp showPageHeader={false} content={<Landing/>} background="#00d0a2"  />)
-const UserAppAbout = () => (<UserApp content={<ContentPage><About /></ContentPage>} />)
-const UserAppJoin = () => (<UserApp content={<ContentPage><Join /></ContentPage>} />)
 const UserAppLogin = ({match}) => {
   // TEMPORARY because I can't find the way to get query params via react-router:
   var redirectTo = window.location.search.split('=')[1];
@@ -128,8 +121,6 @@ class AppRoutes extends React.Component {
     return (
      <Switch>
       <Route exact path='/' component={UserAppLocationsOverview}/>
-      <Route path='/about' component={UserAppAbout}/>
-      <Route path='/join' component={UserAppJoin}/>
 
       <Route path='/login' component={UserAppLogin}/>
       <Route path='/objects' component={UserAppObjectList}/>
@@ -138,7 +129,6 @@ class AppRoutes extends React.Component {
 
       <RouteWhenLoggedIn path='/profile' component={UserAppProfile}/>
       <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppCustomPageObjectDetailsCheckin}/>
-      <RouteWhenLoggedIn path='/commonbike-ui' component={CommonBikeUI}/>
 
       <RouteWhenLoggedIn path='/payment/:internalPaymentId' component={PaymentOrder}/>
 

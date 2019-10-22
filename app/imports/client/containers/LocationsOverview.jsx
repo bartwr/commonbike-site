@@ -126,7 +126,6 @@ export default createContainer((props) => {
   }
   
   let objects = Objects.find({}, { sort: {title: 1} }).fetch();
-  console.log("Locationsoverview - objects: %o", objects);
 
   return {
     currentUser: Meteor.user(),

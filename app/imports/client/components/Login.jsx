@@ -3,22 +3,12 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor'
 import { createContainer } from 'meteor/react-meteor-data';
 import { Accounts } from 'meteor/accounts-base';
-import AccountsUIWrapper from '/imports/client/containers/AccountsUIWrapper.jsx';
 import { RedirectTo } from '/client/main'
 
 // Import templates
-import SquareButton from '/imports/client/components/SquareButton.jsx';
 import LoginForm from '/imports/client/containers/LoginForm.jsx';
 
 class Login extends Component {
-
-  /**
-   *  APP DASHBOARDS
-   *
-   * Facebook: https://developers.facebook.com/apps/328645994158360/settings/
-   * Google: https://console.developers.google.com/apis/credentials?highlightClient=347856876516-if94srm24tciclpid7keqibf02p4dctn.apps.googleusercontent.com&project=commonbike-149108
-   * GitHub: https://github.com/settings/applications/437650
-   */
 
   loginCallback(err) {
     if(err) {
@@ -28,11 +18,6 @@ class Login extends Component {
   }
 
   logout() { Meteor.logout() }
-
-  loginWithGoogle() { Meteor.loginWithGoogle({ requestPermissions: ['email'] }, this.loginCallback.bind(this)) }
-  loginWithGithub() { Meteor.loginWithGithub({ requestPermissions: ['email'] }), this.loginCallback.bind(this) }
-  loginWithTwitter() { Meteor.loginWithTwitter({}, this.loginCallback.bind(this)) }
-  loginWithFacebook() { Meteor.loginWithFacebook({ requestPermissions: ['public_profile'] }, this.loginCallback.bind(this)) }
 
   renderIntro() {
     return (
@@ -45,16 +30,9 @@ class Login extends Component {
           </p>
 
           <p>
-            Log in with your favorite account
+            Log in with a lisk wallet
           </p>
 
-        </div>
-
-        <div style={s.socialButtonsWrapper}>
-          <SquareButton src="google" size="64" title="Login with Google" onClick={this.loginWithGoogle.bind(this)} style={s.google} />
-          <SquareButton src="github" size="64" title="Login with Github" onClick={this.loginWithGithub.bind(this)} style={s.github} />
-          <SquareButton src="twitter" size="64" title="Login with Twitter" onClick={this.loginWithTwitter.bind(this)} style={s.twitter} />
-          <SquareButton src="facebook" size="64" title="Login with Facebook" onClick={this.loginWithFacebook.bind(this)} style={s.facebook} />
         </div>
 
         <p>

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 
 // Import components
-import CommonBikeLogo from '/imports/client/components/CommonBikeLogo.jsx'
+import LiskBikeLogo from '/imports/client/components/LiskBikeLogo.jsx'
 import RaisedButton from '/imports/client/components/RaisedButton.jsx'
 import PageHeader from '/imports/client/components/PageHeader.jsx'
 

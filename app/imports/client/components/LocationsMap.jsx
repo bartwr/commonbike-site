@@ -208,9 +208,7 @@ class ObjectsMapComponent extends Component {
     }
 
     return (
-      <div id='mapid' style={Object.assign({}, s.base, {width: this.props.width, height: this.props.height, maxWidth: '100%'})}>
-        { Meteor.userId() ? <a style={s.avatar} onClick={() => RedirectTo('/profile')}><Avatar /></a> : <a style={s.avatar} onClick={() => RedirectTo('/login')}><Avatar /></a> }
-      </div>
+      <div id='mapid' style={Object.assign({}, s.base, {width: this.props.width, height: this.props.height, maxWidth: '100%'})} />
     );
   }
 }

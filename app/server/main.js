@@ -130,6 +130,7 @@ var server = net.createServer(Meteor.bindEnvironment(function(socket) {
     // socket.write(createSendCommand('GPRSSET#'))
     // Server:1,app.lisk.bike,9020,0
     // socket.write(createSendCommand('SERVER,1,app.lisk.bike/api/liskbike,80,0#'))
+		// socket.write(createSendCommand('UNLOCK#'))
     resetsent=true;
   }
 
@@ -140,6 +141,15 @@ var server = net.createServer(Meteor.bindEnvironment(function(socket) {
     console.log("%o",data);
   })
 }));
+
+// ---------------------------------------------------
+// for now the bl10 server is parked in the meteor app
+// so that I can use the mongodb for state storage
+//
+// later on when things run through the blockchain
+// it can be moved to a separate process. This process
+// can either run standalone or be controlled by using pm2
+// commands issued by the meteor backend.
 
 let port = 3005;                // listening port
 let serverip = '0.0.0.0'; // external IP address for this server

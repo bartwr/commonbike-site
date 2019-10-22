@@ -62,32 +62,6 @@ class Map extends Component {
       accessToken: this.props.accessToken
     }).addTo(myMap)
 
-    const useCustomMarkerIcon = false
-    let   marker
-
-    if (useCustomMarkerIcon) {
-      const myIcon = L.icon({
-        iconUrl: '/files/LocationDetails/marker.svg',
-        iconSize: [32, 32],
-        iconAnchor: [15, 25],
-        popupAnchor: [8, -16],
-        // iconUrl: 'my-icon.png',
-        // iconRetinaUrl: 'my-icon@2x.png',
-        // iconSize: [38, 95],
-        // iconAnchor: [22, 94],
-        // popupAnchor: [-3, -76],
-        // shadowUrl: 'my-icon-shadow.png',
-        // shadowRetinaUrl: 'my-icon-shadow@2x.png',
-        // shadowSize: [68, 95],
-        // shadowAnchor: [22, 94]
-      })
-      marker = L.marker(item.lat_lng, {icon: myIcon}).addTo(myMap)
-    } else { // !useCustomMarkerIcon
-      marker = L.marker(item.lat_lng).addTo(myMap)
-    }
-
-    marker.bindPopup(`<b>${item.title}</b><br>${item.address}`).openPopup()
-
     myMarker = L.circleMarker(myLatLng).addTo(myMap)
     myMarker.bindPopup(`<b>You are here</b>`)
 

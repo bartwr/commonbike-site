@@ -6,8 +6,7 @@ import ReactDOM from 'react-dom';
 import { createContainer } from 'meteor/react-meteor-data';
 
 // Import components
-import CommonBikeLogo from '/imports/client/components/CommonBikeLogo.jsx'
-import CommonBikeLogoDevelopment from '/imports/client/components/CommonBikeLogoDevelopment.jsx'
+import LiskBikeLogo from '/imports/client/components/LiskBikeLogo.jsx'
 import BackButton from '/imports/client/components/BackButton.jsx'
 import RaisedButton from '/imports/client/components/RaisedButton.jsx'
 import Avatar from '/imports/client/components/Avatar.jsx'
@@ -23,20 +22,12 @@ class PageHeader extends Component {
     RedirectTo('/profile');
   }
 
-  getLogo() {
-    if(Meteor.isProduction) {
-      return (<CommonBikeLogo type="common" style={s.logo} />);
-    } else {
-      return (<CommonBikeLogoDevelopment type="common" style={s.logo} />);
-    }
-  }
-
   render() {
     return (
       <div style={s.base}>
         <div style={s.flex}>
           <BackButton />
-          <a onClick={() => RedirectTo('/')} style={{display: 'flex'}}>{this.getLogo()}</a>
+          <a onClick={() => RedirectTo('/')} style={{display: 'flex'}}><LiskBikeLogo style={s.logo} /></a>
           { Meteor.userId() ? <a onClick={this.gotoProfile.bind(this)}><Avatar /></a> : <div /> }
         </div>
         {this.props.children}

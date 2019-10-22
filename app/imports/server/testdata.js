@@ -24,8 +24,7 @@ const cTestBikeImage = '/files/Testdata/liskbike.png';
 var testLocations = [
   {title:"Lisk Bikes @ Lisk Center Utrecht",
    address: "Jaarbeursplein, Utrecht",
-   lat_lng: [ 52.088304, 5.107243],
-   imageUrl:'/files/Testdata/liskcentr.png'
+   lat_lng: [ 52.088304, 5.107243]
   },
   {title:"Lisk Bikes @ Lisk HQ ",
    address: "Eichhornstraße 3, 10785 Berlin, Germany",
