@@ -52,7 +52,7 @@ var locks = {};
 //
 // For documentation, see:
 // 'BL10 GPS tracker communication protocolV1.0.8  20180408.pdf'
-const createSendCommand = (command) => {
+export const createSendCommand = (command) => {
   let messageCount = 1;
 
   const startBit = new Buffer([0x78, 0x78]);
@@ -127,15 +127,18 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
     }
   }
   
-  let thelock = locks[socket.lockid];
+  let theLock = Objects.findOne({'lock.locktype': 'concox-bl10', 'lock.lockid': socket.lockid});
+  if(theLock!=undefined) {
+    console.log('found the lock! HURRAY HURRAY HURRAY!');
+  }
   
-  thelock.lastts = dateFormat(new Date(), 'yymmddHHMMss', true);
-  thelock.lastserial =  serialNo;
+  let lastts = dateFormat(new Date(), 'yymmddHHMMss', true);
+  let lastserial =  serialNo;
   
   switch(cmd) {
     case '01':  // login packet
-      thelock.modelcode =  infocontent.substr(8*2,2*2);
-      thelock.timezone =  infocontent.substr(10*2,2*2); // TODO: decode timezone info
+      let modelcode =  infocontent.substr(8*2,2*2);
+      let timezone =  infocontent.substr(10*2,2*2); // TODO: decode timezone info
       
       // console.log("login from %s (model: %s / tz: %s)", cmdinfo.imei, cmdinfo.modelcode, cmdinfo.timezone);
       
@@ -156,7 +159,7 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         length: infocontent.substr(0*2,1),
         content: new Buffer(infocontent.substr(5*2), 'hex'),
       }
-      // console.log("command response from %s (length: %s) [%s]", socket.lockid, info.length, info.content);
+      console.log("command response from %s (length: %s) [%s]", socket.lockid, info.length, info.content);
       // console.log("source string: %s", new Buffer(infocontent, 'hex'));
       break;
     case '23': // heartbeat package
@@ -174,13 +177,23 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         case '04': gsmstrength = 'strong'; break;
       }
       
-      thelock.hbtinfo = {
+      let hbtinfo = {
         lastdt: dateFormat(new Date(), 'yymmddHHMMss', true),
         locked: terminalinfo.substr(7,1)=='1',
         charging: terminalinfo.substr(5,1)=='1',
         gpspositioning: terminalinfo.substr(1,1)=='1',
         voltage: util.hex2int(infocontent.substr(1*2,2*2))/100,
         gsmstrength: gsmstrength
+      }
+      
+      console.log("%s sent hbtinfo %o", theLock._id, hbtinfo)
+      
+      if(theLock!=undefined) {
+        Objects.update(theLock._id, {$set: {
+            'state.state': hbtinfo.locked==false? 'available': 'inuse',
+            'lock.battery': hbtinfo.voltage,
+            'lock.charging': hbtinfo.charging==true}
+          });
       }
   
       // console.log("heartbeat from %s (locked: %s / charging: %s / gpspositioning: %s / voltage: %s / gsm signal: %s)", socket.lockid, hbtinfo.locked, hbtinfo.charging, hbtinfo.gpspositioning, hbtinfo.voltage, hbtinfo.gsmstrength);
@@ -215,6 +228,12 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         // } else if(cmd=='33') {
         //
         // }
+        if(gpsinfo.infolength>0)
+        if(theLock!=undefined&&gpsinfo.infolength>0) {
+          Objects.update(theLock._id, {$set: {
+            'state.lat_lng': [gpsinfo.latitude, gpsinfo.longitude] }
+          });
+        }
 
         console.log("location from %s (%s)", socket.lockid, JSON.stringify(gpsinfo));
       } else {
@@ -286,7 +305,7 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
   }
 }
 
-const processSinglePacket = (socket, buf) => {
+export const processSinglePacket = (socket, buf) => {
   
   let cmd = '';
   let length = 0;
@@ -342,290 +361,3 @@ const dumpStatus = () => {
   
   return lines.join('\n');
 }
-
-// processes incoming commands from BL10 lock
-concoxBL10API = {
-  authentication: function( apiKey ) {
-    var getObject = ApiKeys.findOne( { "key": apiKey, "type": "object" }, { fields: { "ownerid": 1 } } );
-    if ( getObject ) {
-      return getObject.ownerid;
-    } else {
-      return false;
-    }
-  },
-  connection: function( request ) {
-    var getRequestContents = concoxBL10API.utility.getRequestContents( request ),
-        apiKey             = getRequestContents.api_key,
-        validObject        = concoxBL10API.authentication( apiKey );
-
-    if ( validObject ) {
-      delete getRequestContents.api_key;
-      return { owner: validObject, data: getRequestContents };
-    } else {
-      return { error: 401, message: "Invalid API key." };
-    }
-  },
-  handleRequest: function( request, response, resource, method ) {
-    console.log('incoming request on the locker API!');
-    
-    var connection = concoxBL10API.connection( request );
-    if ( !connection.error ) {
-      concoxBL10API.methods[ resource ]( response, connection );
-    } else {
-      concoxBL10API.utility.response( response, 401, connection );
-    }
-  },
-  methods: {
-    object: function( response, connection ) {
-      var object = Objects.findOne({_id: connection.owner});
-      if(!object) {
-        Meteor.call('log.write', "request for unknown locker", connection.owner)
-        concoxBL10API.utility.response( response, 404, { error: 404, message: "Unknown locker" } );
-        return;
-      }
-
-      objectinfo = {
-        state: object.state.state,
-        timestamp: object.state.timestamp,
-        username: '',
-      }
-
-      var hasData   = concoxBL10API.utility.hasData( connection.data );
-      if(!hasData) {
-        // send status
-        concoxBL10API.utility.response( response, 200, objectinfo );
-        return;
-      }
-
-      var validData = concoxBL10API.utility.validate( connection.data, { "action": String, "cardhash": String, "pincode": String, "timestamp": String });
-      if (!validData) {
-          Meteor.call('log.write', "invalid action request from locker ", connection.data)
-          concoxBL10API.utility.response( response, 403, { error: 403, message: "POST calls must have an action, cardhash and pincode passed in the request body in the correct format." } );
-      } else {
-        Meteor.call('log.write', "action request from locker ", connection.data)
-
-        var action = connection.data.action;
-        var cardhash = connection.data.cardhash;
-        var pincode = connection.data.pincode;
-        // var timestamp = connection.data.timestamp; -> Later convert from locker date/time
-        var timestamp =  new Date().valueOf();
-
-        var userId = object.state.userId;
-        var description = object.state.userDescription;
-        if(cardhash=="00000000") {
-          // keep existing userid / description
-        } else {
-          // card used to rent the locker: find if a user exists with the given cardhash as a card
-          if(false) {
-            // statedata.state.userId = -> id van gevonden gebruiker
-            userId="";
-            description="Lokaal gehuurd"
-          } else {
-            userId="";
-            description="Lokaal gehuurd"
-          }
-        }
-
-        var statedata = {
-            'state.state': action,
-            'state.userId': userId,
-            'state.userDescription': description,
-            'state.timestamp': timestamp
-        }
-
-        switch(action) {
-          case 'inuse':
-            Meteor.call('log.write', "API: locker " + connection.owner + " state set to inuse")
-            var newState = action;
-            var timestamp = new Date().valueOf();
-            Objects.update({_id: object._id}, { $set: statedata });
-
-            var object = Objects.findOne(connection.owner, {title:1, 'state.state':1 });
-            var description = getStateChangeNeatDescription(object.title, newState);
-            console.log(description)
-
-            objectinfo.state = object.state.state;
-            objectinfo.timestamp = object.state.timestamp;
-            objectinfo.username = '';
-            objectinfo.cardhash = '';
-
-            concoxBL10API.utility.response( response, 200, objectinfo );
-
-            break;
-          case 'outoforder':
-          case 'available':
-            Meteor.call('log.write', "API: locker " + connection.owner + " state set to " + action);
-            var newState = action;
-            var timestamp = new Date().valueOf();
-            Objects.update({_id: object._id}, { $set: {
-                'state.userId': null,
-                'state.state': newState,
-                'state.timestamp': timestamp
-               }
-            });
-
-            var object = Objects.findOne(connection.owner, {title:1, 'state.state':1 });
-            var description = getStateChangeNeatDescription(object.title, newState);
-            console.log(description)
-
-            objectinfo.state = object.state.state;
-            objectinfo.timestamp = object.state.timestamp;
-            objectinfo.username = '';
-            objectinfo.cardhash = '';
-
-            concoxBL10API.utility.response( response, 200, objectinfo );
-            break;
-          default:
-            Meteor.call('log.write', "API: locker " + connection.owner + " unable to execute " + action);
-            concoxBL10API.utility.response( response, 403, { error: 403, message: "Unable to execute " + action + ". locker is " + object.state.state } );
-            break;
-        }
-      }
-    }
-  },
-  resources: {},
-  utility: {
-    getRequestContents: function( request ) {
-      switch( request.method ) {
-        case "GET":
-          return request.query;
-        case "POST":
-        case "PUT":
-        // case "DELETE":
-          return request.body;
-        }
-    },
-    hasData: function( data ) {
-      return Object.keys( data ).length > 0 ? true : false;
-    },
-    response: function( response, statusCode, data ) {
-      response.setHeader( 'Content-Type', 'application/json' );
-      response.statusCode = statusCode;
-      var json_data = JSON.stringify(data);
-      response.end(json_data);
-      // response.end( '{title:\'marc\'}' ); // , state: \'available\'
-    },
-    validate: function( data, pattern ) {
-      return Match.test( data, pattern );
-    }
-  },
-  proxyRequest: function(forwardToURL, req, res) {
-    
-    forwardToURL += req.url.substr(1);
-    // Thanks to https://gist.github.com/cmawhorter/a527a2350d5982559bb6 for this code!
-    console.log('==> Making req for ' + forwardToURL + '\n');
-
-    req.pause();
-
-    var options = url.parse(forwardToURL);
-    options.headers = req.headers;
-    options.method = req.method;
-    options.agent = false;
-
-    options.headers['host'] = options.host;
-
-    var connector = (options.protocol == 'https:' ? https : http).request(options, function(serverResponse) {
-      console.log('<== Received res for', serverResponse.statusCode, forwardToURL);
-      console.log('\t-> Request Headers: ', options);
-      console.log(' ');
-      console.log('\t-> Response Headers: ', serverResponse.headers);
-
-      serverResponse.pause();
-
-      serverResponse.headers['access-control-allow-origin'] = '*';
-
-      switch (serverResponse.statusCode) {
-        // pass through.  we're not too smart here...
-        case 200: case 201: case 202: case 203: case 204: case 205: case 206:
-        case 304:
-        case 400: case 401: case 402: case 403: case 404: case 405:
-        case 406: case 407: case 408: case 409: case 410: case 411:
-        case 412: case 413: case 414: case 415: case 416: case 417: case 418:
-          res.writeHeader(serverResponse.statusCode, serverResponse.headers);
-          serverResponse.pipe(res, {end:true});
-          serverResponse.resume();
-        break;
-
-        // fix host and pass through.
-        case 301:
-        case 302:
-        case 303:
-          serverResponse.statusCode = 303;
-          serverResponse.headers['location'] = 'http://localhost:'+PORT+'/'+serverResponse.headers['location'];
-          console.log('\t-> Redirecting to ', serverResponse.headers['location']);
-          res.writeHeader(serverResponse.statusCode, serverResponse.headers);
-          serverResponse.pipe(res, {end:true});
-          serverResponse.resume();
-        break;
-
-        // error everything else
-        default:
-          var stringifiedHeaders = JSON.stringify(serverResponse.headers, null, 4);
-          serverResponse.resume();
-          res.writeHeader(500, {
-            'content-type': 'text/plain'
-          });
-          res.end(process.argv.join(' ') + ':\n\nError ' + serverResponse.statusCode + '\n' + stringifiedHeaders);
-        break;
-      }
-
-      console.log('\n\n');
-    });
-    req.pipe(connector, {end:true});
-    req.resume();
-  }
-};
-
-//
-// const paymentAPI = {
-//   handleRequest: function(req, res) {
-//     res.statusCode = 200 // res.writeHead(200, { 'Content-Type': 'text/plain' })
-//     res.end()
-//
-//     const externalPaymentId = req.body.id
-//     check(externalPaymentId, String)
-//     let paymentOrder = Payments.findOne({externalPaymentId: externalPaymentId})
-//     if (!paymentOrder) {
-//       console.error('Unknown externalPaymentId', externalPaymentId)
-//       return
-//     }
-//
-//     // console.log('FOUND PAYMENTORDER', paymentOrder)
-//     // console.log('visited payment webhook: UpdatePaymentOrder', externalPaymentId)
-//     UpdatePaymentOrder(paymentOrder)
-//   }
-// }
-
-//
-
-var bodyParser = require("body-parser");
-var url = require('url')
-var http = require('http')
-var https = require('https');
-//    .use(bodyParser.json())
-
-WebApp.connectHandlers
-    .use(bodyParser.urlencoded({ extended: true }))
-    .use(bodyParser.json())
-    .use('/api/liskbike', function (req, res) {
-      var settings = getSettingsServerSide();
-      
-      if(settings.developmentOptions.forwardRequests==false) {
-        console.log("incoming lisk.bike request %o", req);
-
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        if (req.method === 'OPTIONS') {
-         res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-         res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS') // GET, PUT, DELETE -> not used / accepted
-         res.end('Set OPTIONS.');
-        } else {
-          concoxBL10API.handleRequest( req, res, 'object' );
-        }
-      } else {
-        console.log('forwarding request to ')
-        concoxBL10API.proxyRequest(settings.developmentOptions.forwardRequestsURL + '/api/liskbike/', req, res);
-      }
-    })
-    // .use('/api/payment/webhook/mollie/v1', function (req, res) {
-    //   paymentAPI.handleRequest(req, res)
-    // })

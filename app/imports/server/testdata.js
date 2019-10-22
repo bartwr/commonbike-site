@@ -43,13 +43,17 @@ var testLocations = [
 ];
 
 var testObjects = [
-  { title: 'Lisk Bike #1', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10', locksettings: { },
+  { title: 'Lisk Bike #1', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10',
+    locksettings: { lockid: '0355951092273478' },
     startcoordinates: [52.088304, 5.107243] }, // LCU location
-  { title: 'Lisk Bike #2', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10', locksettings: { },
+  { title: 'Lisk Bike #2', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10',
+    locksettings: { lockid: '0355951092920805' },
     startcoordinates: [52.506396, 13.373237] }, // Lisk HQ
-  { title: 'Lisk Bike #3', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10', locksettings: { },
+  { title: 'Lisk Bike #3', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10',
+    locksettings: { lockid: '0355951092914766' },
     startcoordinates: [52.069018, 5.114817] }, // Bumos office
-  { title: 'Lisk Bike #4', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10', locksettings: { },
+  { title: 'Lisk Bike #4', description: 'Concox BL10 lock #1', state: 'available', locktype: 'concox-bl10',
+    locksettings: { lockid: '355951092143820' },
     startcoordinates: [52.090788, 5.121851] }, // domplein
 ]
 
@@ -143,8 +147,7 @@ var createLockCode = function(length) {
   return code.toString().substring(1, length+1);
 }
 
-var createLock = function(locktype, locksettings,object) {
-  var lockInfo = {};
+var createLock = function(locktype, locksettings) {
 
   if(locktype!='concox-bl10'&&locktype!='open-elock'&&locktype!='plainkey') {
       // assume plainkey for unknown keytypes
@@ -152,15 +155,11 @@ var createLock = function(locktype, locksettings,object) {
       locktype='plainkey';
   }
 
-  lockInfo = {
-    type: locktype,
-    settings: {} // add settings for axa e-lock here
-  }
-
+  var lockInfo = {};
   if(locktype=='plainkey') {
-    lockInfo.settings = Object.assign({keyid: '0000' }, locksettings);
+    lockInfo = Object.assign({locktype: locktype, keyid: '0000' }, locksettings);
   } else if(locktype=='concox-bl10') {
-    lockInfo.settings = Object.assign({}, locksettings);
+    lockInfo = Object.assign({locktype: locktype, lockid: ''}, locksettings);
   }
 
   return lockInfo;

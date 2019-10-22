@@ -68,7 +68,7 @@ module.exports = {
     ssl: {
       // Enable Let's Encrypt
       letsEncryptEmail: 'mosbuma@bumos.nl',
-      forceSSL: true
+      forceSSL: false
     }
   }
 };

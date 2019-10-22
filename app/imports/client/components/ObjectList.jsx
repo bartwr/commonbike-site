@@ -88,7 +88,7 @@ ObjectList.defaultProps = {
 
   methodsBaseName: "",
   showPrice : false,
-  showState : false,
+  showState : true,
   showRentalDetails: false,
   showLockDetails: false,
   isEditable: false

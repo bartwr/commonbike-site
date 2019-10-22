@@ -9,6 +9,8 @@ import '/imports/api/api-keys.js'
 import { Log } from '/imports/api/log.js'
 import '/imports/server/testdata.js'
 import '/imports/api/databasetools.js';
+import { createSendCommand, processSinglePacket } from '/server/api/concox-bl10.js'; // methods
+
 // import '/server/api/paymentservices/mollie.js'; // methods
 
 Meteor.startup(() => {
@@ -108,3 +110,39 @@ Meteor.methods( {
     }
   }
 });
+
+const net = require('net');
+
+var resetsent = false;
+
+var server = net.createServer(Meteor.bindEnvironment(function(socket) {
+  // console.log('incoming connection from %s',  socket.remoteAddress);
+  socket.on('data', Meteor.bindEnvironment(function(data) {
+    const buf = data.toString('hex');
+    const cmdSplit = buf.split(/(?=7878|7979)/gi)
+    cmdSplit.map( buf => {
+      processSinglePacket(socket, buf);
+    });
+  }));
+	
+  if(false==resetsent) {
+    console.log("send command");
+    // socket.write(createSendCommand('GPRSSET#'))
+    // Server:1,app.lisk.bike,9020,0
+    // socket.write(createSendCommand('SERVER,1,app.lisk.bike/api/liskbike,80,0#'))
+    resetsent=true;
+  }
+
+	// socket.write('Echo server\r\n');
+	// socket.pipe(socket);
+
+  socket.on('error', function(data) {
+    console.log("%o",data);
+  })
+}));
+
+let port = 3005;                // listening port
+let serverip = '0.0.0.0'; // external IP address for this server
+
+console.log('starting concox BL10 server on %s:%s', serverip, port);
+server.listen(port, serverip);
