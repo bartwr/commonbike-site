@@ -216,7 +216,7 @@ export const checkTestObjects = function() {
                  timestamp: timestamp,
                  lat_lng: object.startcoordinates},
         lock: lockinfo,
-        // price: priceinfo,
+        price: priceinfo,
         wallet: walletinfo
       });
     }
