@@ -104,33 +104,35 @@ var s = {
 }
 
 LocationList.propTypes = {
-  isEditable: PropTypes.any,
-  newLocation: PropTypes.any,
-//  locHandle:  PropTypes.any
+  settings: PropTypes.any,
+  objects:  PropTypes.any,
+  newObject: PropTypes.any,
+  isAdmin: PropTypes.bool,
+  showMap: PropTypes.bool,
+  showList: PropTypes.bool,
 };
 
 LocationList.defaultProps = {
-  isEditable: false,
-  newObject: null
-  //locHandle: null
+  settings: undefined,
+  objects: undefined,
+  newObject: null,
+  isAdmin: false,
+  showMap: true,
+  showList: true
 }
 
 export default createContainer((props) => {
   Meteor.subscribe('settings', false);
   Meteor.subscribe('objects');
 
-  const user=Meteor.user();
-  let cancreateobjects = false;
-  if(user&&user.profile&&user.profile.cancreateobjects) {
-    cancreateobjects = user.profile.cancreateobjects || false;
-  }
+  var isAdmin = Roles.userIsInRole(Meteor.userId(), 'admin');
   
   let objects = Objects.find({}, { sort: {title: 1} }).fetch();
 
   return {
-    currentUser: Meteor.user(),
-    objects,
     settings: Settings.findOne({}),
-    cancreateobjects
+    objects,
+    isAdmin,
+    ...props
   };
 }, LocationList);

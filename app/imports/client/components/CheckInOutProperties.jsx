@@ -19,20 +19,6 @@ class CheckInOutProperies extends Component {
     Meteor.call('objects.update', this.props.item._id, this.state);
   }
 
-  // newAvatar :: Event -> NO PURE FUNCTION
-
-  // newCode(e) {
-  //   if( ! this.props.isEditable) return;
-
-  //   var imageUrl =
-  //     prompt('Wat is de URL van de nieuwe avatar? Wil je geen nieuwe avatar toevoegen, klik dan op Annuleren/Cancel')
-
-  //   if(imageUrl) {
-  //     this.state.imageUrl = imageUrl;
-  //     Meteor.call('objects.update', this.props.item._id, this.state);
-  //   }
-  // }
-
   // RedirectTo('/bike/details/' + this.props.item._id) }
   // viewItem() { RedirectTo((this.props.isEditable ? '/admin/bike/details/' : '/bike/details/') + this.props.item._id) }
 

@@ -10,25 +10,23 @@ import Settings from '/imports/api/settings.js';
 import BikeCoin from '/imports/api/bikecoin.js'
 
 import UserApp from '/imports/client/components/UserApp.jsx'
-import ContentPage from '/imports/client/components/ContentPage.jsx'
 import Login from '/imports/client/components/Login.jsx'
-import CustomPage from '/imports/client/components/CustomPage.jsx'
 import Profile from '/imports/client/components/Profile.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
 // import LocationsMap from '/imports/client/components/LocationsMap.jsx'
 import LocationsOverview from '/imports/client/containers/LocationsOverview.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
 import ObjectList from '/imports/client/containers/ObjectList.jsx'
-import ObjectDetails from '/imports/client/containers/ObjectDetails.jsx'
-import AdminTools from '/imports/client/components/AdminTools.jsx'
+import ObjectDetailsOld from '/imports/client/containers/ObjectDetailsOld.jsx'
 import LogList from '/imports/client/containers/LogList.jsx'
 import PaymentOrder from '/imports/client/components/PaymentOrder.jsx'
+import SystemSettings from '/imports/client/containers/SystemSettings.jsx'
 import NoMatch from '/imports/client/components/NoMatch.jsx'
 
 const UserAppLogin = ({match}) => {
   // TEMPORARY because I can't find the way to get query params via react-router:
   var redirectTo = window.location.search.split('=')[1];
-  return (<UserApp content={<CustomPage><Login redirectTo={redirectTo} /></CustomPage>} />)
+  return (<UserApp content={<Login redirectTo={redirectTo} />} />)
 }
 const UserAppProfile = () => (<UserApp content={<div><Profile isEditable="true" /></div>} />)
 const UserAppUserWallet = () => (<UserApp content={<div><UserWallet /></div>} />)
@@ -38,43 +36,46 @@ const UserAppLocationsOverview = () => (<UserApp content={<LocationsOverview />}
 
 const UserAppObjectList = () => (<UserApp content={<ObjectList showPrice={true} showState={true} />} />)
 
-const AdminAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
+const UserAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
 
 const UserAppRentalList = () => (<UserApp content={<ObjectList rentalsMode={true} showState={true} showRentalDetails={true} />} />)
 
-const UserAppCustomPageObjectDetails = ({match}) => {
+const UserAppObjectDetails = ({match}) => {
   return (
-    <UserApp content={<CustomPage backgroundColor="#fff"><ObjectDetails objectId={match.params.objectId}/></CustomPage>} />
+    <UserApp content={<ObjectDetailsOld objectId={match.params.objectId}/>} />
   )
 }
-const UserAppCustomAdminPageObjectDetails = ({match}) => {
+const UserAppAdminPageObjectDetails = ({match}) => {
   return (
-    <UserApp content={<CustomPage backgroundColor="#f9f9f9"><ObjectDetails isEditable="true" objectId={match.params.objectId}/></CustomPage>} />
+    <UserApp content={<ObjectDetailsOld isEditable="true" objectId={match.params.objectId}/>} />
   )
 }
 
-const UserAppCustomPageObjectDetailsCheckin = ({match}) => {
+const UserAppObjectDetailsCheckin = ({match}) => {
   return (
-    <UserApp content={<CustomPage backgroundColor="#f9f9f9"><ObjectDetails objectId={match.params.objectId} checkedIn={true}/></CustomPage>} />
+    <UserApp content={<ObjectDetailsOld objectId={match.params.objectId} checkedIn={true}/>} />
   )
 }
 
 const UserAppAdminAdminUsersList = () => (<UserApp content={<AdminUsersList />} />)
-const UserAppAdminAdminTools = () => (<UserApp content={<AdminTools />} />)
 
-// see: https://react-router.now.sh/auth-workflow
-const RouteWhenLoggedIn = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={props => (
-    Meteor.userId() ? (
-      <Component {...props}/>
-    ) : (
-      <Redirect to={{
-        pathname: '/login',
-        state: { from: props.location }
-      }}/>
+const UserAppSystemSettings = () => (<UserApp content={<SystemSettings />} />)
+
+
+const RouteWhenLoggedIn = ({ component: Component, ...rest }) => {
+
+  if(Meteor.userId()) {
+//    console.log('route when logged in - render normal ', Meteor.userId());
+    return (
+      <Route {...rest} render={props => (<Component {...props}/> )}/>
     )
-  )}/>
-)
+  } else {
+//    console.log('route when logged in - render redirect ', Meteor.userId());
+    return (
+      <Route {...rest} render={props => ( <Redirect to={{ pathname: '/login', state: { from: props.location }}}/> )}/>
+    )
+  }
+}
 
 // see: https://react-router.now.sh/auth-workflow
 const RouteWhenAdmin = ({ component: Component, ...rest }) => (
@@ -125,19 +126,19 @@ class AppRoutes extends React.Component {
       <Route path='/login' component={UserAppLogin}/>
       <Route path='/objects' component={UserAppObjectList}/>
       <Route path='/wallet' component={UserAppUserWallet}/>
-      <Route path='/bike/details/:objectId' component={UserAppCustomPageObjectDetails}/>
+      <Route path='/bike/details/:objectId' component={UserAppObjectDetails}/>
 
       <RouteWhenLoggedIn path='/profile' component={UserAppProfile}/>
-      <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppCustomPageObjectDetailsCheckin}/>
+      <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppObjectDetailsCheckin}/>
 
       <RouteWhenLoggedIn path='/payment/:internalPaymentId' component={PaymentOrder}/>
 
       <RouteWhenLoggedIn path='/admin/rentals' component={UserAppRentalList}/>
-      <RouteWhenLoggedIn path='/admin/bike/details/:objectId' component={UserAppCustomAdminPageObjectDetails}/>
+      <RouteWhenLoggedIn path='/admin/bike/details/:objectId' component={UserAppAdminPageObjectDetails}/>
 
-      <RouteWhenAdmin path='/admin/users' component={UserAppAdminAdminUsersList}/>
-      <RouteWhenAdmin path='/admin/admintools' component={UserAppAdminAdminTools}/>
-      <RouteWhenLoggedIn path='/admin/log' component={AdminAppLogList}/>
+      <RouteWhenLoggedIn path='/admin/users' component={UserAppAdminAdminUsersList}/>
+      <RouteWhenLoggedIn path='/systemsettings' component={UserAppSystemSettings}/>
+      <RouteWhenLoggedIn path='/admin/log' component={UserAppLogList}/>
 
       <Route component={NoMatch}/>
      </Switch>

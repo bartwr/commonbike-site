@@ -28,25 +28,25 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    paddingLeft: 1*theme.spacing.unit,
-    paddingRight: 1*theme.spacing.unit,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     width: '100%'
   },
   details: {
     flexDirection: 'column',
   },
   formheader: {
-    padding: theme.spacing.unit,
+    padding: theme.spacing(1),
   },
   headerfield: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
   messagefield: {
-    paddingBottom: 2*theme.spacing.unit,
+    paddingBottom: theme.spacing(2),
   },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+  textfield: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   apikeyFormcontrol: {
   },
@@ -66,10 +66,10 @@ const styles = theme => ({
   },
   combo: {
     margin: 0,
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing(1)
   },
   yesnoswitch: {
-    margin: theme.spacing.unit
+    margin: theme.spacing(1)
   },
   imagepreview: {
     width: '100%',
@@ -79,7 +79,7 @@ const styles = theme => ({
     backgroundPosition: 'center',
   },
   actionButton: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
     align: 'center center',
   },
   expandIcon: {

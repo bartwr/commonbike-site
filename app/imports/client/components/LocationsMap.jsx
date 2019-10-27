@@ -220,12 +220,6 @@ var s = {
     background: '#e0e0e0',
     textAlign: 'right'
   },
-  avatar: {
-    display: 'inline-block',
-    position: 'relative',
-    zIndex: 2000,
-    margin: '15px 20px'
-  },
   images: {
     hier: '/files/IconsButtons/compass-black.svg' // 'https://einheri.nl/assets/img/home_files/compass-black.svg'
   },

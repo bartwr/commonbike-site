@@ -6,9 +6,6 @@ import ObjectBlock from '/imports/client/containers/ObjectBlock';
 // Import models
 import { Objects } from '/imports/api/objects.js';
 
-// Import components
-import Block from '/imports/client/components/Block';
-
 class ObjectList extends Component {
 
   constructor(props) {

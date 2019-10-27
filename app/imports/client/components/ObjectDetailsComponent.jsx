@@ -16,7 +16,7 @@ import CheckInOutProcessOpenELock from '/imports/client/components/CheckInOutPro
 import ManageApiKeys from '/imports/client/components/ManageApiKeys';
 import Balance from '/imports/client/components/Balance.jsx';
 
-class ObjectDetails extends Component {
+class ObjectDetailsComponent extends Component {
 
   constructor(props) {
     super(props);
@@ -107,17 +107,17 @@ class ObjectDetails extends Component {
 
 var s = StyleProvider.getInstance().checkInOutProcess;
 
-ObjectDetails.propTypes = {
+ObjectDetailsComponent.propTypes = {
   currentUser: PropTypes.object,
   isEditable: PropTypes.any,
   location: PropTypes.object,
   object: PropTypes.object,
 };
 
-ObjectDetails.defaultProps = {
+ObjectDetailsComponent.defaultProps = {
   isEditable: false,
   location: {},
   object: {},
 }
 
-export default ObjectDetails
+export default ObjectDetailsComponent

@@ -45,13 +45,11 @@ class UserDetails extends Component {
 
     var name = '';
     var isActive = false;
-    var picture = '';
     var cancreateobjects = false;
     var publickey = '';
     if (user.profile) {
         name = user.profile.name||'anoniem'
         isActive = user.profile.active|| false
-        picture = user.profile.avatar|| ''
         cancreateobjects = user.profile.cancreateobjects|| false
         publickey = user.profile.wallet && user.profile.wallet.address|| ''
         if(publickey!='') publickey=publickey.substring(0,10)+'.....'
@@ -79,7 +77,6 @@ class UserDetails extends Component {
               </ul>
             :
               <ul style={s.list}>
-                <li style={s.listitem}><img style={s.profilepicture} src={picture}/></li>
                 <li style={s.listitem}>{name}</li>
                 <li style={s.listitem}>{email}</li>
                 <li style={s.listitem}>{publickey}</li>
@@ -130,15 +127,6 @@ var s = {
     fontSize: '1.2em',
     fontWeight: '500',
     listStyle: 'none',
-  },
-  profilepicture: {
-    display: 'inline-block',
-    width: '200px',
-    height: '200px',
-    backgroundColor: '#fff',
-    border: 'solid 2px #fff',
-    borderRadius: '44px',
-    backgroundColor: 'rgba(0, 208, 162, 0.05)',
   },
   icon: {
     width:'32px',

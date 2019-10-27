@@ -71,7 +71,7 @@ class Login extends Component {
 
     return (
       <div style={s.base}>
-        {currentUser ? (active ? RedirectTo(this.props.redirectTo ? this.props.redirectTo : '/') : this.renderTeaser())                             : this.renderIntro()}
+        {currentUser ? (active ? RedirectTo(this.props.redirectTo ? this.props.redirectTo : '/') : this.renderTeaser()) : this.renderIntro()}
 
       </div>
     );
@@ -98,14 +98,6 @@ var s = {
   intro: {
     padding: '0 5px'
   },
-  signUpButton: {
-    margin: '10px 0',
-  },
-  socialButtonsWrapper: {
-    display: 'flex',
-    justifyContent: 'space-around',
-    background: '#fff'
-  }
 }
 
 Login.propTypes = {

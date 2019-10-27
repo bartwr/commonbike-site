@@ -5,15 +5,15 @@ class LiskBikeLogo extends Component {
 
   render() {
     return (
-      <div style={Object.assign({}, s.base, this.props.style, {backgroundImage: 'url("/files/PageHeader/lisk-white.svg")'})}>
-        Lisk.Bike
-      </div>
+      <div style={s.base}>Lisk.Bike</div>
     );
   }
 }
 
 var s = {
   base: {
+    width: '300px',
+    height: '45px',
     fontSize: 'default',
     lineHeight: 'default',
     color: '#fff',

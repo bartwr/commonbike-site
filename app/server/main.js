@@ -50,9 +50,6 @@ Meteor.startup(() => {
 			if(!user.profile || !user.profile.name) {
 				Meteor.users.update(user._id, {$set : { 'profile.name' : 'anonymous' }});
 			}
-			if(!user.profile || !user.profile.avatar) {
-				Meteor.users.update(user._id, {$set : { 'profile.avatar' : '' }});
-			}
 		});
 	}
 
@@ -74,9 +71,6 @@ Meteor.startup(() => {
 		}
 		if(!user.profile || !user.profile.name) {
 			Meteor.users.update(user._id, {$set : { 'profile.name' : 'anonymous' }});
-		}
-		if(!user.profile || !user.profile.avatar) {
-			Meteor.users.update(user._id, {$set : { 'profile.avatar' : '' }});
 		}
 		if(!user.profile || !user.profile.cancreateobjects) {
 			Meteor.users.update(user._id, {$set : { 'profile.cancreateobjects' : 'false' }});

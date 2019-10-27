@@ -1,16 +1,22 @@
 import { Meteor } from 'meteor/meteor'
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
+import { withTracker } from 'meteor/react-meteor-data';
+import { withStyles } from '@material-ui/core/styles';
 
-import ReactDOM from 'react-dom';
-import { createContainer } from 'meteor/react-meteor-data';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 
 // Import components
 import LiskBikeLogo from '/imports/client/components/LiskBikeLogo.jsx'
-import BackButton from '/imports/client/components/BackButton.jsx'
-import RaisedButton from '/imports/client/components/RaisedButton.jsx'
-import Avatar from '/imports/client/components/Avatar.jsx'
 import { RedirectTo } from '/client/main'
+import AppMenu from '/imports/client/components/AppMenu.jsx'
+
+import { Settings } from '/imports/api/settings.js';
 
 class PageHeader extends Component {
 
@@ -18,43 +24,85 @@ class PageHeader extends Component {
     super(props);
   }
 
-  gotoProfile() {
-    RedirectTo('/profile');
-  }
-
   render() {
+    const classes = this.props.classes;
+    const { currentUser } = this.props
+
     return (
-      <div style={s.base}>
-        <div style={s.flex}>
-          <BackButton />
-          <a onClick={() => RedirectTo('/')} style={{display: 'flex'}}><LiskBikeLogo style={s.logo} /></a>
-          { Meteor.userId() ? <a onClick={this.gotoProfile.bind(this)}><Avatar /></a> : <div /> }
-        </div>
+      <div className={classes.root}>
+        <AppBar position="static" className={classes.appbar}>
+          <Toolbar>
+            <div className={classes.menudiv}>
+              { currentUser && <AppMenu testitems={this.props.showTestOptions} user={currentUser} /> }
+            </div>
+            <div onClick={() => RedirectTo('/')} className={classes.logodiv}>
+              <LiskBikeLogo className={classes.logo}/>
+            </div>
+          </Toolbar>
+        </AppBar>
         {this.props.children}
       </div>
     );
   }
 }
 
-var s = {
-  base: {
-    fontSize: 'default',
-    lineHeight: 'default',
-    padding: '15px 20px 15px 20px'
-  },
-  flex: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  logo: {
-    width: '174px',
-    height: '28px',
-    alignSelf: 'center'
-  },
-}
-
 PageHeader.propTypes = {
   children: PropTypes.any,
+  showTestOptions: PropTypes.bool
 };
 
-export default PageHeader
+PageHeader.defaultProps = {
+  showTestOptions: false
+}
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  appbar: {
+    backgroundColor: '#fbae17',
+  },
+  menudiv: {
+    position: 'absolute',
+    left: theme.spacing(1),
+    top: theme.spacing(1),
+    width: 'auto',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'left',
+    alignItems: 'center',
+    zIndex: '100'
+  },
+  logodiv: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: '99',
+  },
+  logo: {
+    width: '300px',
+    height: '50px',
+    border: '1px solid green'
+  }
+});
+
+export default withStyles(styles)(withTracker((props) => {
+  Meteor.subscribe('settings');
+
+  var settings = Settings.findOne();
+  if(!settings) {
+    return {}
+  }
+  
+  return {
+    currentUser: Meteor.user(),
+    showTestOptions: settings.developmentOptions.showTestButtons
+  };
+})(PageHeader))
+

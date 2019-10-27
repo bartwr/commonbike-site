@@ -7,15 +7,15 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { Objects } from '/imports/api/objects.js';
 
 // Import components
-import ObjectDetailsComponent from '/imports/client/components/ObjectDetails';
+import ObjectDetailsComponent from '/imports/client/components/ObjectDetailsComponent';
 
 /**
- *  ObjectDetails
+ *  ObjectDetailsOld
  *
  * @param {Object} locations
  * @param {Boolean} isEditable
  */
-class ObjectDetails extends Component {
+class ObjectDetailsOld extends Component {
 
   constructor(props) {
     super(props);
@@ -31,18 +31,17 @@ class ObjectDetails extends Component {
         isEditable={this.props.isEditable} />
     );
   }
-
 }
 
 // Define what propTypes are allowed
-ObjectDetails.propTypes = {
+ObjectDetailsOld.propTypes = {
   isEditable: PropTypes.any,
   locations: PropTypes.array,
   onClickHandler: PropTypes.any
 };
 
 // Set default prop values
-ObjectDetails.defaultProps = {
+ObjectDetailsOld.defaultProps = {
   isEditable: false,
   object: {},
   location: {}
@@ -64,4 +63,4 @@ export default createContainer((props) => {
     location: object ? Locations.find({_id: object.locationId}).fetch()[0] : {}
   };
 
-}, ObjectDetails);
+}, ObjectDetailsOld);

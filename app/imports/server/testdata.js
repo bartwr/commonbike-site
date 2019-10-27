@@ -93,15 +93,6 @@ export const cleanupTestData = function() {
   });
 }
 
-const GetRandomAvatar = () => {
-  const url = 'https://randomuser.me/api/'
-  const response = HTTP.get(url)
-  const obj = JSON.parse(response.content)
-  const avatar_url = obj.results[0].picture.large
-
-  return avatar_url
-}
-
 export const checkTestUsers = function() {
     testUsers.forEach(function (userData) {
       var id;
@@ -117,16 +108,12 @@ export const checkTestUsers = function() {
         email: userData.email,
         password: userData.password,
         profile: { name: userData.name,
-                   avatar: userData.avatar || GetRandomAvatar(),
                    wallet: {
                      address:keypair.address,
                      privatekey:keypair.privatekey
                    }
         }
       });
-
-      var anavatar = GetRandomAvatar();
-      Meteor.users.update({_id: id}, {$set:{'avatar': anavatar}});
 
       // email verification
       Meteor.users.update({_id: id}, {$set:{'emails.0.verified': true, 'profile.active':true}});

@@ -123,7 +123,7 @@ class EditObject extends Component {
           fieldname: 'imageUrl',
           fieldvalue: this.props.object.imageUrl,
           controltype: 'text',
-          label: 'Avatar'
+          label: 'Image'
   		},
   		{
           fieldname: 'locationId',

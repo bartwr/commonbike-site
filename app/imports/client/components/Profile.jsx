@@ -14,23 +14,23 @@ class Profile extends Component {
     super(props);
   }
 
-  reservations() {
-    RedirectTo('/objects')
-  }
-
-  objects() {
-    RedirectTo('/admin/ojects')
-  }
-
-  wallet() {
-    RedirectTo('/wallet')
-  }
+  // reservations() {
+  //   RedirectTo('/objects')
+  // }
+  //
+  // objects() {
+  //   RedirectTo('/admin/objects')
+  // }
+  //
+  // wallet() {
+  //   RedirectTo('/wallet')
+  // }
 
   rentals() {
     RedirectTo('/admin/rentals')
   }
 
-  manageusers() {
+  manageusers() {wallet
     RedirectTo('/admin/users')
   }
 
@@ -48,18 +48,6 @@ class Profile extends Component {
       return this.props.currentUser.emails[0].address;
     } else {
       return '';
-    }
-  }
-
-  // newAvatar :: Event -> NO PURE FUNCTION
-  newAvatar(e) {
-    if( ! this.props.isEditable) return;
-
-    var imageUrl =
-      prompt('What is he URL of the new avatar? Do you want to add an avatar, Click on Annul/Cancel')
-
-    if(imageUrl) {
-      Meteor.call('currentuser.update_avatar', imageUrl);
     }
   }
 
@@ -132,17 +120,15 @@ class Profile extends Component {
 
         <div style={s.centerbox}>
 
-          <Avatar style={s.avatar} newAvatar={this.newAvatar.bind(this)} />
-
           <p style={s.personalia}>
             { this.getUserPersonalia() }
           </p>
 
-          <RaisedButton onClick={() => RedirectTo('/')}>SEARCH</RaisedButton>
+          // <RaisedButton onClick={() => RedirectTo('/')}>SEARCH</RaisedButton>
 
-          <RaisedButton onClick={this.reservations.bind(this)}>BIKE</RaisedButton>
+          // <RaisedButton onClick={this.reservations.bind(this)}>BIKE</RaisedButton>
 
-          <RaisedButton onClick={this.wallet.bind(this)}>WALLET</RaisedButton>
+          // <RaisedButton onClick={this.wallet.bind(this)}>WALLET</RaisedButton>
 
           { this.getMyObjectsButton() }
 
@@ -174,11 +160,6 @@ var s = {
     fontWeight: 'bold',
     fontSize: '20px',
   },
-  avatar: {
-    display: 'inline-block',
-    width: '200px',
-    height: '200px'
-  }
 }
 
 Profile.propTypes = {

@@ -15,11 +15,6 @@ export const UserProfileSchema = new SimpleSchema({
     label: "Name",
     defaultValue: 'anonymous'
   },
-  'avatar': {
-    type: String,
-    label: "Avatar",
-    defaultValue: ''
-  },
   cancreateobjects: {
     type: Boolean,
     label: "Can Create Locations",
@@ -87,11 +82,6 @@ if(Meteor.isServer) {
   });
 
   Meteor.methods({
-    'currentuser.update_avatar'(new_avatar_url) {
-      if(this.userId) {
-        Meteor.users.update(this.userId, {$set : { 'profile.avatar' : new_avatar_url }});
-      }
-    },
     'userstatus.set'(user) {
       pattern = {
         id: String,
