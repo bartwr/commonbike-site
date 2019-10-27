@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 import ObjectBlock from '/imports/client/containers/ObjectBlock';
 
 // Import models
@@ -52,6 +51,7 @@ var s = {
     minHeight: 'calc(100vh - 74px)',
   },
   intro: {
+    color: 'white',
     padding: '0 70px',
     margin: '0 auto',
     maxWidth: '400px',

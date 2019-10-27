@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import L from 'leaflet'
 import { Settings } from '/imports/api/settings.js';
 
@@ -106,7 +106,7 @@ Map.defaultProps = {
   accessToken: "pk.eyJ1IjoiZXJpY3ZycCIsImEiOiJjaWhraHE5ajIwNmRqdGpqN2h2ZXhqMnRsIn0.1FBWllDyQ_nSlHFE2jMLDA"
 }
 
-export default Map = createContainer((props) => {
+export default withTracker((props) => {
   Meteor.subscribe('settings');
 
   var settings = Settings.findOne();
@@ -115,6 +115,7 @@ export default Map = createContainer((props) => {
       style: settings.mapbox.style,
       accessToken: settings.mapbox.userId
   };
-}, Map);
+})(Map);
+
 
 // export default Map

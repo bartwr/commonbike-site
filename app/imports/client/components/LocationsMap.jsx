@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 import { RedirectTo } from '/client/main'
 import { Settings } from '/imports/api/settings.js';
 import L from 'leaflet'
@@ -10,7 +9,7 @@ import './Leaflet.EasyButton.js';
 
 import { Objects } from '/imports/api/objects.js';
 
-class ObjectsMapComponent extends Component {
+class LocationsMap extends Component {
   constructor(props) {
     super(props);
 
@@ -237,7 +236,7 @@ var s = {
   }
 }
 
-ObjectsMapComponent.propTypes = {
+LocationsMap.propTypes = {
   width: PropTypes.any,
   height: PropTypes.any,
   locations: PropTypes.array,
@@ -249,7 +248,7 @@ ObjectsMapComponent.propTypes = {
   startZoom: PropTypes.number
 };
 
-ObjectsMapComponent.defaultProps = {
+LocationsMap.defaultProps = {
   width: '100vw',
   height: '50vh',
   clickItemHandler: '',
@@ -257,10 +256,4 @@ ObjectsMapComponent.defaultProps = {
   startZoom: 15
 }
 
-export default LocationsMap = createContainer((props) => {
-  return {
-    // locations: props.locations,
-    objects: props.objects,
-    settings: props.settings
-  };
-}, ObjectsMapComponent);
+export default LocationsMap;

@@ -2,7 +2,6 @@ import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
-import { createContainer } from 'meteor/react-meteor-data';
 
 // Import components
 import TextField from '/imports/client/components/TextField.jsx';
@@ -107,6 +106,4 @@ LoginForm.propTypes = {
   signUpHandler: PropTypes.any.isRequired
 };
 
-export default createContainer((props) => {
-  return {}
-}, LoginForm);
+export default LoginForm;

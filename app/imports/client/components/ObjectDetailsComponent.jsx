@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 import { RedirectTo } from '/client/main'
 import { StyleProvider } from '/imports/client/StyleProvider.js'
 

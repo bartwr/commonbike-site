@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 
 // Import models
 // import { Locations } from '/imports/api/locations.js';
@@ -47,20 +47,18 @@ ObjectDetailsOld.defaultProps = {
   location: {}
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
+    // Subscribe to models
+    Meteor.subscribe('locations', props.isEditable);
+    Meteor.subscribe('objects');
 
-  // Subscribe to models
-  Meteor.subscribe('locations', props.isEditable);
-  Meteor.subscribe('objects');
+    // Get object (bike) information
+    let object = Objects.find({_id: props.objectId}).fetch()[0];
 
-  // Get object (bike) information
-  let object = Objects.find({_id: props.objectId}).fetch()[0];
-
-  // Return variables for use in this component
-  return {
-    currentUser: Meteor.user(),
-    object: object,
-    location: object ? Locations.find({_id: object.locationId}).fetch()[0] : {}
-  };
-
-}, ObjectDetailsOld);
+    // Return variables for use in this component
+    return {
+      currentUser: Meteor.user(),
+      object: object,
+      location: object ? Locations.find({_id: object.locationId}).fetch()[0] : {}
+    };
+})(ObjectDetailsOld);

@@ -26,6 +26,9 @@ const styles = {
   fullList: {
     width: 'auto',
   },
+  menuIcon: {
+    color: 'white'
+  }
 };
 
 class AppMenu extends React.Component {
@@ -152,7 +155,7 @@ class AppMenu extends React.Component {
   }
 
   objects() {
-    RedirectTo('/admin/objects')
+    RedirectTo('/objects')
   }
 
   render() {
@@ -167,7 +170,7 @@ class AppMenu extends React.Component {
         <List>
           {[
             { title: 'Search on the Map', onclick: this.doRedirect('/').bind(this) },
-            { title: 'List of all bicycles', onclick: this.doRedirect('/admin/objects').bind(this) },
+            { title: 'List of all bicycles', onclick: this.doRedirect('/objects').bind(this) },
             { title: 'My Rentals', onclick: this.doRedirect('/admin/rentals').bind(this) },
             { title: 'My Wallet', onclick: this.doRedirect('/wallet').bind(this) },
             ].map((info, index) => (

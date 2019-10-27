@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 
 // Import components
 import Wallet from '/imports/client/components/Wallet';
@@ -30,7 +30,7 @@ UserWallet.defaultProps = {
   address: ''
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
   if(!Meteor.user()) {
     return (<div />);
   }
@@ -45,4 +45,4 @@ export default createContainer((props) => {
     address: address,
     providerurl: providerurl
   };
-}, UserWallet);
+})(UserWallet);

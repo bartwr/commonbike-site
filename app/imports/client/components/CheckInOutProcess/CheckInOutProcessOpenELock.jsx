@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 import CheckInOutProcessBase from '/imports/client/components/CheckInOutProcess/CheckInOutProcessBase';
 import { StyleProvider } from '/imports/client/StyleProvider.js'
 import { getUserDescription } from '/imports/api/users.js';

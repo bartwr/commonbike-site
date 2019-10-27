@@ -10,11 +10,10 @@ import Settings from '/imports/api/settings.js';
 import BikeCoin from '/imports/api/bikecoin.js'
 
 import UserApp from '/imports/client/components/UserApp.jsx'
-import Login from '/imports/client/components/Login.jsx'
-import Profile from '/imports/client/components/Profile.jsx'
+import Login from '/imports/client/containers/Login.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
 // import LocationsMap from '/imports/client/components/LocationsMap.jsx'
-import LocationsOverview from '/imports/client/containers/LocationsOverview.jsx'
+import OverviewPage from '/imports/client/containers/OverviewPage.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
 import ObjectList from '/imports/client/containers/ObjectList.jsx'
 import ObjectDetailsOld from '/imports/client/containers/ObjectDetailsOld.jsx'
@@ -28,13 +27,12 @@ const UserAppLogin = ({match}) => {
   var redirectTo = window.location.search.split('=')[1];
   return (<UserApp content={<Login redirectTo={redirectTo} />} />)
 }
-const UserAppProfile = () => (<UserApp content={<div><Profile isEditable="true" /></div>} />)
 const UserAppUserWallet = () => (<UserApp content={<div><UserWallet /></div>} />)
 
 // const UserAppLocationsMap = () => (<UserApp content={<LocationsMap />} />)
-const UserAppLocationsOverview = () => (<UserApp content={<LocationsOverview />} />)
+const UserAppOverviewPage = () => (<UserApp content={<OverviewPage showMap={true} showList={true} />} />)
 
-const UserAppObjectList = () => (<UserApp content={<ObjectList showPrice={true} showState={true} />} />)
+const UserAppObjectList = () => (<UserApp content={<OverviewPage showMap={false} showList={true} />} />)
 
 const UserAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
 
@@ -121,14 +119,13 @@ class AppRoutes extends React.Component {
   render() {
     return (
      <Switch>
-      <Route exact path='/' component={UserAppLocationsOverview}/>
+      <Route exact path='/' component={UserAppOverviewPage}/>
 
       <Route path='/login' component={UserAppLogin}/>
       <Route path='/objects' component={UserAppObjectList}/>
       <Route path='/wallet' component={UserAppUserWallet}/>
       <Route path='/bike/details/:objectId' component={UserAppObjectDetails}/>
 
-      <RouteWhenLoggedIn path='/profile' component={UserAppProfile}/>
       <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppObjectDetailsCheckin}/>
 
       <RouteWhenLoggedIn path='/payment/:internalPaymentId' component={PaymentOrder}/>

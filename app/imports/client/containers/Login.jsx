@@ -1,9 +1,9 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor'
-import { createContainer } from 'meteor/react-meteor-data';
 import { Accounts } from 'meteor/accounts-base';
 import { RedirectTo } from '/client/main'
+import { withTracker } from 'meteor/react-meteor-data';
 
 // Import templates
 import LoginForm from '/imports/client/containers/LoginForm.jsx';
@@ -104,9 +104,9 @@ Login.propTypes = {
   redirectTo: PropTypes.string
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
   return {
     currentUser: Meteor.user(),
     // settings: Settings.findOne({})
   };
-}, Login);
+})(Login);

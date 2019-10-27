@@ -1,6 +1,6 @@
 // import React, { Component, } from 'react';
 // import PropTypes from 'prop-types';
-// import { createContainer } from 'meteor/react-meteor-data';
+// import { withTracker } from 'meteor/react-meteor-data';
 //
 // // Import models
 // // import { Locations } from '/imports/api/locations.js';
@@ -67,7 +67,7 @@
 //   rentalsMode: false
 // }
 //
-// export default createContainer((props) => {
+// export default withTracker((props) => {
 //   Meteor.subscribe('objects');
 //   Meteor.subscribe('users');
 //
@@ -106,4 +106,4 @@
 //     showLockDetails: props.showLockDetails||false,
 //     emptyListMessage: emptyListMessage
 //   };
-// }, ObjectList);
+// })(ObjectList);

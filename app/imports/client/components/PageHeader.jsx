@@ -60,7 +60,7 @@ const styles = theme => ({
     flexGrow: 1,
   },
   appbar: {
-    backgroundColor: '#fbae17',
+    backgroundColor: 'transparent', //  '#fbae17',
   },
   menudiv: {
     position: 'absolute',

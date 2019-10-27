@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import {propTypes} from 'react-router';
@@ -218,7 +218,7 @@ EditSettings.defaultProps = {
   title: 'INSTELLINGEN'
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
   // Subscribe to models
   Meteor.subscribe('settings', true);
 
@@ -233,4 +233,4 @@ export default createContainer((props) => {
     settings: settings // ,
   };
 
-}, EditSettings);
+})(EditSettings);

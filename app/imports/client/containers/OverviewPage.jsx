@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 
 // Import models
 import { Settings } from '/imports/api/settings.js';
@@ -10,7 +10,7 @@ import { Objects, createObject } from '/imports/api/objects.js';
 import ObjectList from '/imports/client/components/ObjectList';
 import LocationsMap from '/imports/client/components/LocationsMap';
 
-class LocationList extends Component {
+class OverviewPage extends Component {
 
   constructor(props) {
     super(props);
@@ -81,13 +81,19 @@ class LocationList extends Component {
   }
 
   render() {
+    const { showMap, showList } = this.props;
+    
     return (
       <div>
-       { this.getMap()}
-       <ObjectList isEditable={this.props.isEditable}
-        objects={this.props.objects}
-        newObjectHandler={this.newObjectHandler.bind(this)}
-        canCreateObjects={this.props.cancreateobjects} />
+       { showMap ? this.getMap() : null}
+       { showList ?
+           <ObjectList isEditable={this.props.isEditable}
+            objects={this.props.objects}
+            newObjectHandler={this.newObjectHandler.bind(this)}
+            canCreateObjects={this.props.cancreateobjects} />
+            :
+            null
+        }
       </div>
     );
   }
@@ -103,7 +109,7 @@ var s = {
   }
 }
 
-LocationList.propTypes = {
+OverviewPage.propTypes = {
   settings: PropTypes.any,
   objects:  PropTypes.any,
   newObject: PropTypes.any,
@@ -112,16 +118,16 @@ LocationList.propTypes = {
   showList: PropTypes.bool,
 };
 
-LocationList.defaultProps = {
+OverviewPage.defaultProps = {
   settings: undefined,
   objects: undefined,
   newObject: null,
   isAdmin: false,
-  showMap: true,
+  showMap: false,
   showList: true
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
   Meteor.subscribe('settings', false);
   Meteor.subscribe('objects');
 
@@ -135,4 +141,4 @@ export default createContainer((props) => {
     isAdmin,
     ...props
   };
-}, LocationList);
+})(OverviewPage);

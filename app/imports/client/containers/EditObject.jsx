@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import { RedirectTo } from '/client/main'
@@ -230,7 +230,7 @@ EditObject.defaultProps = {
   objectId: ''
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
   // Subscribe to models
   Meteor.subscribe('objects');
   Meteor.subscribe('locations', true);
@@ -242,4 +242,4 @@ export default createContainer((props) => {
     object: Objects.find({_id: props.objectId}).fetch()[0],
   };
 
-}, EditObject);
+})(EditObject);
