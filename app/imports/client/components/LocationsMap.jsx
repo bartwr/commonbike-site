@@ -181,7 +181,7 @@ class LocationsMap extends Component {
   }
 
   toggleTrackUser() {
-    if(!navigator||!navigator.geolocation) return;
+    if(!navigator||!navigator.geolocation||!navigator.getCurrentPosition) return;
     
     if(this.state.watchId==undefined) {
       let options = {
