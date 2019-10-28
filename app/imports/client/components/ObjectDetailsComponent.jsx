@@ -2,19 +2,49 @@ import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import { RedirectTo } from '/client/main'
 import { StyleProvider } from '/imports/client/StyleProvider.js'
+import { withStyles } from '@material-ui/core/styles';
 
-// Import components
-import EditObject from '/imports/client/containers/EditObject';
-// import RaisedButton from '/imports/client/components/RaisedButton.jsx'
-import ObjectBlock from '/imports/client/containers/ObjectBlock';
-// import Button from '/imports/client/components/Button.jsx';
-import CheckInOutProcessBase from '/imports/client/components/CheckInCode';
-import MapSummary from '/imports/client/MapSummary';
-import CheckInOutProcessPlainKey from '/imports/client/components/CheckInOutProcess/CheckInOutProcessPlainKey';
-import CheckInOutProcessOpenELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenELock';
-import ManageApiKeys from '/imports/client/components/ManageApiKeys';
-import Balance from '/imports/client/components/Balance.jsx';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
+const styles = theme => ({
+  root: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    background: 'transparent'
+  },
+  dialog: {
+    width: '60vw',
+    height: '80vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: '5vmin'
+  },
+  actionbutton: {
+    width: '50vw',
+    height: '30px',
+    margin: '1vmin'
+  }
+});
 
 class ObjectDetailsComponent extends Component {
 
@@ -78,22 +108,31 @@ class ObjectDetailsComponent extends Component {
   //     return <CheckInOutProcessPlainKey
   //         object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
   }
+  
+  rentBike() {
+    
+  }
 
   render() {
     if(this.props.object==undefined) {
       return (null);
     }
     
-    const { object } = this.props;
+    const { object, classes } = this.props;
 
     let location = object.state && object.state.lat_lng || [0,0];
     
     console.log("object %o / location: %o", object, location);
     
     return (
-      <div style={s.base}>
-        <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
-        { this.renderCheckInOutProcess(object.state.state) }
+      <div className={classes.root}>
+        <div className={classes.dialog}>
+          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.rentBike(object)}>CREATE BIKE</Button>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.rentBike(object)}>RENT BIKE</Button>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.rentBike(object)}>END RENT BIKE</Button>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.rentBike(object)}>UPDATE GPS LOCATION</Button>
+        </div>
       </div>
     );
     
@@ -136,4 +175,4 @@ ObjectDetailsComponent.defaultProps = {
   object: undefined,
 }
 
-export default ObjectDetailsComponent
+export default withStyles(styles)(ObjectDetailsComponent);
