@@ -245,6 +245,9 @@ Meteor.methods({
   'objects.returnBike'(object) {
     console.log('returning bike %o', object);
     
+    let bikeaddress = object.wallet.address;
+    
+    
     return {
       result: 'ok'
     }

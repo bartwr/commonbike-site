@@ -47,6 +47,15 @@ if (Meteor.isServer) {
 	}
 }
 
+// use this function serverside to get client side settings
+export const getSettingsClientSide = function(profileName) {
+	if( ! profileName) {
+		profileName = defaultProfileName
+	}
+
+	return Settings.findOne({profileName: profileName});
+}
+
 export const MapboxSchema = new SimpleSchema({
   'style': {
     type: String,
@@ -272,11 +281,12 @@ if (Meteor.isServer) {
 			// Do settings initialisation below this line. Code above assures that the
 			// structures are present in the database, code below should set values
 			// so that it works out of the box when doing a fresh installation
-			if(settings.bikecoin.provider_url=='') {
+			if(settings.bikecoin.provider_url==''||
+		     settings.bikecoin.provider_url.includes('infura') == true) {
 				// key generation will fail if there is no provider_url set
-				settings.bikecoin.provider_url='https://ropsten.infura.io/sCQUO1V3FOoOUWGZBtig';
+				console.log('setting provider URL to brainz.lisk.bike testnode');
+				settings.bikecoin.provider_url='http://brainz.lisk.bike:4000';
 
-				console.log('setting provider URL to ropsten testnet');
 				Settings.update(settings._id, settings, {validate: false});	// todo: make net selectable in the configuration
 			}
 
@@ -288,7 +298,7 @@ if (Meteor.isServer) {
 				console.log('adding bikecoin keypair to general settings')
 				Settings.update(settings._id, settings, {validate: false});
 			}
-
+			
 			if(Meteor.users.find().fetch().length==0) {
 				console.log('create genesis user');
 
