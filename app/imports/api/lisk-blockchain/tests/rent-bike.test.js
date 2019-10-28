@@ -33,7 +33,7 @@ const rentBike = (bike, renterAccount) => {
     });
   }
 
-// test-coode
+// test-code
 getBike(client, bikeAccount).then(bike => {
   console.log("bike:", bike);
 
