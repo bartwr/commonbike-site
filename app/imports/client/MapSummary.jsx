@@ -8,7 +8,7 @@ class MapSummary extends Component {
     super(props);
 
     this.state = {
-     mapVisible: false
+     mapVisible: true
     }
   }
 

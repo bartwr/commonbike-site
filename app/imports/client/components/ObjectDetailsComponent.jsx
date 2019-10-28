@@ -14,6 +14,7 @@ import CheckInOutProcessPlainKey from '/imports/client/components/CheckInOutProc
 import CheckInOutProcessOpenELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenELock';
 import ManageApiKeys from '/imports/client/components/ManageApiKeys';
 import Balance from '/imports/client/components/Balance.jsx';
+import Typography from '@material-ui/core/Typography';
 
 class ObjectDetailsComponent extends Component {
 
@@ -21,21 +22,19 @@ class ObjectDetailsComponent extends Component {
     super(props);
   }
 
-  getBalance(item) {
-    if(item&&item.wallet) {
-       return (<Balance label="SALDO" address={item.wallet.address} providerurl="https://ropsten.infura.io/sCQUO1V3FOo" />);
-    } else {
-       console.log('no wallet!', item)
-       return (<div />);
-     }
-  }
+  // getBalance(item) {
+  //   if(item&&item.wallet) {
+  //      return (<Balance label="SALDO" address={item.wallet.address} providerurl="https://ropsten.infura.io/sCQUO1V3FOo" />);
+  //   } else {
+  //      console.log('no wallet!', item)
+  //      return (<div />);
+  //    }
+  // }
 
-  renderCheckInOutProcess() {
-    if( ! this.props.object.lock ) return <div />;
-
-    var validUser = (Meteor.userId()==this.props.object.state.userId)||this.props.isEditable;
-
-    if(this.props.object.state.state=="inuse"&&!validUser) {
+  renderCheckInOutProcess(state) {
+    const {object} = this.props;
+    
+    if(this.props.object.state.state=="inuse") {
       return (
         <div style={s.base}>
           <ul style={s.list}>
@@ -43,7 +42,7 @@ class ObjectDetailsComponent extends Component {
           </ul>
         </div>
       );
-    } else if(this.props.object.state.state!="available"&&!validUser) {
+    } else if(this.props.object.state.state!="available") {
       return (
         <div style={s.base}>
           <ul style={s.list}>
@@ -51,72 +50,90 @@ class ObjectDetailsComponent extends Component {
           </ul>
         </div>
       );
+    } else {
+      return (
+        <div style={s.base}>
+          <ul style={s.list}>
+            <li style={s.listitem,s.mediumFont}>UNKNOWN</li>
+          </ul>
+        </div>
+      );
     }
 
-    var lockType = this.props.object.lock.type;
-
-    // If not logged in: refer to login page
-    if( ! this.props.currentUser)
-      return <Button onClick={RedirectTo.bind(this, '/login?redirectTo=/bike/details/'+this.props.object._id)}>Login to reserve</Button>
-
-    else if(lockType=='open-elock')
-      return <CheckInOutProcessOpenELock
-          object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-
-  else if(lockType=='concox-bl10')
-    return <CheckInOutProcessConcoxBL10
-        object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-
-    else
-      return <CheckInOutProcessPlainKey
-          object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
+  //   var lockType = this.props.object.lock.type;
+  //
+  //   // If not logged in: refer to login page
+  //   if( ! this.props.currentUser)
+  //     return <Button onClick={RedirectTo.bind(this, '/login?redirectTo=/bike/details/'+this.props.object._id)}>Login to reserve</Button>
+  //
+  //   else if(lockType=='open-elock')
+  //     return <CheckInOutProcessOpenELock
+  //         object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
+  //
+  // else if(lockType=='concox-bl10')
+  //   return <CheckInOutProcessConcoxBL10
+  //       object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
+  //
+  //   else
+  //     return <CheckInOutProcessPlainKey
+  //         object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
   }
 
   render() {
+    if(this.props.object==undefined) {
+      return (null);
+    }
+    
+    const { object } = this.props;
+
+    let location = object.state && object.state.lat_lng || [0,0];
+    
+    console.log("object %o / location: %o", object, location);
+    
     return (
       <div style={s.base}>
-
-        <p style={s.intro}>
-          Reserveer bij:<br /><span dangerouslySetInnerHTML={{__html: this.props.location.title}} />
-        </p>
-
-        <center>
-          <MapSummary item={this.props.location} width={400} height={120}/>
-        </center>
-
-        <ObjectBlock
-          item={this.props.object} />
-
-        { this.props.isEditable?
-          <EditObject objectId={this.props.object._id} />
-          :null }
-
-        { this.props.isEditable?
-          <ManageApiKeys keyOwnerId={this.props.object._id} keyType="object" />
-          :null }
-
-{/*}        <div>{ this.getBalance( this.props.object ) }</div> */}
-
-        { this.renderCheckInOutProcess() }
-
+        <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
+        { this.renderCheckInOutProcess(object.state.state) }
       </div>
     );
+    
+    {/*
+// Define what propTypes are allowed
+<center>
+  <MapSummary item={location} width={'60vmin'} height={'40vmin'} style={{border: '2px solid red'}}/>
+</center>
+
+            <ObjectBlock
+              item={this.props.object} />
+
+            { this.props.isEditable?
+              <EditObject objectId={this.props.object._id} />
+              :null }
+
+            { this.props.isEditable?
+              <ManageApiKeys keyOwnerId={this.props.object._id} keyType="object" />
+              :null }
+
+            <div>{ this.getBalance( this.props.object ) }</div>
+
+    */}
+
   }
+
+
 }
 
 var s = StyleProvider.getInstance().checkInOutProcess;
 
 ObjectDetailsComponent.propTypes = {
   currentUser: PropTypes.object,
-  isEditable: PropTypes.any,
-  location: PropTypes.object,
   object: PropTypes.object,
+  isEditable: PropTypes.any,
 };
 
 ObjectDetailsComponent.defaultProps = {
   isEditable: false,
-  location: {},
-  object: {},
+  object: undefined,
 }
 
 export default ObjectDetailsComponent
