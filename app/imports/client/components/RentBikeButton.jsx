@@ -13,7 +13,9 @@ class RentBikeButton extends Component {
   clickRentBike(bike) {
     console.log("clickRentBike", bike);
 
-    doRentBike(renterAccount, bikeAccount);
+    doRentBike(renterAccount, bikeAccount).then(res => {
+      console.log(res)
+    });
 
     // getBike(client, bikeAccount).then(bike => {
     //   console.log("bike:", bike);
