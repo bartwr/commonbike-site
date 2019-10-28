@@ -110,14 +110,6 @@ class Map extends Component {
   }
 }
 
-Map.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  item: PropTypes.object.isRequired,
-  style: PropTypes.string.isRequired,
-  accessToken: PropTypes.string.isRequired
-}
-
 Map.defaultProps = {
   width: window.innerWidth,
   height: window.innerHeight-32,

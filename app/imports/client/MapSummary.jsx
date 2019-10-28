@@ -45,12 +45,6 @@ class MapSummary extends Component {
   }
 }
 
-MapSummary.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  item: PropTypes.object.isRequired
-}
-
 MapSummary.defaultProps = {
   width: window.innerWidth,
   height: window.innerHeight-32,
