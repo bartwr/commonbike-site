@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo';
 
-import { getUserDescription } from '/imports/api/users.js';
 import { CoinSchema } from '/imports/api/bikecoinschema.js';
 
 export const Objects = new Mongo.Collection('objects');
@@ -23,7 +22,7 @@ export const StateSchema = new SimpleSchema({
     optional: true
   },
   'timestamp': {
-    type: Number,
+    type: Date,
     label: "Timestamp",
     defaultValue: ''
   },
@@ -56,8 +55,6 @@ export const PriceSchema = new SimpleSchema({
     defaultValue: 'tijdelijk gratis'
   },
 });
-
-// TODO: make schema voor lock options
 
 export const ObjectsSchema = new SimpleSchema({
   title: {
@@ -100,15 +97,15 @@ if (Meteor.isServer) {
 export function getStateChangeNeatDescription(objectTitle, newState) {
   var description = ""
   if(newState=='reserved') {
-    description = objectTitle + " gereserveerd"
+    description = objectTitle + " reserved"
   } else if(newState=='inuse') {
-    description = objectTitle + " gehuurd"
+    description = objectTitle + " rented"
   } else if(newState=='available') {
-    description = objectTitle + " teruggebracht"
+    description = objectTitle + " returned"
   } else if(newState=='outoforder') {
-    description = objectTitle + " buiten bedrijf gesteld"
+    description = objectTitle + " set out of order"
   } else {
-    description = objectTitle + " in toestand '" + newState + "' gezet"
+    description = objectTitle + " set to state '" + newState + "'"
   }
 
   return description;
@@ -118,33 +115,30 @@ export const createObject = (title) => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
 
-  var timestamp =  new Date().valueOf();
-
-  var length = 5;
-  var base = Math.pow(10, length+1);
-  var code = Math.floor(base + Math.random() * base)
-  // console.log('code: ' + code);
-  keycode = code.toString().substring(1, length+1);
-
   var data = {
     title: title,
     description: '',
     imageUrl: '/files/Block/bike.png',
     state: {state: 'available',
-            userId: Meteor.userId(),
-            timestamp: timestamp,
-            userDescription: getUserDescription(Meteor.user())},
-    lock: {type: 'plainkey',
-           settings: {keyid: keycode }
+            timestamp: new Date(),
+            lat_lng: [0, 0],
+            userId: ''
+    },
+    lock: {locktype: 'concox-bl10',
+           lockid: '',
+           battery: 0,
+           charging: false
           },
     price: {value: '0',
             currency: 'euro',
             timeunit: 'day',
-            description: 'tijdelijk gratis'},
-    lat_lng: [0, 0],
-    wallet: { address : '',
-              privatekey :  '' }
+            description: 'temporarily free'},
+    wallet: { passphrase :  '',
+              privateKey :  '',
+              publicKey : '',
+              address :  '' }
   }
+  // state -> 'state': String / lat_lng: [0,0] / timestamp: number / userid: ''
 
   try {
     var context =  ObjectsSchema.newContext();
@@ -182,7 +176,7 @@ Meteor.methods({
     var objectId = Objects.insert(data);
 
     var object = Objects.findOne(objectId, {title:1, locationId:1});
-    var description = getUserDescription(Meteor.user()) + ' has added a new bike ' + object.title;
+    var description = 'A new bike was added: ' + object.title;
     console.log(description);
   },
   'objects.update'(objectId, data) {
@@ -221,7 +215,7 @@ Meteor.methods({
       // apply changes
       Objects.update(_id, {$set : changes} );
 
-      var description = getUserDescription(Meteor.user()) + ' heeft de instellingen van object ' + object.title + ' gewijzigd';
+      var description = 'Settings changed for ' + object.title;
       console.log(description);
     } else {
       console.log('unable to update object with id ' + _id);
@@ -233,23 +227,26 @@ Meteor.methods({
 
     Objects.remove(objectId);
 
-    var description = getUserDescription(Meteor.user()) + ' has removed bike ' + object.title;
+    var description = 'Bike ' + object.title + ' was removed';
     console.log(description);
   },
   'objects.setState'(objectId, userId, newState){
     // Make sure the user is logged in
     if (! Meteor.userId()) throw new Meteor.Error('not-authorized');
 
-    // console.log('setstate userDescription: ' + userDescription)
-    // console.log('setstate object: ' + userId, Meteor.userId())
-
-    var timestamp = new Date().valueOf();
     Objects.update({_id: objectId}, { $set: {
         'state.userId': userId,
         'state.state': newState,
-        'state.timestamp': timestamp }
+        'state.timestamp': new Date() }
     });
 
     return;
   },
+  'objects.returnBike'(object) {
+    console.log('returning bike %o', object);
+    
+    return {
+      result: 'ok'
+    }
+  }
 });

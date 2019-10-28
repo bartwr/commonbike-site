@@ -67,22 +67,36 @@ class EditObject extends Component {
   }
 
   getCoinFields() {
+    const { object } = this.props;
+    
     let fields = [
       {
           controltype: 'header',
-          label: 'CommonBikeCoin'
+          label: 'Wallet'
       },
       {
-          fieldname: 'object.wallet.address',
-          fieldvalue: this.props.object.wallet.address,
+          fieldname: 'object.passphrase',
+          fieldvalue: this.props.passphrase,
           controltype: 'text',
-          label: 'Address'
+          label: 'Passphrase'
       },
       {
-          fieldname: 'object.wallet.privatekey',
-          fieldvalue: this.props.object.wallet.privatekey,
+          fieldname: 'object.privateKey',
+          fieldvalue: this.props.privateKey,
           controltype: 'text',
           label: 'Private Key'
+      },
+      {
+          fieldname: 'object.publicKey',
+          fieldvalue: this.props.publicKey,
+          controltype: 'text',
+          label: 'Public Key'
+      },
+      {
+          fieldname: 'object.address',
+          fieldvalue: this.props.address,
+          controltype: 'text',
+          label: 'Address'
       },
     ]
 
@@ -124,13 +138,6 @@ class EditObject extends Component {
           fieldvalue: this.props.object.imageUrl,
           controltype: 'text',
           label: 'Image'
-  		},
-  		{
-          fieldname: 'locationId',
-          fieldvalue: this.props.object.locationId,
-          controltype: 'combo',
-          label: 'Locatie',
-          options: validLocations
   		},
   		{
           controltype: 'header',
