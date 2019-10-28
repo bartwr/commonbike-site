@@ -1,44 +1,74 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import { RedirectTo } from '/client/main'
-import { StyleProvider } from '/imports/client/StyleProvider.js'
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
-// Import components
-import Balance from '/imports/client/components/Balance.jsx';
+const styles = theme => ({
+  root: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'no-wrap',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    background: 'transparent',
+    zIndex: 1,
+  },
+  listitem: {
+    marginLeft: '5vmin',
+    marginTop: '5vmin'
+  }
+});
 
 class Wallet extends Component {
 
   constructor(props) {
     super(props);
+    
+    this.state = {balance: 0};
   }
-
-  buyBikeCoin(bikecoins) {
-    console.log('buy bikecoins' + bikecoins);
+  
+  enterPassphrase() {
+    
+  }
+  
+  clearPassphrase() {
+    
   }
 
   render() {
+    const {wallet, classes} = this.props;
+    
+    if(wallet==undefined) return (null);
+    
     return (
-      <div style={s.base}>
-        <Balance label="SALDO" address={this.props.address} providerurl={this.props.providerurl} /> : <div />
-
-        <Button onClick={() => this.buyBikeCoin(100) } buttonStyle="hugeSmallerFont">BUY 100 BIKECOIN or LISK??</Button>
+      <div className={classes.root}>
+        <Typography variant="subtitle2" className={classes.listitem}>passphrase: {wallet.passphrase}</Typography>
+        <Typography variant="subtitle2" className={classes.listitem}>private key: {wallet.privateKey}</Typography>
+        <Typography variant="subtitle2" className={classes.listitem}>public key: {wallet.publicKey}</Typography>
+        <Typography variant="subtitle2" className={classes.listitem}>address: {wallet.address}</Typography>
+        <Typography variant="subtitle2" className={classes.listitem}>balance: {this.state.balance}</Typography>
       </div>
     );
   }
 }
 
-var s = StyleProvider.getInstance().checkInOutProcess;
-
 Wallet.propTypes = {
-  wallettype: PropTypes.string,
+  wallettype: PropTypes.object,
   providerurl: PropTypes.string,
-  address: PropTypes.string
 };
 
 Wallet.defaultProps = {
-  wallettype: 'user',
+  wallet: undefined,
   providerurl: '',
-  address: ''
 }
 
-export default Wallet
+export default withStyles(styles)(Wallet);

@@ -84,6 +84,7 @@ class ObjectDetailsComponent extends Component {
             <li style={s.listitem,s.mediumFont}>NOT AVAILABLE</li>
           </ul>
         </div>
+        
       );
     } else {
       return (
@@ -114,16 +115,25 @@ class ObjectDetailsComponent extends Component {
   //         object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
   }
   
+  
   clickCreateBike(object) {
-    console.log("clickCreateBike", object);    
+    console.log("clickCreateBike", object);
   }
 
   clickReturnBike(object) {
-    console.log("clickReturnBike", object);    
+    Meteor.call('objects.returnBike', object, this.processReturnBikeResult.bind(this));
+  }
+  
+  processReturnBikeResult(err, res) {
+    if(err) {
+      alert('unable to return bike');
+    }
+    
+    alert('returned bike' + JSON.stringify(res));
   }
 
   clickUpdateGPS(object) {
-    console.log("clickUpdateGPS", object);    
+    console.log("clickUpdateGPS", object);
   }
 
   render() {
@@ -143,7 +153,7 @@ class ObjectDetailsComponent extends Component {
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
           <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
           <RentBikeButton bike={this.props.object} classes={classes} />
-          <Button variant="contained" className={classes.actionbutton} onClick={this.clickReturnBike.bind(this, object)} disabled>RETURN BIKE</Button>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.clickReturnBike.bind(this, object)}>RETURN BIKE</Button>
           <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
         </div>
       </div>

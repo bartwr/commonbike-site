@@ -16,29 +16,24 @@ import { createSendCommand, processSinglePacket } from '/server/api/concox-bl10.
 Meteor.startup(() => {
 	// code to run on server at startup
 	
-	if(false) {
+	const cDefaultBikeAccount = {
+		"passphrase":"debris glare sustain expire cloth shove paper grit flock vital object laptop",
+		"privateKey":"49f24b696c7d31b6f85ae496aad43869c3e40cf553b17080e7550639b93338dcb6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962",
+		"publicKey":"b6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962",
+		"address":"5079673205830650891L"}
+	
+	if(true) {
 		var myObjects = Objects.find().fetch();
 		_.each(myObjects, function (objectData) {
-		    var timestamp =  new Date().valueOf();
-		    var length = 5;
-		    var base = Math.pow(10, length+1);
-		    var code = Math.floor(base + Math.random() * base)
-		    var keycode = code.toString().substring(1, length+1);
-
-			if(!objectData.state) {
-			    Objects.update(objectData._id, {$set:{
-			      state: {state: 'available',
-	              		  userId: null,
-	                      timestamp: timestamp}
-			    }});
+			if("passphrase" in objectData.wallet == false) {
+				console.log("updating object wallet for " + objectData.title)
+		    Objects.update(objectData._id, {$unset:{ wallet: "" }});
+				Objects.update(objectData._id, {$set:{ wallet: {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
 			}
-
-			if(!objectData.lock) {
-			    Objects.update(objectData._id, {$set:{
-			      lock: {type: 'plainkey',
-			             settings: {keyid: keycode }
-			         }
-			    }});
+			
+			if(objectData.title=="Lisk Bike #1" && objectData.wallet.privatekey!=cDefaultBikeAccount.privateKey) {
+				console.log("initialize bike #1 with default bike account");
+				Objects.update(objectData._id, {$set:{ wallet: cDefaultBikeAccount}});
 			}
 		});
 
@@ -49,6 +44,17 @@ Meteor.startup(() => {
 			}
 			if(!user.profile || !user.profile.name) {
 				Meteor.users.update(user._id, {$set : { 'profile.name' : 'anonymous' }});
+			}
+			if("passphrase" in user.profile.wallet == false) {
+				console.log()
+		    Meteor.users.update(user._id, {$unset:{ 'profile.wallet': "" }});
+				Meteor.users.update(user._id, {$set:{ 'profile.wallet': {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
+			}
+
+			if("passphrase" in user.profile.wallet == false) {
+				console.log()
+		    Meteor.users.update(user._id, {$unset:{ 'profile.wallet': "" }});
+				Meteor.users.update(user._id, {$set:{ 'profile.wallet': {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
 			}
 		});
 	}

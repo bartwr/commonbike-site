@@ -216,8 +216,10 @@ if (Meteor.isServer) {
 						token_address: '',
 						token_abi: '',
 						wallet: {
-							address: '',
-							privatekey: ''
+							passphrase: '',
+							privateKey: '',
+							publicKey: '',
+							address: ''
 						}
 					},
 					developmentOptions: {
@@ -249,6 +251,12 @@ if (Meteor.isServer) {
 				
 					console.log("added Development options to settings")
 					Settings.update(settings._id, settings, {validate: false});
+				}
+				
+				if("passphrase" in settings.bikecoin.wallet == false) {
+					console.log("update settings wallet")
+					Settings.update(settings._id, {$unset:{ 'bikecoin.wallet': "" }});
+					Settings.update(settings._id, {$set:{ 'bikecoin.wallet': {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
 				}
 
 		    try {

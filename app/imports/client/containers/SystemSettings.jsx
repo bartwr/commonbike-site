@@ -142,16 +142,28 @@ class SystemSettings extends Component {
           label: 'Application BikeCoin Wallet'
       },
       {
-          fieldname: 'bikecoin.coin.wallet.address',
+          fieldname: 'bikecoin.wallet.passphrase',
+          fieldvalue: this.props.settings.bikecoin.wallet.passphrase,
+          controltype: 'text',
+          label: 'Passphrase'
+      },
+      {
+          fieldname: 'bikecoin.wallet.privateKey',
+          fieldvalue: this.props.settings.bikecoin.wallet.privateKey,
+          controltype: 'text',
+          label: 'Private Key'
+      },
+      {
+          fieldname: 'bikecoin.wallet.publicKey',
+          fieldvalue: this.props.settings.bikecoin.wallet.publicKey,
+          controltype: 'text',
+          label: 'PublicKey'
+      },
+      {
+          fieldname: 'bikecoin.wallet.address',
           fieldvalue: this.props.settings.bikecoin.wallet.address,
           controltype: 'text',
           label: 'Address'
-      },
-      {
-          fieldname: 'bikecoin.coin.wallet.privatekey',
-          fieldvalue: this.props.settings.bikecoin.wallet.privatekey,
-          controltype: 'text',
-          label: 'Private Key'
       },
       {
           controltype: 'header',
