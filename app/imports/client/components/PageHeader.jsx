@@ -33,7 +33,7 @@ class PageHeader extends Component {
         <AppBar position="static" className={classes.appbar}>
           <Toolbar>
             <div className={classes.menudiv}>
-              { currentUser && <AppMenu testitems={this.props.showTestOptions} user={currentUser} /> }
+              <AppMenu testitems={this.props.showTestOptions} user={currentUser} />
             </div>
             <div onClick={() => RedirectTo('/')} className={classes.logodiv}>
               <LiskBikeLogo className={classes.logo}/>

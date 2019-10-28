@@ -154,6 +154,12 @@ class AppMenu extends React.Component {
     Meteor.logout(()=>RedirectTo('/'));
   }
 
+  doLogin() {
+    this.closeMenu();
+
+    RedirectTo('/login');
+  }
+
   objects() {
     RedirectTo('/objects')
   }
@@ -162,7 +168,7 @@ class AppMenu extends React.Component {
     const { classes } = this.props;
     const user = this.props.user;
 
-    let isAdmin = Roles.userIsInRole(user._id, 'admin');
+    let isAdmin = user && Roles.userIsInRole(user._id, 'admin');
     let email = user && user.emails && user.emails[0] ? user.emails[0].address: ""
 
     const sideList = (
@@ -172,7 +178,7 @@ class AppMenu extends React.Component {
             { title: 'Search on the Map', onclick: this.doRedirect('/').bind(this) },
             { title: 'List of all bicycles', onclick: this.doRedirect('/objects').bind(this) },
 //            { title: 'My Rentals', onclick: this.doRedirect('/admin/rentals').bind(this) }, -> needs special version of objects page
-            { title: 'My Wallet', onclick: this.doRedirect('/wallet').bind(this) },
+//            { title: 'My Wallet', onclick: this.doRedirect('/wallet').bind(this) },
             ].map((info, index) => (
             <ListItem button key={info.title} onClick={info.onclick}>
               <ListItemIcon><StarIcon /></ListItemIcon>
@@ -209,19 +215,30 @@ class AppMenu extends React.Component {
             null
           }
         <Divider />
-        { this.props.testitems ?
+        { isAdmin && this.props.testitems ?
             this.renderTestSubmenu(classes, isAdmin)
             :
             null
          }
+        { this.props.user ?
          <ListItem button key={"Logout"} onClick={this.doLogout.bind(this)}>
            <ListItemIcon><StarIcon /></ListItemIcon>
            <ListItemText primary={"Logout"} />
          </ListItem>
+         :
+         <ListItem button key={"Login"} onClick={this.doLogin.bind(this)}>
+           <ListItemIcon><StarIcon /></ListItemIcon>
+           <ListItemText primary={"Login"} />
+         </ListItem>
+       }
+       { this.props.user ?
          <ListItem>
            <AccountCircleIcon />
            <ListItemText primary={email} />
          </ListItem>
+         :
+         null
+        }
       </div>
     );
 

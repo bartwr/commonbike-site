@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 // import ObjectDetails from '/imports/client/containers/ObjectDetails';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { withStyles } from '@material-ui/core/styles';
+import Redirect from 'react-router/Redirect'
 
 // Import models
 import { Objects } from '/imports/api/objects.js';
@@ -37,6 +38,13 @@ class ObjectList extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {redirect: false}
+  }
+  
+  doRedirect = (location) => () => {
+    console.log("do redirect %s", location);
+    this.setState({redirect: location});
   }
   
   newObject() {
@@ -47,12 +55,12 @@ class ObjectList extends Component {
   
   handleObjectSelection = (object) => {
     // console.log('select catalogitem %o', menuitem.catalogitem.uuid);
-    alert('show / navigate to object detail screen')
-    this.setState({showeditscreen: true, selectedobjectid: object._id});
+    this.setState({redirect: '/bike/'+object._id});
   }
   
   handleEditSelection = (object) => {
     // console.log('edit catalogitem %o', menuitem.catalogitem.uuid);
+    RedirectTo((this.props.isEditable ? '/admin/bike/details/' : '/bike/details/') + this.props.item._id)
     this.setState({showeditscreen: true, selectedobjectid: object._id});
   }
 
@@ -90,6 +98,10 @@ class ObjectList extends Component {
   render() {
     if(!this.props.objects ) return (null);
     
+    if(false!==this.state.redirect) {
+      return (<Redirect to={this.state.redirect} push/>);
+    }
+
     const { classes, allowCreateLocation, editmode, objects } = this.props;
     
     return (

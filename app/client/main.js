@@ -122,7 +122,7 @@ class AppRoutes extends React.Component {
       <Route path='/login' component={UserAppLogin}/>
       <Route path='/objects' component={UserAppObjectList}/>
       <Route path='/wallet' component={UserAppUserWallet}/>
-      <Route path='/bike/details/:objectId' component={UserAppObjectDetails}/>
+      <Route path='/bike/:objectId' component={UserAppObjectDetails}/>
 
       <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppObjectDetailsCheckin}/>
 

@@ -24,20 +24,14 @@ class Login extends Component {
       <div style={s.base}>
 
         <div style={s.intro}>
-
           <p>
-            Do you want to be one of the first<br />to try Lisk.bike?
+            Register or log in with your email adress
           </p>
-
           <p>
-            Log in with a lisk wallet
+            to access the backend
           </p>
-
         </div>
 
-        <p>
-          Or use your email adress
-        </p>
 
         <div style={{textAlign: 'center'}}>
           <LoginForm loginCallback={this.loginCallback.bind(this)} />

@@ -128,7 +128,7 @@ ObjectCompactComponent.propTypes = {
 
 ObjectCompactComponent.defaultProps = {
   isAdmin: false,
-  object: {},
+  object: undefined,
 }
 
 export default withStyles(styles)(ObjectCompactComponent);
