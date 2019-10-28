@@ -101,10 +101,14 @@ class Wallet extends Component {
     super(props);
     
     this.state = {balance: '-', timer: false};
-    
+  }
+  
+  componentDidMount() {
     if(this.props.showbalance==true) {
       this.getBalance();
-    }
+    } else {
+      'skip first getbalance call'
+    }    
   }
   
   componentWillUnmount() {
@@ -154,18 +158,18 @@ class Wallet extends Component {
       <div className={classes.outer}>
         <div className={classes.inner} style={{textOverflow: 'ellipsis'}}>
           { title != '' ?
-              <Typography variant="h4" className={classes.title}>{title}</Typography>
+              <Typography variant="h5" className={classes.title}>{title}</Typography>
             :
-              <Typography variant="h4" className={classes.listitemheader}>address</Typography>
+              <Typography variant="h5" className={classes.listitemheader}>address</Typography>
           }
           <Typography noWrap variant="subtitle1" className={classes.listitem}>{wallet.address}</Typography>
           { showbalance == true ?
-              <Typography variant="h4" className={classes.listitemheader}>balance</Typography>
+              <Typography variant="h5" className={classes.listitemheader}>balance</Typography>
             :
               null
           }
           { showbalance == true ?
-              <Typography variant="h4" className={classes.listitem}>{this.state.balance}</Typography>
+              <Typography variant="h5" className={classes.listitem}>{this.state.balance}</Typography>
             :
               null
           }

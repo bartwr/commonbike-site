@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Objects } from '/imports/api/objects.js';
 import '/imports/api/users.js';
 import { getUserDescription } from '/imports/api/users.js';
-import BikeCoin from '/imports/api/bikecoin.js';
 
 var testUsers = [
     {name:"user1",email:"user1@lisk.bike",
@@ -102,15 +101,27 @@ export const checkTestUsers = function() {
       id = hithere._id;
     } else {
       // assign new keypair to object
-      var keypair = BikeCoin.newKeypair();
+      // assign new keypair to object
+      const passphrase = Mnemonic.generateMnemonic();
+      const { privateKey, publicKey } = getKeys(passphrase);
+      const address = getAddressFromPublicKey(publicKey);
+
+      let wallet = {
+        passphrase,
+        privateKey,
+        publicKey,
+        address
+      };
 
       id = Accounts.createUser({
         email: userData.email,
         password: userData.password,
         profile: { name: userData.name,
                    wallet: {
-                     address:keypair.address,
-                     privatekey:keypair.privatekey
+                     passphrase: '',
+                     privateKey: '',
+                     publicKey: '',
+                     address: ''
                    }
         }
       });
@@ -171,15 +182,7 @@ export const checkTestObjects = function() {
         timeunit: 'day',
         description: 'tijdelijk gratis'
       };
-
-      // assign new keypair to object
-      var keypair = BikeCoin.newKeypair();
-
-      var walletinfo = {
-        address:keypair.address,
-        privatekey:keypair.privatekey
-      }
-      
+    
       // var firstproviderid = null;
       // _.each(locationData.providers, function (provider) {
       //   var hithere=Accounts.findUserByEmail(provider);
@@ -202,7 +205,12 @@ export const checkTestObjects = function() {
                  lat_lng: object.startcoordinates},
         lock: lockinfo,
         price: priceinfo,
-        wallet: walletinfo
+        wallet: {
+          passphrase: '',
+          privateKey: '',
+          publicKey: '',
+          address: ''
+        }
       });
     }
   });

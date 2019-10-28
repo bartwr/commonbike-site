@@ -1,6 +1,5 @@
 import { ApiKeys } from '/imports/api/api-keys.js'
 import { Objects, getStateChangeNeatDescription } from '/imports/api/objects.js'
-import { UpdatePaymentOrder, UpdateAllPaymentOrders } from '/server/api/paymentservices/mollie.js'
 import { getSettingsServerSide, Settings } from '/imports/api/settings.js';
 
 // demo of concox bl-10 usage (localhost)

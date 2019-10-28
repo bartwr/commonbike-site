@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo';
 import { getUserDescription } from '/imports/api/users.js';
-import BikeCoin from '/imports/api/bikecoin.js';
 import {CoinSchema} from '/imports/api/bikecoinschema.js';
 
 export const Settings = new Mongo.Collection('settings');
@@ -11,10 +10,7 @@ export const defaultProfileName = 'default';   // FUTURE: multiple profiles
 
 // set fields/objects that are also visible to the client here
 const publicFieldset = {profileName:1, mapbox:1, gps: 1,
-												"bikecoin.enabled": 1,
-	                      "bikecoin.provider_url": 1,
-												"bikecoin.token_address": 1,
-												"bikecoin.token_abi": 1	};
+	                      "bikecoin.provider_url": 1 };
 
 if (Meteor.isServer) {
 	Meteor.publish('settings', function settingsPublication(profileName) {
@@ -105,24 +101,9 @@ export const GPSSchema = new SimpleSchema({
 });
 
 export const CoinSettingsSchema = new SimpleSchema({
-	'enabled': {
-    type: Boolean,
-    label: "bikecoin.enabled",
-    defaultValue: 'true'
-  },
 	'provider_url': {
     type: String,
     label: "bikecoin.provider_url",
-    defaultValue: ''
-  },
-	'token_address': {
-    type: String,
-    label: "bikecoin.token_address",
-    defaultValue: ''
-  },
-	'token_abi': {
-    type: String,
-    label: "bikecoin.token_abi",
     defaultValue: ''
   },
 	wallet: {
@@ -220,10 +201,7 @@ if (Meteor.isServer) {
 						lat_lng: [999,999]
 				  },
 					bikecoin: {
-						enabled:false,
 						provider_url: '',
-						token_address: '',
-						token_abi: '',
 						wallet: {
 							passphrase: '',
 							privateKey: '',
@@ -267,6 +245,21 @@ if (Meteor.isServer) {
 					Settings.update(settings._id, {$unset:{ 'bikecoin.wallet': "" }});
 					Settings.update(settings._id, {$set:{ 'bikecoin.wallet': {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
 				}
+				
+				if("token_address" in settings.bikecoin != false) {
+					console.log("remove bikecoin.token_address from settings")
+					Settings.update(settings._id, {$unset:{ 'bikecoin.token_address': "" }});
+				}
+				
+				if("token_abi" in settings.bikecoin != false) {
+					console.log("remove bikecoin.token_abi from settings")
+					Settings.update(settings._id, {$unset:{ 'bikecoin.token_abi': "" }});
+				}
+
+				if("enabled" in settings.bikecoin != false) {
+					console.log("remove enabled from settings")
+					Settings.update(settings._id, {$unset:{ 'bikecoin.enabled': "" }});
+				}
 
 		    try {
 		      check(settings, SettingsSchema);
@@ -288,15 +281,6 @@ if (Meteor.isServer) {
 				settings.bikecoin.provider_url='http://brainz.lisk.bike:4000';
 
 				Settings.update(settings._id, settings, {validate: false});	// todo: make net selectable in the configuration
-			}
-
-			if(settings.bikecoin.wallet.address=='' && settings.bikecoin.wallet.privatekey=='') {
-				var keypair = BikeCoin.newKeypair();
-				settings.bikecoin.wallet.address = keypair.address;
-				settings.bikecoin.wallet.privatekey = keypair.privatekey;
-
-				console.log('adding bikecoin keypair to general settings')
-				Settings.update(settings._id, settings, {validate: false});
 			}
 			
 			if(Meteor.users.find().fetch().length==0) {
@@ -360,11 +344,10 @@ if (Meteor.isServer) {
         var description = getUserDescription(Meteor.user()) + ' heeft de systeeminstellingen gewijzigd';
 				console.log(description);
 			};
-    },
+    }
 	});
 
 	Meteor.startup(() => {
 		Meteor.call('settings.check');
 	});
-
 }

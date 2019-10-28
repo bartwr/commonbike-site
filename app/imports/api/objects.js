@@ -168,9 +168,16 @@ Meteor.methods({
     data.title = data.title.replace(/<.*?>/g, " ").replace(/\s+/g, " ").trim();
 
     // assign new keypair to object
-    var keypair = BikeCoin.newKeypair();
-    data.wallet.address=keypair.address;
-    data.wallet.privatekey=keypair.privatekey;
+    const passphrase = Mnemonic.generateMnemonic();
+    const { privateKey, publicKey } = getKeys(passphrase);
+    const address = getAddressFromPublicKey(publicKey);
+
+    data.wallet = {
+      passphrase,
+      privateKey,
+      publicKey,
+      address
+    };
 
     // Insert object
     var objectId = Objects.insert(data);

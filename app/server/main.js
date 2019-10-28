@@ -3,15 +3,12 @@ import { Accounts } from 'meteor/accounts-base'
 
 import { Settings } from '/imports/api/settings.js';
 import '/imports/api/users.js'
-import BikeCoin from '/imports/api/bikecoin.js'
 import { Objects } from '/imports/api/objects.js';
 import '/imports/api/api-keys.js'
 import { Log } from '/imports/api/log.js'
 import '/imports/server/testdata.js'
 import '/imports/api/databasetools.js';
 import { createSendCommand, processSinglePacket } from '/server/api/concox-bl10.js'; // methods
-
-// import '/server/api/paymentservices/mollie.js'; // methods
 
 Meteor.startup(() => {
 	// code to run on server at startup

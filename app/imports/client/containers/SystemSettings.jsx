@@ -31,11 +31,6 @@ class SystemSettings extends Component {
     return true;
   }
   
-  deployContract() {
-    console.log("deploy the contracts now!!!!!!")
-    // Meteor.call('bikecoin.deploycontract');
-  }
-
   render() {
   	if(!this.props.settings) {
     	return ( <div />);
@@ -104,15 +99,8 @@ class SystemSettings extends Component {
       },
       {
           controltype: 'header',
-          label: 'BikeCoin Contract'
+          label: 'Lisk'
       },
-  		{
-          fieldname: 'bikecoin.enabled',
-          fieldvalue: this.props.settings.bikecoin.enabled,
-          controltype: 'combo',
-          label: 'Enabled',
-          controltype: 'yesno'
-  		},
       {
           fieldname: 'bikecoin.provider_url',
           fieldvalue: this.props.settings.bikecoin.provider_url,
@@ -120,26 +108,8 @@ class SystemSettings extends Component {
           label: 'Provider URL'
       },
       {
-          fieldname: 'bikecoin.deploycontract',
-          fieldvalue: 'bikecoin.deploycontract',
-          controltype: 'serverside-action',
-          label: 'Deploy Contract'
-      },
-      {
-          fieldname: 'bikecoin.token_address',
-          fieldvalue: this.props.settings.bikecoin.token_address,
-          controltype: 'text',
-          label: 'Token Address'
-      },
-      {
-          fieldname: 'bikecoin.token_abi',
-          fieldvalue: this.props.settings.bikecoin.token_abi,
-          controltype: 'text',
-          label: 'Token ABI'
-      },
-      {
           controltype: 'header',
-          label: 'Application BikeCoin Wallet'
+          label: 'System BikeCoin Wallet'
       },
       {
           fieldname: 'bikecoin.wallet.passphrase',
@@ -194,9 +164,6 @@ class SystemSettings extends Component {
   	]
 
     var handlers = [
-      { name: "deploycontract",
-        action: this.deployContract
-      }
     ]
 
     const { classes } = this.props;

@@ -178,7 +178,7 @@ class AppMenu extends React.Component {
             { title: 'Search on the Map', onclick: this.doRedirect('/').bind(this) },
             { title: 'List of all bicycles', onclick: this.doRedirect('/objects').bind(this) },
 //            { title: 'My Rentals', onclick: this.doRedirect('/admin/rentals').bind(this) }, -> needs special version of objects page
-            { title: 'My Wallet', onclick: this.doRedirect('/wallet').bind(this) },
+            { title: 'My Wallet', onclick: this.doRedirect('/userwallet').bind(this) },
             ].map((info, index) => (
             <ListItem button key={info.title} onClick={info.onclick}>
               <ListItemIcon><StarIcon /></ListItemIcon>
@@ -201,6 +201,7 @@ class AppMenu extends React.Component {
                   {[
                     { title: 'User Management', onclick: this.doRedirect('/admin/users').bind(this) },
                     { title: 'System Settings', onclick: this.doRedirect('/systemsettings').bind(this) } ,
+                    { title: 'System Wallet', onclick: this.doRedirect('/systemwallet').bind(this) } ,
                     { title: 'Log', onclick: this.doRedirect('/admin/log').bind(this) } ,
                     ].map((info, index) => (
                     <ListItem button key={'menuitem' + info.title}  onClick={info.onclick} className={classes.nested}>

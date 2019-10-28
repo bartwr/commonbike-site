@@ -7,11 +7,12 @@ import {BrowserRouter as Router, Switch, Route, withRouter} from 'react-router-d
 import Redirect from 'react-router/Redirect'
 
 import Settings from '/imports/api/settings.js';
-import BikeCoin from '/imports/api/bikecoin.js'
 
 import UserApp from '/imports/client/components/UserApp.jsx'
 import Login from '/imports/client/containers/Login.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
+import SystemWallet from '/imports/client/containers/SystemWallet.jsx'
+// import BikeWallet from '/imports/client/containers/BikeWallet.jsx'
 // import LocationsMap from '/imports/client/components/LocationsMap.jsx'
 import OverviewPage from '/imports/client/containers/OverviewPage.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
@@ -57,6 +58,7 @@ const UserAppAdminAdminUsersList = () => (<UserApp content={<AdminUsersList />} 
 
 const UserAppSystemSettings = () => (<UserApp content={<SystemSettings />} />)
 
+const UserAppSystemWallet = () => (<UserApp content={<div><SystemWallet /></div>} />)
 
 const RouteWhenLoggedIn = ({ component: Component, ...rest }) => {
 
@@ -121,7 +123,7 @@ class AppRoutes extends React.Component {
 
       <Route path='/login' component={UserAppLogin}/>
       <Route path='/objects' component={UserAppObjectList}/>
-      <Route path='/wallet' component={UserAppUserWallet}/>
+      <Route path='/userwallet' component={UserAppUserWallet}/>
       <Route path='/bike/:objectId' component={UserAppObjectDetails}/>
 
       <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppObjectDetailsCheckin}/>
@@ -129,6 +131,7 @@ class AppRoutes extends React.Component {
       <RouteWhenLoggedIn path='/payment/:internalPaymentId' component={PaymentOrder}/>
 
       <RouteWhenLoggedIn path='/admin/bike/details/:objectId' component={UserAppAdminPageObjectDetails}/>
+      <RouteWhenLoggedIn path='/systemwallet' component={UserAppSystemWallet}/>
 
       <RouteWhenLoggedIn path='/admin/users' component={UserAppAdminAdminUsersList}/>
       <RouteWhenLoggedIn path='/systemsettings' component={UserAppSystemSettings}/>
