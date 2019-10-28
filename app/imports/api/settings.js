@@ -61,52 +61,6 @@ export const MapboxSchema = new SimpleSchema({
   }
 });
 
-export const SlackSchema = new SimpleSchema({
-  'notify': {
-    type: Boolean,
-    label: "slack.notify",
-    defaultValue: 'false'
-  },
-  'address': {
-    type: String,
-    label: "slack.address",
-    defaultValue: '<fill in Webhook URL here, channel and name below, set notify to true>'
-  },
-  'channel': {
-    type: String,
-    label: "slack.channel",
-    defaultValue: 'commonbike-activity'
-  },
-  'name': {
-    type: String,
-    label: "slack.name",
-    defaultValue: 'commonbike-bot'
-  },
-  'icon_emoji': {
-    type: String,
-    label: "slack.icon_emoji",
-    defaultValue: ':ghost:'
-  }
-});
-
-export const VeiligstallenSchema = new SimpleSchema({
-  'visible': {
-    type: Boolean,
-    label: "veiligstallen.visible",
-    defaultValue: 'false'
-  },
-  'kmlURL': {
-    type: String,
-    label: "veiligstallen.kmlurl",
-    defaultValue: 'http://www.veiligstallen.nl/veiligstallen.kml'
-  },
-  'kmlLastDownloadTimestamp': {
-    type: Number,
-    label: "veiligstallen.kmllastdownload",
-    defaultValue: 0
-  }
-});
-
 export const OnboardingSchema = new SimpleSchema({
   'enabled': {
     type: Boolean,
@@ -119,49 +73,8 @@ export const BackupSchema = new SimpleSchema({
   'location': {
     type: String,
     label: "Backup Location",
-    defaultValue: '~/backup-commonbike'
+    defaultValue: '~/backup-liskbike'
   }
-});
-
-export const SkopeiSchema = new SimpleSchema({
-	'enabled': {
-    type: Boolean,
-    label: "skopei.enabled",
-    defaultValue: 'false'
-  },
-	'clientid': {
-    type: String,
-    label: "skopei.clientid",
-    defaultValue: '<fill in client id here, client key below, set enable to true>'
-  },
-	'clientkey': {
-    type: String,
-    label: "skopei.clientkey",
-    defaultValue: ''
-  },
-});
-
-export const GoAboutSchema = new SimpleSchema({
-	'enabled': {
-    type: Boolean,
-    label: "goabout.enabled",
-    defaultValue: 'false'
-  },
-	'clientid': {
-    type: String,
-    label: "goabout.clientid",
-    defaultValue: '<fill in client id here, client secret / usertoken below, set enable to true>'
-  },
-	'clientsecret': {
-    type: String,
-    label: "goabout.clientsecret",
-    defaultValue: ''
-  },
-	'userbearertoken': {
-    type: String,
-    label: "goabout.userbearertoken",
-    defaultValue: ''
-  },
 });
 
 export const GPSSchema = new SimpleSchema({
@@ -211,6 +124,24 @@ export const CoinSettingsSchema = new SimpleSchema({
 // for now there is only one set of settings. Later on profilename can be used later
 // to use different settings for different instances
 
+export const DevelopmentOptionsSchema = new SimpleSchema({
+	'showTestButtons': {
+    type: Boolean,
+    label: "Show Test Buttons",
+    defaultValue: 'false'
+  },
+	'forwardRequests': {
+		type: Boolean,
+    label: "Forward incoming requests",
+    defaultValue: 'false'
+	},
+	'forwardRequestsURL': {
+		type: String,
+    label: "Forwarding Destination URL",
+    defaultValue: 'http://luggage.dyndns.tv:7777'
+	}
+});
+
 export const SettingsSchema = new SimpleSchema({
   _id: {
   	type: String,
@@ -233,23 +164,11 @@ export const SettingsSchema = new SimpleSchema({
   mapbox: {
     type: MapboxSchema
   },
-  slack: {
-    type: SlackSchema
-  },
-  veiligstallen: {
-  	type: VeiligstallenSchema
-  },
 	onboarding: {
 		type: OnboardingSchema
   },
 	backup: {
     type: BackupSchema
-  },
-	skopei: {
-    type: SkopeiSchema
-  },
-	goabout: {
-    type: GoAboutSchema
   },
 	gps: {
     type: GPSSchema
@@ -257,6 +176,9 @@ export const SettingsSchema = new SimpleSchema({
 	bikecoin: {
 	    type: CoinSettingsSchema
   },
+	developmentOptions: {
+		type: DevelopmentOptionsSchema
+	},
 });
 
 if (Meteor.isServer) {
@@ -278,34 +200,11 @@ if (Meteor.isServer) {
 					  style: 'mapbox.streets',
 					  userId: '<mapbox access token has not been set in system settings>'
 					},
-	    		slack: {
-  				  notify:false,
-  				  address: '<fill in Webhook URL here, channel and name below, set notify to true>',
-  				  channel: 'commonbike-activity',
-  				  name: 'commonbike-bot',
-  				  icon_emoji: ':ghost:'
-	    		},
-	    		veiligstallen: {
-  				  visible:false,
-  				  kmlURL: '<fill in Webhook URL here, channel and name below, set notify to true>',
-  				  kmlLastDownloadTimestamp: 0
-	    		},
 					onboarding: {
 					  enabled:false
 					},
 					backup: {
 					  location:''
-					},
-					skopei : {
-					  enabled:false,
-					  clientid: '',
-					  clientkey: ''
-					},
-					goabout : {
-					  enabled:false,
-					  clientid: '',
-					  clientsecret: '',
-					  userbearertoken: ''
 					},
 					gps: {
 						enabled:true,
@@ -321,6 +220,11 @@ if (Meteor.isServer) {
 							privatekey: ''
 						}
 					},
+					developmentOptions: {
+						showTestButtons: false,
+						forwardRequests: false,
+						forwardRequestsURL: 'http://luggage.dyndns.tv:7777'
+					},
 	    	}
 
 				try {
@@ -334,91 +238,16 @@ if (Meteor.isServer) {
 				Settings.update(settingsId, settings, {validate: false});
 
 		    var description = 'Standaard instellingen aangemaakt';
-		    Meteor.call('transactions.addTransaction', 'CREATE_SETTINGS', description, Meteor.userId(), null, null, settings);
+				console.log(description);
 	    } else {
-				if(settings.velocity) {
-					console.log('remove velocity settings')
-					Settings.update(settings._id, {$unset:{ velocity: "" }});
-					unset(settings.velocity)
-				}
-
-				if(!settings.baseurl) {
-					settings.baseurl = '';
-
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(settings.openbikelocker) {
-					console.log('remove openbikelocker settings')
-					Settings.update(settings._id, {$unset:{ openbikelocker: "" }});
-					delete settings.openbikelocker
-
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(!settings.onboarding) {
-					settings.onboarding = { enabled: false };
-
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(settings.mapbox.userId.substring(0,3)!='pk.') {
-					console.log('setting mapbox userId');
-				  settings.mapbox.userId='pk.eyJ1IjoiZXJpY3ZycCIsImEiOiJjaWhraHE5ajIwNmRqdGpqN2h2ZXhqMnRsIn0.1FBWllDyQ_nSlHFE2jMLDA';
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(!settings.backup) {
-					settings.backup = {
-						location:'~/backup-commonbike'
+				if("developmentOptions" in settings == false) {
+					settings.developmentOptions = {
+						showTestButtons: false,
+						forwardRequests: false,
+						forwardRequestsURL: "http://luggage.dyndns.tv:7777"
 					}
-
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(!settings.bikecoin) {
-					settings.bikecoin = {
-						enabled:false,
-						provider_url: '',
-						token_address: '',
-						token_abi: '',
-						wallet: {
-							address: '',
-							privatekey: ''
-						}
-					}
-
-					console.log('adding bikecoin settings')
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(!settings.skopei) {
-					settings.skopei = {
-						enabled:false,
-						clientid: '',
-						clientkey: ''
-					}
-
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(!settings.goabout) {
-					settings.goabout = {
-						enabled:false,
-						clientid: '',
-						clientsecret: '',
-						userbearertoken: ''
-					}
-
-					Settings.update(settings._id, settings, {validate: false});
-				}
-
-				if(!settings.gps) {
-					settings.gps = {
-						enabled:true,
-						lat_lng: [999,999]
-					}
-
+				
+					console.log("added Development options to settings")
 					Settings.update(settings._id, settings, {validate: false});
 				}
 
@@ -427,6 +256,7 @@ if (Meteor.isServer) {
 		    } catch(ex) {
 		      console.log('data for settings does not match schema: ' + ex.message);
 					console.log(JSON.stringify(ex.message));
+					console.log(ex);
 			  	throw new Meteor.Error('invalid-settings');
 		    }
 	    }
@@ -488,7 +318,7 @@ if (Meteor.isServer) {
 			Settings.update(settingsId, settings, {validate: false});
 
 	    var description = getUserDescription(Meteor.user()) + ' heeft de instellingen van profiel ' + settings.profileName + ' gewijzigd';
-	    Meteor.call('transactions.addTransaction', 'CHANGE_SETTINGS', description, Meteor.userId(), null, null, settings);
+			console.log(description);
 	  },
 	  'settings.applychanges'(_id, changes) {
 		  // Make sure the user is logged in
@@ -510,7 +340,7 @@ if (Meteor.isServer) {
 				Settings.update(_id, {$set : changes} );
 
         var description = getUserDescription(Meteor.user()) + ' heeft de systeeminstellingen gewijzigd';
-        Meteor.call('transactions.addTransaction', 'CHANGESETTINGS_SYSTEMSETTINGS', description, Meteor.userId(), null, null, JSON.stringify(logchanges));
+				console.log(description);
 			};
     },
 	});

@@ -1,5 +1,6 @@
-import React, { Component, PropTypes } from 'react'
-import { createContainer } from 'meteor/react-meteor-data';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types';
+import { withTracker } from 'meteor/react-meteor-data';
 import L from 'leaflet'
 import { Settings } from '/imports/api/settings.js';
 
@@ -61,32 +62,6 @@ class Map extends Component {
       accessToken: this.props.accessToken
     }).addTo(myMap)
 
-    const useCustomMarkerIcon = false
-    let   marker
-
-    if (useCustomMarkerIcon) {
-      const myIcon = L.icon({
-        iconUrl: '/files/LocationDetails/marker.svg',
-        iconSize: [32, 32],
-        iconAnchor: [15, 25],
-        popupAnchor: [8, -16],
-        // iconUrl: 'my-icon.png',
-        // iconRetinaUrl: 'my-icon@2x.png',
-        // iconSize: [38, 95],
-        // iconAnchor: [22, 94],
-        // popupAnchor: [-3, -76],
-        // shadowUrl: 'my-icon-shadow.png',
-        // shadowRetinaUrl: 'my-icon-shadow@2x.png',
-        // shadowSize: [68, 95],
-        // shadowAnchor: [22, 94]
-      })
-      marker = L.marker(item.lat_lng, {icon: myIcon}).addTo(myMap)
-    } else { // !useCustomMarkerIcon
-      marker = L.marker(item.lat_lng).addTo(myMap)
-    }
-
-    marker.bindPopup(`<b>${item.title}</b><br>${item.address}`).openPopup()
-
     myMarker = L.circleMarker(myLatLng).addTo(myMap)
     myMarker.bindPopup(`<b>You are here</b>`)
 
@@ -114,16 +89,16 @@ Map.defaultProps = {
   width: window.innerWidth,
   height: window.innerHeight-32,
   item: {
-    address: 'Moreelsepark 65, Utrecht, Netherlands',
+    address: 'Jaarbeursplein, Utrecht, Netherlands',
     title: 'Seats2meet',
     description: 'Utrecht CS',
-    lat_lng: [52.08906, 5.11343]
+    lat_lng: [52.088304, 5.107243]
   },
   style: "mapbox.streets" ,
   accessToken: "pk.eyJ1IjoiZXJpY3ZycCIsImEiOiJjaWhraHE5ajIwNmRqdGpqN2h2ZXhqMnRsIn0.1FBWllDyQ_nSlHFE2jMLDA"
 }
 
-export default Map = createContainer((props) => {
+export default withTracker((props) => {
   Meteor.subscribe('settings');
 
   var settings = Settings.findOne();
@@ -132,6 +107,7 @@ export default Map = createContainer((props) => {
       style: settings.mapbox.style,
       accessToken: settings.mapbox.userId
   };
-}, Map);
+})(Map);
+
 
 // export default Map

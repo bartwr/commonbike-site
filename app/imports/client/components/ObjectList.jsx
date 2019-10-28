@@ -1,93 +1,124 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 import ObjectBlock from '/imports/client/containers/ObjectBlock';
+import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
+// import ObjectDetails from '/imports/client/containers/ObjectDetails';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import { withStyles } from '@material-ui/core/styles';
 
 // Import models
-import { Objects } from '/imports/api/locations.js';
+import { Objects } from '/imports/api/objects.js';
 
-// Import components
-import Block from '/imports/client/components/Block';
+const styles = theme => ({
+  root: {
+    margin: theme.spacing(3),
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  addbox: {
+     display: 'flex',
+     flexDirection: 'column',
+     justifyContent: 'center',
+     alignItems: 'center',
+     width: '200px',
+     height: '200px',
+     margin: theme.spacing(1),
+     paddingTop: theme.spacing(0.5).unit
+    },
+  addicon: {
+    width: '100px',
+    height: '100px',
+  }
+});
 
 class ObjectList extends Component {
 
   constructor(props) {
     super(props);
   }
+  
+  newObject() {
+    if(this.props.newObject) {
+      this.props.newObject();
+    }
+  }
+  
+  handleObjectSelection = (object) => {
+    // console.log('select catalogitem %o', menuitem.catalogitem.uuid);
+    alert('show / navigate to object detail screen')
+    this.setState({showeditscreen: true, selectedobjectid: object._id});
+  }
+  
+  handleEditSelection = (object) => {
+    // console.log('edit catalogitem %o', menuitem.catalogitem.uuid);
+    this.setState({showeditscreen: true, selectedobjectid: object._id});
+  }
+
+  // handleDeleteSelection = (menuitem) => {
+  //   if( ! confirm('Are you sure that you want to delete bicycle '+ object.title +'?'))
+  //     return;
+  //
+  //   Meteor.call('objects.remove', object._id, this.processServerResultDeleteItem.bind(this));
+  //
+  //   return true;
+  //   // this.setState({showeditscreen: true, selectedobjectid: menuitem.catalogitem.uuid});
+  // }
+  //
+  // processServerResultDeleteItem = (err, serverResult) => {
+  //   const { item  } = this.props;
+  //
+  //   // var util = require('util')
+  //   // if(err) {
+  //   //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, JSON.stringify(err)), snackbarOptions.error);
+  //   // } else if (serverResult.result!==true) {
+  //   //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, serverResult.message), snackbarOptions.error);
+  //   // } else {
+  //   //   this.doSnack(serverResult.message,snackbarOptions.success);
+  //   // }
+  // };
+  
+  renderObject(object) {
+    return (
+      <ObjectBlock key={object._id} object={object}
+        selecthandler={this.handleObjectSelection}
+        edithandler={this.handleEditSelection} />
+     )
+  }
 
   render() {
+    if(!this.props.objects ) return (null);
+    
+    const { classes, allowCreateLocation, editmode, objects } = this.props;
+    
     return (
-      <div style={s.base}>
-
-        <p style={s.intro}>
-          {this.props.title}<br/>
-        </p>
-
-        { this.props.objects.length != 0 ?
-           this.props.objects.map((object) =>  <ObjectBlock
-                              key={object._id}
-                              item={object}
-                              isEditable={this.props.isEditable}
-                              showPrice={this.props.showPrice}
-                              showState={this.props.showState}
-                              showRentalDetails={this.props.showRentalDetails}
-                              showLockDetails={this.props.showLockDetails}
-                              onClick={this.props.clickItemHandler} />)
+      <div  className={classes.root}>
+        { objects.length != 0 ?
+           objects.map(this.renderObject.bind(this))
           :
-          <p style={s.intro}><i><b>{this.props.emptyListMessage}</b></i></p>
+          <Typography> variant='h4'>No Bicycles Available</Typography>
         }
-
+        { editmode && allowCreateLocation ?
+            <Card className={classes.addbox}>
+              <AddBoxIcon className={classes.addicon} onClick={this.newObject.bind(this)} />
+            </Card>
+          :
+            null
+        }
       </div>
     );
   }
 }
 
-var s = {
-  base: {
-    fontSize: 'default',
-    lineHeight: 'default',
-    padding: '20px 20px 0 20px',
-    textAlign: 'center',
-    minHeight: 'calc(100vh - 74px)',
-  },
-  intro: {
-    padding: '0 70px',
-    margin: '0 auto',
-    maxWidth: '400px',
-    textAlign: 'left',
-    minHeight: '80px',
-    fontSize: '1.2em',
-    fontWeight: '500',
-    background: 'url("/files/ObjectList/marker.svg") 0 0 / auto 60px no-repeat',
-  },
-
-}
-
 ObjectList.propTypes = {
-  title: PropTypes.string,
-  emptyListMessage: PropTypes.string,
   objects: PropTypes.array,
   clickItemHandler: PropTypes.any,
-
-  showPrice : PropTypes.any,
-  showState : PropTypes.any,
-  showRentalDetails: PropTypes.any,
-  showLockDetails: PropTypes.any,
-  isEditable: PropTypes.any
 };
 
 ObjectList.defaultProps = {
-  title: "Bekijk hier jouw reserveringen",
-  emptyListMessage: "",
-  objects: {},
+  objects: [],
   clickItemHandler: '',
-
-  methodsBaseName: "",
-  showPrice : false,
-  showState : false,
-  showRentalDetails: false,
-  showLockDetails: false,
-  isEditable: false
 }
 
-export default ObjectList;
+export default withStyles(styles)(ObjectList)

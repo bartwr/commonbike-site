@@ -1,10 +1,10 @@
 == installing
 
-git clone <repository>
-cd repository
+git clone <repository url>
+cd <repository name>/app
 meteor npm install
 meteor npm install --save bcrypt
 
 == running
 
-npm start
+meteor

@@ -1,4 +1,4 @@
-import { getUserDescription } from '/imports/api/users.js'; 
+import { getUserDescription } from '/imports/api/users.js';
 
 export const ApiKeys = new Meteor.Collection( 'api-keys' );
 
@@ -68,12 +68,12 @@ if(Meteor.isServer) {
          });
 
         var description = getUserDescription(Meteor.user()) + ` heeft een nieuwe ${type} API key toegevoegd met naam  owner ID ${ownerId} en naam ${name}`;
-        Meteor.call('transactions.addTransaction', 'API_KEY_CREATE', description, Meteor.userId(), null, null);    
+        console.log(description);
 
          return key;
       } catch( exception ) {
         var description = getUserDescription(Meteor.user()) + ` kan geen nieuwe ${type} API key toegevoegd met naam  owner ID ${ownerId} en naam ${name} - reden:` + exception;
-        Meteor.call('transactions.addTransaction', 'API_KEY_CREATE', description, Meteor.userId(), null, null);    
+        console.log(description);
 
         return exception;
       }
@@ -87,7 +87,7 @@ if(Meteor.isServer) {
           ApiKeys.remove(apikey);
 
           var description = getUserDescription(Meteor.user()) + ` heeft de ${apikey.type} API key verwijderd met naam  owner ID ${apikey.ownerId} en naam ${apikey.name}`;
-          Meteor.call('transactions.addTransaction', 'API_KEY_REMOVE', description, Meteor.userId(), null, null);    
+          console.log(description);
         } else {
           console.log('kan key niet verwijderen ' + _id)
         }

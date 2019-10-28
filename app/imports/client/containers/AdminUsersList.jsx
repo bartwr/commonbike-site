@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 
 // Import components
 import '/imports/api/users.js'
@@ -28,12 +28,12 @@ AdminUsersList.defaultProps = {
   isEditable: false,
 }
 
-export default createContainer((props) => {
-	Meteor.subscribe('allusers');
+export default withTracker((props) => {
+  Meteor.subscribe('allusers');
 
   var users = Meteor.users.find({}, { sort: {title: 1} }).fetch();
 
 	return {
   	users: users
 	};
-}, AdminUsersList);
+})(AdminUsersList);

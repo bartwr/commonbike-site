@@ -2,22 +2,20 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base'
 
 import { Settings } from '/imports/api/settings.js';
-import '/imports/api/transactions.js';
 import '/imports/api/users.js'
 import BikeCoin from '/imports/api/bikecoin.js'
-import { Locations, toGeoJSONPoint, Address2GeoJSONPoint } from '/imports/api/locations.js';
 import { Objects } from '/imports/api/objects.js';
 import '/imports/api/api-keys.js'
 import { Log } from '/imports/api/log.js'
 import '/imports/server/testdata.js'
 import '/imports/api/databasetools.js';
-import '/imports/api/integrations/goabout.js';
-import '/server/api/paymentservices/mollie.js'; // methods
+import { createSendCommand, processSinglePacket } from '/server/api/concox-bl10.js'; // methods
+
+// import '/server/api/paymentservices/mollie.js'; // methods
 
 Meteor.startup(() => {
 	// code to run on server at startup
-
-	// fix all 'old' objects in the production database
+	
 	if(false) {
 		var myObjects = Objects.find().fetch();
 		_.each(myObjects, function (objectData) {
@@ -52,42 +50,16 @@ Meteor.startup(() => {
 			if(!user.profile || !user.profile.name) {
 				Meteor.users.update(user._id, {$set : { 'profile.name' : 'anonymous' }});
 			}
-			if(!user.profile || !user.profile.avatar) {
-				Meteor.users.update(user._id, {$set : { 'profile.avatar' : '' }});
-			}
 		});
 	}
 
 	if(true) {
-		var myLocations = Locations.find().fetch();
-		_.each(myLocations, function (locationData) {
-			if(locationData.coordinates) {
-		    Locations.update(locationData._id, {$unset:{ coordinates: "" }});
-			}
-			if(locationData.point) {
-		    Locations.update(locationData._id, {$unset:{ point: "" }});
-			}
-			if(locationData.loc) {
-		    Locations.update(locationData._id, {$unset:{ loc: "" }});
-			}
-
-			if(!locationData.locationType) {
-				locationData.locationType = 'commonbike'
-				locationData.externalId = ''
-
-				Locations.update(locationData._id, locationData, {validate: false});
-			}
-		});
-
 		_.each(myObjects, function (objectData) {
 			if(objectData.coordinates) {
 		    Objects.update(objectData._id, {$unset:{ coordinates: "" }});
 			}
 			if(objectData.point) {
 		    Objects.update(objectData._id, {$unset:{ point: "" }});
-			}
-			if(objectData.loc) {
-		    Locations.update(objectData._id, {$unset:{ loc: "" }});
 			}
 		});
 	}
@@ -100,11 +72,8 @@ Meteor.startup(() => {
 		if(!user.profile || !user.profile.name) {
 			Meteor.users.update(user._id, {$set : { 'profile.name' : 'anonymous' }});
 		}
-		if(!user.profile || !user.profile.avatar) {
-			Meteor.users.update(user._id, {$set : { 'profile.avatar' : '' }});
-		}
-		if(!user.profile || !user.profile.cancreatelocations) {
-			Meteor.users.update(user._id, {$set : { 'profile.cancreatelocations' : 'false' }});
+		if(!user.profile || !user.profile.cancreateobjects) {
+			Meteor.users.update(user._id, {$set : { 'profile.cancreateobjects' : 'false' }});
 		}
 
 		if(!user.profile || !user.profile.wallet) {
@@ -135,3 +104,49 @@ Meteor.methods( {
     }
   }
 });
+
+const net = require('net');
+
+var resetsent = false;
+
+var server = net.createServer(Meteor.bindEnvironment(function(socket) {
+  // console.log('incoming connection from %s',  socket.remoteAddress);
+  socket.on('data', Meteor.bindEnvironment(function(data) {
+    const buf = data.toString('hex');
+    const cmdSplit = buf.split(/(?=7878|7979)/gi)
+    cmdSplit.map( buf => {
+      processSinglePacket(socket, buf);
+    });
+  }));
+	
+  if(false==resetsent) {
+    console.log("send command");
+    // socket.write(createSendCommand('GPRSSET#'))
+    // Server:1,app.lisk.bike,9020,0
+    // socket.write(createSendCommand('SERVER,1,app.lisk.bike/api/liskbike,80,0#'))
+		// socket.write(createSendCommand('UNLOCK#'))
+    resetsent=true;
+  }
+
+	// socket.write('Echo server\r\n');
+	// socket.pipe(socket);
+
+  socket.on('error', function(data) {
+    console.log("%o",data);
+  })
+}));
+
+// ---------------------------------------------------
+// for now the bl10 server is parked in the meteor app
+// so that I can use the mongodb for state storage
+//
+// later on when things run through the blockchain
+// it can be moved to a separate process. This process
+// can either run standalone or be controlled by using pm2
+// commands issued by the meteor backend.
+
+let port = 3005;                // listening port
+let serverip = '0.0.0.0'; // external IP address for this server
+
+console.log('starting concox BL10 server on %s:%s', serverip, port);
+server.listen(port, serverip);

@@ -3,37 +3,32 @@ import PropTypes from 'prop-types';
 
 // Import components
 import PageHeader from '/imports/client/components/PageHeader.jsx'
-import FeedbackWidget from '/imports/client/components/FeedbackWidget.jsx';
 
 // UserApp component - represents the whole app
 export default class UserApp extends Component {
 
   render() {
     return (
-      <div style={Object.assign({}, s.base, {background: this.props.background})}>
+      <div style={s.base}>
         {this.props.showPageHeader ? <PageHeader /> : null}
         {this.props.content}
-        <FeedbackWidget />
       </div>
     );
   }
-  
-
-
 }
 
 UserApp.propTypes = {
-  background: PropTypes.string,
   showPageHeader: PropTypes.bool,
 };
 
 UserApp.defaultProps = {
-  background: '#fbae17',
   showPageHeader: true,
 }
 
 var s = {
   base: {
+    backgroundColor: 'transparent',
+    backgroundImage: 'linear-gradient(255deg, #02275A 19%, #00132E 70%)',
     maxWidth: '100%',
     minHeight: '100%',
     overflow: 'auto',

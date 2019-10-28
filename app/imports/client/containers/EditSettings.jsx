@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import {propTypes} from 'react-router';
@@ -70,63 +70,6 @@ class EditSettings extends Component {
   		},
       {
           controltype: 'header',
-          label: 'Slack'
-      },
-  		{
-          fieldname: 'slack.notify',
-          fieldvalue: this.props.settings.slack.notify,
-          controltype: 'combo',
-          label: 'Notify',
-          controltype: 'yesno'
-  		},
-  		{
-          fieldname: 'slack.address',
-          fieldvalue: this.props.settings.slack.address,
-          controltype: 'text',
-          label: 'Address'
-  		},
-      {
-          fieldname: 'slack.channel',
-          fieldvalue: this.props.settings.slack.channel,
-          controltype: 'text',
-          label: 'Channel'
-      },
-      {
-          fieldname: 'slack.name',
-          fieldvalue: this.props.settings.slack.name,
-          controltype: 'text',
-          label: 'Name'
-      },
-      {
-          fieldname: 'slack.icon_emoji',
-          fieldvalue: this.props.settings.slack.icon_emoji,
-          controltype: 'text',
-          label: 'Emoji'
-      },
-      {
-          controltype: 'header',
-          label: 'Veiligstallen'
-      },
-      {
-          fieldname: 'veiligstallen.visible',
-          fieldvalue: this.props.settings.veiligstallen.visible,
-          label: 'Visible',
-          controltype: 'yesno'
-      },
-      {
-          fieldname: 'veiligstallen.kmlURL',
-          fieldvalue: this.props.settings.veiligstallen.kmlURL,
-          controltype: 'text',
-          label: 'kmlURL'
-      },
-      {
-          fieldname: 'veiligstallen.kmlLastDownloadTimestamp',
-          fieldvalue: this.props.settings.veiligstallen.kmlLastDownloadTimestamp,
-          controltype: 'number',
-          label: 'timestamp of last download'
-      },
-      {
-          controltype: 'header',
           label: 'Automatic Onboarding'
       },
   		{
@@ -145,56 +88,6 @@ class EditSettings extends Component {
           fieldvalue: this.props.settings.backup.location,
           controltype: 'text',
           label: 'storage directory'
-      },
-      {
-          controltype: 'header',
-          label: 'Skopei Integration'
-      },
-      {
-          fieldname: 'skopei.enabled',
-          fieldvalue: this.props.settings.skopei.enabled,
-          label: 'Enabled',
-          controltype: 'yesno'
-      },
-      {
-          fieldname: 'skopei.clientid',
-          fieldvalue: this.props.settings.skopei.clientid,
-          controltype: 'text',
-          label: 'Client ID'
-      },
-      {
-          fieldname: 'skopei.clientkey',
-          fieldvalue: this.props.settings.skopei.clientkey,
-          controltype: 'text',
-          label: 'Client Key'
-      },
-      {
-          controltype: 'header',
-          label: 'GoAbout Integration'
-      },
-      {
-          fieldname: 'goabout.enabled',
-          fieldvalue: this.props.settings.goabout.enabled,
-          label: 'Enabled',
-          controltype: 'yesno'
-      },
-      {
-          fieldname: 'goabout.clientid',
-          fieldvalue: this.props.settings.goabout.clientid,
-          controltype: 'text',
-          label: 'Client ID'
-      },
-      {
-          fieldname: 'goabout.clientsecret',
-          fieldvalue: this.props.settings.goabout.clientsecret,
-          controltype: 'text',
-          label: 'Client Secret'
-      },
-      {
-          fieldname: 'goabout.userbearertoken',
-          fieldvalue: this.props.settings.goabout.userbearertoken,
-          controltype: 'text',
-          label: 'User Bearer Token'
       },
       {
           controltype: 'header',
@@ -259,6 +152,28 @@ class EditSettings extends Component {
       },
       {
           controltype: 'header',
+          label: 'Development Options'
+      },
+      {
+          fieldname: 'developmentOptions.showTestButtons',
+          fieldvalue: this.props.settings.developmentOptions.showTestButtons,
+          controltype: 'yesno',
+          label: 'Show Test buttons'
+      },
+      {
+          fieldname: 'developmentOptions.forwardRequests',
+          fieldvalue: this.props.settings.developmentOptions.forwardRequests,
+          controltype: 'yesno',
+          label: 'Forward API requests (debugmode)'
+      },
+      {
+          fieldname: 'developmentOptions.forwardRequestsURL',
+          fieldvalue: this.props.settings.developmentOptions.forwardRequestsURL,
+          controltype: 'text',
+          label: 'Forward API requests URL'
+      },
+      {
+          controltype: 'header',
           label: ''
       },
   	]
@@ -303,7 +218,7 @@ EditSettings.defaultProps = {
   title: 'INSTELLINGEN'
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
   // Subscribe to models
   Meteor.subscribe('settings', true);
 
@@ -318,4 +233,4 @@ export default createContainer((props) => {
     settings: settings // ,
   };
 
-}, EditSettings);
+})(EditSettings);

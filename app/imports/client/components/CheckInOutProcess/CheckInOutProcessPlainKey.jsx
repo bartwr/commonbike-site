@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 import ReactDOM from 'react-dom';
 import CheckInOutProcessBase from '/imports/client/components/CheckInOutProcess/CheckInOutProcessBase';
 import { StyleProvider } from '/imports/client/StyleProvider.js'
@@ -30,7 +29,7 @@ class CheckInOutProcessPlainKey extends CheckInOutProcessBase {
 
     var userDescription = getUserDescription(Meteor.user());
     var description='Locatiecode ' + ReactDOM.findDOMNode(this.refs.code).value + ' ingevoerd door gebruiker ' + userDescription;
-    Meteor.call('transactions.addTransaction', 'ENTER_LOCATIONCODE', description, Meteor.userId(), this.props.object.locationId, this.props.object._id);
+    console.log(description);
   }
 
   renderButtonsForUser() {

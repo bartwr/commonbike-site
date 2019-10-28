@@ -1,5 +1,6 @@
 import React from 'react'
-import RaisedButton from '/imports/client/components/RaisedButton.jsx';
+// import RaisedButton from '/imports/client/components/RaisedButton.jsx';
+import Button from '/imports/client/components/Button.jsx';
 
 class PaymentOrder extends React.Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class PaymentOrder extends React.Component {
     return (
       <div>
         <h2>Payment order {this.state.internalPaymentId} is {this.state.paymentStatus}</h2>
-        <RaisedButton onClick={this.onAgain}>Again</RaisedButton>
+        <Button onClick={this.onAgain}>Again</Button>
 
       </div>
     )

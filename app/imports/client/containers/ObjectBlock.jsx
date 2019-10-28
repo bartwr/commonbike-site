@@ -1,126 +1,236 @@
-import React, { Component, } from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types';
-import ContentEditable from 'react-contenteditable';
-import ReactDOM from 'react-dom';
-import { RedirectTo } from '/client/main'
+import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import AddObjectComponent from '/imports/client/components/AddObjectComponent.jsx';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/DeleteForever';
 
 // Import models
 import { Objects } from '/imports/api/objects.js';
 
 // Import components
-import Block from '/imports/client/components/Block';
 // import CheckInOutProperties from '/imports/client/components/CheckInOutProperties/CheckInOutProperties';
+const styles = theme => ({
+  card: {
+    position: 'relative',
+    width: '38vmin', // '120px',
+    height: '45vmin', // '120px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    margin: '2vmin',
+    boxSizing: 'border-box',
+    padding: '0.1vmin',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    // -- old code
+    // margin: theme.spacing.unit,
+    // paddingLeft: 1.5 * theme.spacing.unit,
+    background: 'white',
+    // color: '#bcc1c5',
+    // '&:hover': {
+    //       color: 'white',
+    //       border: '1px solid white'
+    // },
+    borderRadius: '10px',
+    zIndex: 1,
+  },
+  poster: {
+    flex: '6 6 auto',
+    width: '90%',
+    boxSizing: 'border-box',
+    marginTop: '10px',
+    marginBotton: '5px',
+    height: 'calc(100%-1.1vmin)', // '120px',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    background: 'white',
+    backgroundSize: 'cover',
+    backgroundRepeat:'no-repeat',
+    backgroundPosition: 'center',
+    border: '0.4vmin solid black',
+    borderRadius: '1vmin',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    zIndex: 1
+  },
+  title: {
+    flex: '0 1 auto',
+    width: '100%',
+    textAlign: 'center',
+    height: '20%',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontSize: '5vmin',
+    // fontFamily: 'Fredoka One',
+    marginTop: '0.2vmin'
+    // border: '1px solid red',
+  },
+  state: {
+    flex: '0 1 auto',
+    boxSizing: 'border-box',
+    width: '90%',
+    textAlign: 'center',
+    height: '7vmin',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontSize: '5vmin',
+    // fontFamily: 'Fredoka One',
+    marginTop: '0.5vmin',
+    margin: '1vmin',
+    border: '1px solid black',
+    borderRadius: '1vmin'
+  },
+  buttons: {
+    position:'absolute',
+    zIndex:10,
+    left:0,
+    right: 0,
+    top:'-2vmin',
+    height: 'auto', // '3.5vmin',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    background: 'transparent',
+    margin: 0,
+    padding: 0,
+  },
+  menuitem: {
+    // color: 'white',
+    height: '8vmin',
+    width: 'auto',
+    zIndex: '100',
+    backgroundColor: 'white',
+    color: 'black',
+    border: '0.2vmin solid black',
+    borderRadius: '0.7vmin',
+    // '&:hover': {
+    //       color: 'white',
+    // },
+  },
+});
 
 class ObjectBlock extends Component {
 
   constructor(props) {
     super(props);
-    
-    this.state = props.item
   }
     
-  //+handleChange :: Event -> StateChange
-  handleChange(e) {
-    this.state.title = e.target.value;
+  doHandler = (menuitem, handler) => (e) => {
+    e.preventDefault();
     
-    Meteor.call('objects.update', this.props.item._id, this.state);
+    if(handler in this.props) {
+      // console.log(`itemCompact  - calling ${handler} handler`);
+      this.props[handler](menuitem);
+    } else {
+      console.warn(`itemCompact  - ${handler} handler not set by parent`);
+    }
   }
-
-  // newAvatar :: Event -> NO PURE FUNCTION
-  newAvatar(e) {
-    if( ! this.props.isEditable) return;
-
-    var imageUrl =
-      prompt('Wat is de URL van de nieuwe avatar? Wil je geen nieuwe avatar toevoegen, klik dan op Annuleren/Cancel')
-
-    if(imageUrl) {
-      this.state.imageUrl = imageUrl;
-      Meteor.call('objects.update', this.props.item._id, this.state);
+  
+  edithandler = (menuitem) => (e) => {
+    e.preventDefault();
+    
+    if(this.props.edithandler) {
+      this.props.edithandler(menuitem);
+    } else {
+      console.warning('itemCompact.edithandler - edithandler not set by parent');
     }
   }
 
-  // RedirectTo('/bike/details/' + this.props.item._id) }
-  viewItem() { RedirectTo((this.props.isEditable ? '/admin/bike/details/' : '/bike/details/') + this.props.item._id) }
-
-  deleteItem() {
-    if( ! confirm('Weet je zeker dat je de fiets "'+this.props.item.title+'" wilt verwijderen?') || ! confirm('Sure? If not sure: don\'t') )
-      return;
-
-    Meteor.call('objects.remove', this.props.item._id);
+  state2text(state) {
+    let text = "";
+    if (state=='r_available'||state=='available') {
+      text = 'AVAILABLE';
+    } else if (state=='r_rentstart'||state=='inuse') {
+      text = 'IN USE';
+    } else if (state=='r_outoforder'||state=='outoforder') {
+      text = 'OUT OF ORDER';
+    } else if (state=='reserved') {
+      text = 'RESERVED';
+    } else {
+      text = 'UNKNOWN';
+    }
+  
+    return text;
   }
 
   render() {
-    return (
-      <Block
-        item={this.props.item}
-        showState={this.props.showState}
-        showPrice={this.props.showPrice}
-        showRentalDetails={this.props.showRentalDetails}
-        showLockDetails={this.props.showLockDetails}
-        isEditable={this.props.isEditable}
-        newAvatar={this.newAvatar.bind(this)}
-        handleChange={this.handleChange.bind(this)}
-        deleteItem={this.deleteItem.bind(this)}
-        viewItem={this.viewItem.bind(this)}
-        onClick={ ! this.props.isEditable ? this.viewItem.bind(this) : null} />
-    );
-  }
+    // try {
+      const { classes, object, zoom, editmode, parentuuid } = this.props;
+      
+      if(undefined==object) {
+        // console.log('blank render %s!', zoom)
+        //           <div className={classes.card} />
 
-}
+        return (
+          <div className={classes.card}>
+            { editmode ?
+                <div className={classes.card} style={{position: 'relative',zoom: zoom}}>
+                  <AddObjectComponent parentuuid={parentuuid} type={'Food'} zoom={0.5}/>
+                </div>
+              :
+                null
+            }
+        </div>
+        );
+        //
+      }
 
-var s = {
-  base: {
-    background: '#fff',
-    display: 'flex',
-    fontWeight: 'normal',
-    lineHeight: 'normal',
-    padding: '10px',
-    maxWidth: '100%',
-    width: '400px',
-    margin: '20px auto',
-    borderBottom: 'solid 5px #bc8311',
-    textAlign: 'left',
-  },
-  avatar: {
-    flex: 1,
-    maxHeight: '148px'
-  },
-  title: {
-    flex: 2,
-    fontSize: '1.2em',
-    margin: '0 10px',
-    fontWeight: 500
-  },
-  deleteButton: {
-    cursor: 'cross',
-    ':hover': {
-      color: '#f00',
-    }
-  },
-  infoButton: {
-    marginLeft: '5px',
-    cursor: 'pointer',
-    fontWeight: 'bold',
+      let imagelink='url(' + object.imageUrl + ')' ;
+      let statetext=this.state2text(object.state.state);
+      return (
+          <div className={classes.card} style={{position: 'relative'}}>
+            <div className={classes.poster} style={{backgroundImage: imagelink}} onClick={ this.doHandler(object, 'selecthandler') }/>
+            <div className={classes.state} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{statetext}</div>
+            <div className={classes.title} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{object.title}</div>
+            { editmode ?
+                <div className={classes.buttons}>
+                   <EditIcon className={classes.menuitem} title='Edit' onClick={this.doHandler(object, 'edithandler')} />
+                   {
+                     this.props.deletehandler && (object.hasChildren == false) ?
+                        <DeleteIcon className={classes.menuitem} title='Delete' onClick={this.doHandler(object, 'deletehandler')} />
+                      :
+                        <div />
+                   }
+                </div>
+              :
+                null
+            }
+        </div>
+      )
   }
 }
 
 ObjectBlock.propTypes = {
-  item: PropTypes.object.isRequired,
-  isEditable: PropTypes.any,
-  showPrice: PropTypes.any,
-  showState: PropTypes.any,
-  showRentalDetails: PropTypes.any,
-  showLockDetails: PropTypes.any,
-  onClick: PropTypes.any,
+  object: PropTypes.object.isRequired,
+  selecthandler: PropTypes.any,
+  edithandler: PropTypes.any,
+  deletehandler: PropTypes.any,
+  editmode: PropTypes.bool,
 };
 
 ObjectBlock.defaultProps = {
-  item: {},
-  showPrice: false,
-  showState: false,
-  showRentalDetails: false,
-  showLockDetails: false,
-  isEditable: false
+  object: undefined,
+  selecthandler: undefined,
+  edithandler: undefined,
+  deletehandler: undefined,
+  editmode: false,
 }
 
-export default ObjectBlock;
+export default withStyles(styles)(withRouter(ObjectBlock));

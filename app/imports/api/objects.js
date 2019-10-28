@@ -1,9 +1,7 @@
 import { Meteor } from 'meteor/meteor'
 import { Mongo } from 'meteor/mongo';
 
-import { Locations } from '/imports/api/locations.js'; // , geoJSONPointSchema
 import { getUserDescription } from '/imports/api/users.js';
-import { Integrations } from '/imports/api/integrations.js';
 import { CoinSchema } from '/imports/api/bikecoinschema.js';
 
 export const Objects = new Mongo.Collection('objects');
@@ -14,25 +12,25 @@ export const StateSchema = new SimpleSchema({
     label: "State",
     defaultValue: 'available'
   },
-  'userId': {
-    type: String,
-    label: "User Id",
-    defaultValue: ''
+  lat_lng: {
+    type:   Array,
+    label: "GPS location",
+    maxCount: 2
+  },
+  'lat_lng.$': {
+    type: Number,
+    decimal: true,
+    optional: true
   },
   'timestamp': {
     type: Number,
     label: "Timestamp",
     defaultValue: ''
   },
-  'userDescription': {
+  'userId': {
     type: String,
-    label: "Description",
+    label: "User Id",
     defaultValue: ''
-  },
-  rentalInfo: {
-    type: Object,
-    blackbox: true,
-    optional: true
   },
 });
 
@@ -62,10 +60,6 @@ export const PriceSchema = new SimpleSchema({
 // TODO: make schema voor lock options
 
 export const ObjectsSchema = new SimpleSchema({
-  locationId: {
-    type: String,
-    label: "Location"
-  },
   title: {
     type: String,
     label: "Title",
@@ -91,16 +85,6 @@ export const ObjectsSchema = new SimpleSchema({
   lock: {
     type: Object,
     blackbox: true
-  },
-  lat_lng: {
-    type:   Array,
-    label: "GPS location",
-    maxCount: 2
-  },
-  'lat_lng.$': {
-    type: Number,
-    decimal: true,
-    optional: true
   },
   wallet: {
     type: CoinSchema
@@ -130,7 +114,7 @@ export function getStateChangeNeatDescription(objectTitle, newState) {
   return description;
 }
 
-export const createObject = (locationId, title) => {
+export const createObject = (title) => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
 
@@ -143,7 +127,6 @@ export const createObject = (locationId, title) => {
   keycode = code.toString().substring(1, length+1);
 
   var data = {
-    locationId: locationId,
     title: title,
     description: '',
     imageUrl: '/files/Block/bike.png',
@@ -198,19 +181,9 @@ Meteor.methods({
     // Insert object
     var objectId = Objects.insert(data);
 
-    // Add message to Slack: 'bike added!'
     var object = Objects.findOne(objectId, {title:1, locationId:1});
-    var description = getUserDescription(Meteor.user()) + ' heeft een nieuwe fiets ' + object.title + ' toegevoegd';
-    var slackmessage = 'Weer een nieuwe fiets toegevoegd'
-    if(object.locationId) {
-      var location = Locations.findOne(object.locationId, {title:1});
-      description += ' op locatie ' + location.title;
-      slackmessage += ' bij ' + location.title;
-    }
-    Meteor.call('transactions.addTransaction', 'ADD_OBJECT', description, Meteor.userId(), object.locationId, objectId, data);
-    if (Meteor.isServer) {
-      Integrations.slack.sendNotification(slackmessage);
-    }
+    var description = getUserDescription(Meteor.user()) + ' has added a new bike ' + object.title;
+    console.log(description);
   },
   'objects.update'(objectId, data) {
 
@@ -227,16 +200,6 @@ Meteor.methods({
       description: data.description,
       imageUrl: data.imageUrl
     }});
-
-    // op dit moment uitgeschakeld: door de reactive werking worden te veel transacties gelogd (bv bij het wijzigen van de titel van een fiets)
-
-    // var object = Objects.findOne(objectId, {title:1, locationId:1});
-    // var description = getUserDescription(Meteor.user()) + ' heeft de gegevens van fiets ' + object.title + ' gewijzigd';
-    // if(object.locationId) {
-    //   var location = Locations.findOne(object.locationId, {title:1});
-    //   description += ' op locatie ' + location.title;
-    // }
-    // Meteor.call('transactions.addTransaction', 'CHANGE_OBJECT', description, Meteor.userId(), object.locationId, objectId, data);
   },
   'objects.applychanges'(_id, changes) {
 
@@ -259,7 +222,7 @@ Meteor.methods({
       Objects.update(_id, {$set : changes} );
 
       var description = getUserDescription(Meteor.user()) + ' heeft de instellingen van object ' + object.title + ' gewijzigd';
-      Meteor.call('transactions.addTransaction', 'CHANGESETTINGS_OBJECT', description, Meteor.userId(), null, _id, JSON.stringify(logchanges));
+      console.log(description);
     } else {
       console.log('unable to update object with id ' + _id);
       console.log(context);
@@ -270,17 +233,10 @@ Meteor.methods({
 
     Objects.remove(objectId);
 
-    var description = getUserDescription(Meteor.user()) + ' heeft fiets ' + object.title + ' verwijderd';
-    var slackmessage = 'Fiets verwijderd'
-    if(object.locationId) {
-      var location = Locations.findOne(object.locationId, {title:1});
-      description += ' op locatie ' + location.title;
-      slackmessage += ' bij ' + location.title;
-    }
-    Meteor.call('transactions.addTransaction', 'REMOVE_OBJECT', description, Meteor.userId(), object.locationId, object);
-    Integrations.slack.sendNotification(slackmessage);
+    var description = getUserDescription(Meteor.user()) + ' has removed bike ' + object.title;
+    console.log(description);
   },
-  'objects.setState'(objectId, userId, locationId, newState, userDescription, rentalInfo){
+  'objects.setState'(objectId, userId, newState){
     // Make sure the user is logged in
     if (! Meteor.userId()) throw new Meteor.Error('not-authorized');
 
@@ -291,14 +247,8 @@ Meteor.methods({
     Objects.update({_id: objectId}, { $set: {
         'state.userId': userId,
         'state.state': newState,
-        'state.timestamp': timestamp,
-        'state.userDescription': userDescription||'anonymous',
-        'state.rentalInfo': rentalInfo||{} }
+        'state.timestamp': timestamp }
     });
-
-    var object = Objects.findOne(objectId, {title:1});
-    var description = getStateChangeNeatDescription(object.title, newState);
-    Meteor.call('transactions.changeStateForObject', newState, description, objectId, locationId);
 
     return;
   },

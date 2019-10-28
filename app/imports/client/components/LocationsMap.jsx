@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
 import { RedirectTo } from '/client/main'
 import { Settings } from '/imports/api/settings.js';
 import L from 'leaflet'
@@ -8,10 +7,9 @@ import 'leaflet-search'
 
 import './Leaflet.EasyButton.js';
 
-import { LocationsFiltered, Address2LatLng } from '/imports/api/locations.js';
 import { Objects } from '/imports/api/objects.js';
 
-class LocationsMapComponent extends Component {
+class LocationsMap extends Component {
   constructor(props) {
     super(props);
 
@@ -19,11 +17,7 @@ class LocationsMapComponent extends Component {
       map: undefined,
       watchId : undefined,
       trackingMarkersGroup: undefined,
-      locationMarkersGroup: undefined,
       objectMarkersGroup: undefined,
-      showParkingMarkers: false,
-      parkingButton: undefined,
-      parkingMarkersGroup: undefined
     }
   }
 
@@ -50,15 +44,15 @@ class LocationsMapComponent extends Component {
     let googleGeocoding = (text, callResponse) => geocoder.geocode({address: text}, callResponse);
 
     // Now add the search control
-    map.addControl( new L.Control.Search({
-      position: 'topleft',
-      sourceData: googleGeocoding,
-      formatData: this.formatJSON,
-      markerLocation: true,
-      autoType: false,
-      autoCollapse: true,
-      minLength: 2
-    }) );
+    // map.addControl( new L.Control.Search({
+    //   position: 'topleft',
+    //   sourceData: googleGeocoding,
+    //   formatData: this.formatJSON,
+    //   markerLocation: true,
+    //   autoType: false,
+    //   autoCollapse: true,
+    //   minLength: 2
+    // }) );
 
     // Add a leyer for search elements
     let markersLayer = new L.LayerGroup();
@@ -77,12 +71,6 @@ class LocationsMapComponent extends Component {
     // Le easy button
     L.easyButton( '<img src="'+ s.images.hier + '" style="width:22px;height:22px" />', this.toggleTrackUser.bind(this) ).addTo(map);
 
-    var locationMarkersGroup = L.featureGroup().addTo(map);
-    locationMarkersGroup.on("click", function (event) {
-      var clickedMarker = event.layer;
-      RedirectTo('/location/' + clickedMarker.locationId);
-    }.bind(this));
-
     var objectMarkersGroup = L.featureGroup().addTo(map);
     objectMarkersGroup.on("click", function (event) {
         var clickedMarker = event.layer;
@@ -92,39 +80,10 @@ class LocationsMapComponent extends Component {
     var trackingMarkersGroup = L.featureGroup().addTo(map);   // no tracking marker yet!
     this.toggleTrackUser()
 
-    // var parkingstates = {
-    //   states: [
-    //     {
-    //       stateName: 'verborgen',
-    //       icon: '<img src="'+ s.images.veiligstallengrijs + '" style="width:32px;height:32px" />',
-    //       title: 'toon stallingen',
-    //       onClick: this.toggleParking.bind(this)
-    //     },
-    //     {
-    //       stateName: 'zichtbaar',
-    //       title: 'verberg stallingen',
-    //       icon: '<img src="'+ s.images.veiligstallen + '" style="width:32px;height:32px" />',
-    //       onClick: this.toggleParking.bind(this)
-    //     },
-    //   ]
-    // };
-    //
-    // // Button is not added to map yet: only when enabled
-    // var parkingButton = L.easyButton(parkingstates).state(
-    //   this.state.showParkingMarkers ? 'zichtbaar' : 'verborgen'
-    // );
-
-    // var parkingMarkersGroup = L.geoJSON(null , {
-    //   pointToLayer: this.parkingPointToLayer.bind(this), filter: this.parkingFilterLayers.bind(this)
-    // }).addTo(map); // no tracking marker yet!
-
     this.setState(prevState => ({ map: map,
                                   trackingMarkersGroup: trackingMarkersGroup,
-                                  locationMarkersGroup: locationMarkersGroup,
                                   objectMarkersGroup: objectMarkersGroup,
                                 }));
-                                // parkingButton: parkingButton,
-                                // parkingMarkersGroup: parkingMarkersGroup
 
     setTimeout(this.mapChanged,1000);
   }
@@ -153,63 +112,20 @@ class LocationsMapComponent extends Component {
 
   }
 
-  initializeLocationsMarkers() {
-    var markers = [];
-
-    this.state.locationMarkersGroup.clearLayers();
-
-    this.props.locations.map((location) =>  {
-      if(!location.lat_lng&&location.address) {
-        var ll = Address2LatLng(location.address);
-        location.lat_lng= ll;
-      }
-
-      if(location.lat_lng) {
-        // create custom icon
-        let imageUrl;
-        if(location.imageUrl&&location.imageUrl!='') {
-          imageUrl = location.imageUrl;
-        } else {
-          imageUrl = '/files/LocationDetails/location.png'
-        }
-        var commonbikeIcon = L.icon({
-          iconUrl: imageUrl,
-          iconSize: [32, 32], // size of the icon
-        });
-
-        var marker = L.marker([location.lat_lng[0],location.lat_lng[1]] , {icon: commonbikeIcon, zIndexOffset: -1000}); // locationMarker
-        marker.locationId = location._id;
-        // markers.push(marker); // .bindPopup(location.title)
-        try {
-          this.state.locationMarkersGroup.addLayer(marker);
-        } catch(ex) {
-          console.error(ex);
-          console.log('error for location ' + location.title + '/' + location.imageUrl)
-          console.log(JSON.stringify(location,0,2));
-        }
-      } else {
-        console.log('not lat_lng for ' + location.title)
-      }
-    });
-
-    // var locationMarkersGroup = L.featureGroup(markers);
-    // locationMarkersGroup.on("click", function (event) {
-    //     var clickedMarker = event.layer;
-    //     RedirectTo('/location/' + clickedMarker.locationId);
-    // }.bind(this));
-  }
-
   initializeObjectsMarkers() {
+    console.log("locationsmap.initializeObjectsMarkers objects %o", this.props.objects)
+
+    if(!this.props.objects) return;
+    
   // create custom icon
     var bikeIcon = L.icon({
         iconUrl: '/files/ObjectDetails/marker.svg',
-        iconSize: [16, 16], // size of the icon
+        iconSize: ['32px', '32px'], // size of the icon
         });
 
-    var markers = [];
     this.props.objects.map((object) => {
-      if(object.lat_lng) {
-        var marker = L.marker(object.lat_lng, {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
+      if(object.state.lat_lng) {
+        var marker = L.marker(object.state.lat_lng, {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
         marker.bikeLocationId = object._id;
         // markers.push(marker); // .bindPopup(location.title)
         this.state.objectMarkersGroup.addLayer(marker);
@@ -223,11 +139,6 @@ class LocationsMapComponent extends Component {
     if(!this.state.map) return;
 
     this.props.mapChanged ? this.props.mapChanged(this.state.map.getBounds()) : null
-
-    // Show parking markers if the app demands it
-    // if(this.state.showParkingMarkers) {
-    //   this.initializeParkingLayer();
-    // }
   }
 
   // ----------------------------------------------------------------------------
@@ -286,71 +197,17 @@ class LocationsMapComponent extends Component {
   }
 
   // ----------------------------------------------------------------------------
-  // parking related functions
-  // ----------------------------------------------------------------------------
-  // clearParkingLayer() {
-  //   if(!this.state.parkingMarkersGroup) {
-  //     return;
-  //   }
-  //
-  //   this.state.parkingMarkersGroup.clearLayers();
-  // }
-  //
-  // initializeParkingLayer() {
-  //   if(this.props.settings) {
-  //     if(this.props.settings.veiligstallen.visible) {
-  //       this.state.parkingButton.addTo(this.state.map);
-  //     }
-  //   }
-  //
-  //   this.state.parkingMarkersGroup.clearLayers();
-  //
-  //   if( ! this.state.showParkingMarkers) {
-  //     return;
-  //   }
-  //
-  // omnivore.kml('/files/ProviderLogos/Veiligstallen/veiligstallen.kml', null, this.state.parkingMarkersGroup).addTo(this.state.map);
-  // }
-  //
-  // toggleParking() {
-  //   this.setState(prevState => ({ showParkingMarkers: !prevState.showParkingMarkers}))
-  //   this.state.parkingButton.state(this.state.showParkingMarkers?'zichtbaar':'verborgen');
-  //   this.initializeParkingLayer();
-  // }
-  //
-  // parkingFilterLayers(feature, layer) {
-  //   var coords = feature.geometry.coordinates;
-  //   var newLatLng = [coords[1], coords[0]]
-  //
-  //   // only add visible items
-  //   return (this.state.map.getBounds().contains(newLatLng));
-  // }
-  //
-  // parkingPointToLayer(feature, latlng) {
-  //   var parkingIcon = new L.Icon({
-  //        iconSize: [24, 24],
-  //        iconAnchor: [24, 24],
-  //        popupAnchor:  [1, -12],
-  //        iconUrl: s.images.veiligstallen
-  //   });
-  //   return L.marker(latlng, {icon: parkingIcon});
-  // }
-
-  // ----------------------------------------------------------------------------
   // rendering
   // ----------------------------------------------------------------------------
   render() {
     if(this.state.map) {
       this.initializeMap();
-      this.initializeLocationsMarkers();
+      // this.initializeLocationsMarkers();
       this.initializeObjectsMarkers();
-      // this.initializeParkingLayer();
     }
 
     return (
-      <div id='mapid' style={Object.assign({}, s.base, {width: this.props.width, height: this.props.height, maxWidth: '100%'})}>
-        { Meteor.userId() ? <a style={s.avatar} onClick={() => RedirectTo('/profile')}><Avatar /></a> : <a style={s.avatar} onClick={() => RedirectTo('/login')}><Avatar /></a> }
-      </div>
+      <div id='mapid' style={Object.assign({}, s.base, {width: this.props.width, height: this.props.height, maxWidth: '100%'})} />
     );
   }
 }
@@ -362,15 +219,7 @@ var s = {
     background: '#e0e0e0',
     textAlign: 'right'
   },
-  avatar: {
-    display: 'inline-block',
-    position: 'relative',
-    zIndex: 2000,
-    margin: '15px 20px'
-  },
   images: {
-    veiligstallen: '/files/ProviderLogos/Veiligstallen/icon.png',
-    veiligstallengrijs: '/files/ProviderLogos/Veiligstallen/icon-grijs.png',
     hier: '/files/IconsButtons/compass-black.svg' // 'https://einheri.nl/assets/img/home_files/compass-black.svg'
   },
   searchForLocation: {
@@ -387,7 +236,7 @@ var s = {
   }
 }
 
-LocationsMapComponent.propTypes = {
+LocationsMap.propTypes = {
   width: PropTypes.any,
   height: PropTypes.any,
   locations: PropTypes.array,
@@ -399,7 +248,7 @@ LocationsMapComponent.propTypes = {
   startZoom: PropTypes.number
 };
 
-LocationsMapComponent.defaultProps = {
+LocationsMap.defaultProps = {
   width: '100vw',
   height: '50vh',
   clickItemHandler: '',
@@ -407,10 +256,4 @@ LocationsMapComponent.defaultProps = {
   startZoom: 15
 }
 
-export default LocationsMap = createContainer((props) => {
-  return {
-    locations: props.locations,
-    objects: props.objects,
-    settings: props.settings
-  };
-}, LocationsMapComponent);
+export default LocationsMap;

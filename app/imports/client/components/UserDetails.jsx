@@ -2,7 +2,6 @@ import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
-import { createContainer } from 'meteor/react-meteor-data';
 import { RedirectTo } from '/client/main'
 
 // Import components
@@ -28,7 +27,7 @@ class UserDetails extends Component {
     if(!readonly) {
       return(
         <img src={imagesrc} style={s.icon} alt="toggle" onClick={() => {
-          if(warning && !isOn && ! confirm('Weet je zeker dat je deze gebruiker admin rechten wilt geven?')) {
+          if(warning && !isOn && ! confirm('Are you sure you want to give this user admin rights?')) {
             return;
           }
 
@@ -45,14 +44,12 @@ class UserDetails extends Component {
 
     var name = '';
     var isActive = false;
-    var picture = '';
-    var canCreateLocations = false;
+    var cancreateobjects = false;
     var publickey = '';
     if (user.profile) {
         name = user.profile.name||'anoniem'
         isActive = user.profile.active|| false
-        picture = user.profile.avatar|| ''
-        canCreateLocations = user.profile.cancreatelocations|| false
+        cancreateobjects = user.profile.cancreateobjects|| false
         publickey = user.profile.wallet && user.profile.wallet.address|| ''
         if(publickey!='') publickey=publickey.substring(0,10)+'.....'
     }
@@ -79,13 +76,12 @@ class UserDetails extends Component {
               </ul>
             :
               <ul style={s.list}>
-                <li style={s.listitem}><img style={s.profilepicture} src={picture}/></li>
                 <li style={s.listitem}>{name}</li>
                 <li style={s.listitem}>{email}</li>
                 <li style={s.listitem}>{publickey}</li>
-                <li style={s.listitem}>Admin: { this.getToggleButton('currentuser.setAdmin', user._id, isAdmin, readonly, 'Weet je zeker dat je deze gebruiker admin rechten wilt geven?') }</li>
+                <li style={s.listitem}>Admin: { this.getToggleButton('currentuser.setAdmin', user._id, isAdmin, readonly, 'Are you sure you want to give this user admin rights?') }</li>
                 <li style={s.listitem}>Active: { this.getToggleButton('currentuser.setActive', user._id, isActive, readonly) }</li>
-                <li style={s.listitem}>Add locations: { this.getToggleButton('currentuser.canCreateLocations', user._id, canCreateLocations, false) }</li>
+                <li style={s.listitem}>Add locations: { this.getToggleButton('currentuser.cancreateobjects', user._id, cancreateobjects, false) }</li>
               </ul>
             }
           </div>
@@ -130,15 +126,6 @@ var s = {
     fontSize: '1.2em',
     fontWeight: '500',
     listStyle: 'none',
-  },
-  profilepicture: {
-    display: 'inline-block',
-    width: '200px',
-    height: '200px',
-    backgroundColor: '#fff',
-    border: 'solid 2px #fff',
-    borderRadius: '44px',
-    backgroundColor: 'rgba(0, 208, 162, 0.05)',
   },
   icon: {
     width:'32px',

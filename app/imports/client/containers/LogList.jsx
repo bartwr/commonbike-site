@@ -1,6 +1,7 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import { createContainer } from 'meteor/react-meteor-data';
+import { withTracker } from 'meteor/react-meteor-data';
+
 
 // Import models
 import { Log } from '/imports/api/log.js';
@@ -44,11 +45,11 @@ LogList.propTypes = {
 LogList.defaultProps = {
 }
 
-export default createContainer((props) => {
+export default withTracker((props) => {
   Meteor.subscribe('log');
 
   return {
   	title: 'Log',
     logitems: Log.find({}, {sort: { timestamp:-1}, limit:10}).fetch()
   };
-}, LogList);
+})(LogList);

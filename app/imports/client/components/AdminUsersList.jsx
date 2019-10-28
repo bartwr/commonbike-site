@@ -33,7 +33,7 @@ const styles = theme => ({
   },
   filterbar: {
     width: '100%',
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     marginBottom: 0,
     display: 'flex',
     flexDirection: 'row',
@@ -43,10 +43,10 @@ const styles = theme => ({
     flexBasis: 'auto',
     maxWidth: '250px',
     flexGrow: 1,
-    marginBottom: theme.spacing.unit,
+    marginBottom: theme.spacing(1),
   },
   filterinput: {
-    padding: 0.5 * theme.spacing.unit,
+    padding: theme.spacing(0.5),
   },
   centerbox: {
     display: 'flex',
@@ -54,8 +54,8 @@ const styles = theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     background: 'white',
-    paddingLeft: theme.spacing.unit,
-    margin: 0.5 * theme.spacing.unit,
+    paddingLeft: theme.spacing(1),
+    margin: theme.spacing(0.5),
   },
   itemtitle: {
     flexBasis: 'auto',
@@ -84,7 +84,7 @@ const styles = theme => ({
 //    flexBasis: '35%',
     width: '115px',
     flexGrow: 0,
-    marginLeft: theme.spacing.unit
+    marginLeft: theme.spacing(1)
   }
 });
 

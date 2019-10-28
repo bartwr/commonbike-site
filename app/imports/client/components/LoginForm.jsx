@@ -2,12 +2,10 @@ import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
-import { createContainer } from 'meteor/react-meteor-data';
+import Button from '@material-ui/core/Button';
 
 // Import components
 import TextField from '/imports/client/components/TextField.jsx';
-import RaisedButton from '/imports/client/components/RaisedButton.jsx';
-import Button from '/imports/client/components/Button.jsx';
 
 class LoginForm extends Component {
 
@@ -62,17 +60,19 @@ class LoginForm extends Component {
       <form style={s.base} onSubmit={this.submitForm.bind(this)} method="post">
 
         <div style={s.label}>E-mailadres</div>
-        <TextField type="email" ref="email" placeholder="Je e-mailadres" name="email" style={s.textField} onChange={this.handleChange.bind(this)} />
+        <TextField type="email" ref="email" placeholder="Your e-mailadress" name="email" style={s.textField} onChange={this.handleChange.bind(this)} />
 
         <div style={s.label}>Wachtwoord</div>
-        <TextField type="password" ref="password" placeholder="Vul een uniek wachtwoord in" name="password" style={s.textField} />
+        <TextField type="password" ref="password" placeholder="Fill in an unique password" name="password" style={s.textField} />
 
         <div style={Object.assign({display: 'block', maxWidth: '100%'}, this.state.user && {display: 'none'})}>
           <div style={s.label}>Herhaal je wachtwoord</div>
-          <TextField type="password" ref="password2" placeholder="Herhaal je wachtwoord" name="password2" style={s.textField} />
+          <TextField type="password" ref="password2" placeholder="Repeat your password" name="password2" style={s.textField} />
         </div>
-
-        <Button style={s.button} type='submit'>Meld me aan</Button>
+        
+        <div>
+          <Button style={{color:'black', backgroundColor: 'white'}}variant='outlined' type='submit'>{this.state.user? 'LOGIN':'REGISTER' } </Button>
+        </div>
 
       </form>
     )
@@ -83,8 +83,10 @@ class LoginForm extends Component {
 var s = {
   base: {
     display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center'
+    flexDirection: 'column',
+    // flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   label: {
     display: 'none',
@@ -107,6 +109,4 @@ LoginForm.propTypes = {
   signUpHandler: PropTypes.any.isRequired
 };
 
-export default createContainer((props) => {
-  return {}
-}, LoginForm);
+export default LoginForm;
