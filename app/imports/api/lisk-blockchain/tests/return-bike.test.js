@@ -1,44 +1,6 @@
-require('dotenv').config()
-const fs = require('fs');
-const { APIClient } = require('@liskhq/lisk-client');
-const ReturnBikeTransaction = require('../transactions/return-bike');
+const {doReturnBike} = require('../client/return-bike.js');
 
-const { getTimestamp, getBike } = require('./_helpers.js');
+const bikeAccount = {"passphrase":"debris glare sustain expire cloth shove paper grit flock vital object laptop","privateKey":"49f24b696c7d31b6f85ae496aad43869c3e40cf553b17080e7550639b93338dcb6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962","publicKey":"b6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962","address":"5079673205830650891L"}
+const renterAccount = {"passphrase":"bridge tail scissors ahead crunch easily wild play face parent between perfect","privateKey":"0c6e2f5d58d7f9c52d287fac34d8e2a02a932ebd357daf065d599c2e0c1a2cca4ccc735fa41359a4d5ebf13057d70c67ce0cee68415e5b597db34d6b2c8d9a91","publicKey":"4ccc735fa41359a4d5ebf13057d70c67ce0cee68415e5b597db34d6b2c8d9a91","address":"4271028317684991679L"}
 
-const client = new APIClient([`http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`]);
-const renterAccount = JSON.parse(fs.readFileSync('./accounts/'+process.argv[2]+'.json')); 
-const bikeAccount = JSON.parse(fs.readFileSync('./accounts/'+process.argv[3]+'.json')); 
-
-
-const returnBike = (bike, renterAccount) => {
-
-    const tx =  new ReturnBikeTransaction({
-        asset: {
-            id: bike.id, // XXX or use bike.address
-        },
-        amount: bike.deposit,
-        senderPublicKey: renterAccount.publicKey,
-        recipientId: bike.id,
-        timestamp: getTimestamp(),
-    });
-
-    tx.sign(renterAccount.passphrase);
-    // console.log(tx);
-
-    return client.transactions.broadcast(tx.toJSON())
-    .then(() => tx)
-    .catch(err => {
-      console.error("return-bike.err2:", err);
-      // return Promise.reject(err);
-    });
-  }
-
-// test-coode
-getBike(client, bikeAccount).then(bike => {
-  console.log("bike:", bike);
-
-  returnBike(bike, renterAccount).then(returnResult => {
-    console.log(returnResult);
-  });
-})
-
+doReturnBike(renterAccount, bikeAccount)

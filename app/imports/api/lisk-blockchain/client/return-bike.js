@@ -1,13 +1,13 @@
 const { APIClient } = require('@liskhq/lisk-client');
-const RentBikeTransaction = require('../transactions/rent-bike');
+const ReturnBikeTransaction = require('../transactions/return-bike');
 
 const { getTimestamp, getBike } = require('./_helpers.js');
 const client = new APIClient(['http://brainz.lisk.bike:4000']);
 
 import { Promise } from 'meteor/promise';
 
-const rentBike = async (bike, renterAccount) => {
-    const tx = new RentBikeTransaction({
+const returnBike = (bike, renterAccount) => {
+    const tx =  new ReturnBikeTransaction({
         asset: {
             id: bike.id, // XXX or use bike.address
         },
@@ -20,20 +20,25 @@ const rentBike = async (bike, renterAccount) => {
     tx.sign(renterAccount.passphrase);
     // console.log(tx);
 
-    return await client.transactions.broadcast(tx.toJSON())
+    return client.transactions.broadcast(tx.toJSON())
+    .then(() => tx)
+    .catch(err => {
+      console.error("return-bike.err2:", err);
+      // return Promise.reject(err);
+    });
 }
 
-const doRentBike = async (renterAccount, bikeAccount) => {
+const doReturnBike = async (renterAccount, bikeAccount) => {
     const bike = await getBike(client, bikeAccount);
       
-    const rentResult = rentBike(bike, renterAccount);
-    rentResult.then(result => {
+    const returnResult = returnBike(bike, renterAccount);
+    returnResult.then(result => {
         // console.log(result)
     }, (err) => {
         alert(err.errors[0].message)
     })
 
-    return rentResult;
+    return returnResult;
 }
 
-module.exports = {doRentBike}
+module.exports = {doReturnBike}

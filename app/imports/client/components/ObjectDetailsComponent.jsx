@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 import RentBikeButton from './RentBikeButton';
+import ReturnBikeButton from './ReturnBikeButton';
 
 //
 //
@@ -143,7 +144,7 @@ class ObjectDetailsComponent extends Component {
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
           <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
           <RentBikeButton bike={this.props.object} classes={classes} />
-          <Button variant="contained" className={classes.actionbutton} onClick={this.clickReturnBike.bind(this, object)} disabled>RETURN BIKE</Button>
+          <ReturnBikeButton bike={this.props.object} classes={classes} />
           <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
         </div>
       </div>
