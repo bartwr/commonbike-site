@@ -102,7 +102,7 @@ export default withStyles(styles)(withTracker((props) => {
   
   return {
     currentUser: Meteor.user(),
-    showTestOptions: settings.developmentOptions.showTestButtons
+    showTestOptions: settings.developmentOptions && settings.developmentOptions.showTestButtons||false
   };
 })(PageHeader))
 

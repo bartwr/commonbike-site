@@ -15,7 +15,7 @@ import UserWallet from '/imports/client/containers/UserWallet.jsx'
 // import LocationsMap from '/imports/client/components/LocationsMap.jsx'
 import OverviewPage from '/imports/client/containers/OverviewPage.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
-import ObjectList from '/imports/client/containers/ObjectList.jsx'
+// import ObjectList from '/imports/client/containers/ObjectList.jsx'
 import ObjectDetailsOld from '/imports/client/containers/ObjectDetailsOld.jsx'
 import LogList from '/imports/client/containers/LogList.jsx'
 import PaymentOrder from '/imports/client/components/PaymentOrder.jsx'
@@ -35,8 +35,6 @@ const UserAppOverviewPage = () => (<UserApp content={<OverviewPage showMap={true
 const UserAppObjectList = () => (<UserApp content={<OverviewPage showMap={false} showList={true} />} />)
 
 const UserAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
-
-const UserAppRentalList = () => (<UserApp content={<ObjectList rentalsMode={true} showState={true} showRentalDetails={true} />} />)
 
 const UserAppObjectDetails = ({match}) => {
   return (
@@ -130,7 +128,6 @@ class AppRoutes extends React.Component {
 
       <RouteWhenLoggedIn path='/payment/:internalPaymentId' component={PaymentOrder}/>
 
-      <RouteWhenLoggedIn path='/admin/rentals' component={UserAppRentalList}/>
       <RouteWhenLoggedIn path='/admin/bike/details/:objectId' component={UserAppAdminPageObjectDetails}/>
 
       <RouteWhenLoggedIn path='/admin/users' component={UserAppAdminAdminUsersList}/>
@@ -140,6 +137,8 @@ class AppRoutes extends React.Component {
       <Route component={NoMatch}/>
      </Switch>
   )}
+
+//  <RouteWhenLoggedIn path='/admin/rentals' component={UserAppRentalList}/>
 }
 
 const AppRoutesWithRouterContext = withRouter(AppRoutes)

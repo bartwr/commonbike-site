@@ -44,15 +44,15 @@ class LocationsMap extends Component {
     let googleGeocoding = (text, callResponse) => geocoder.geocode({address: text}, callResponse);
 
     // Now add the search control
-    map.addControl( new L.Control.Search({
-      position: 'topleft',
-      sourceData: googleGeocoding,
-      formatData: this.formatJSON,
-      markerLocation: true,
-      autoType: false,
-      autoCollapse: true,
-      minLength: 2
-    }) );
+    // map.addControl( new L.Control.Search({
+    //   position: 'topleft',
+    //   sourceData: googleGeocoding,
+    //   formatData: this.formatJSON,
+    //   markerLocation: true,
+    //   autoType: false,
+    //   autoCollapse: true,
+    //   minLength: 2
+    // }) );
 
     // Add a leyer for search elements
     let markersLayer = new L.LayerGroup();

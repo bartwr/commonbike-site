@@ -80,13 +80,13 @@ class Login extends Component {
 
 var s = {
   base: {
+    color: 'white',
     width: '480px',
     maxWidth: '100%',
     minHeight: 'calc(100% - 74px)',
     height: 'calc(100% - 74px)',
     margin: '0 auto',
     lineHeight: 'default',
-    color: '#000',
     paddingTop: '20px',
     fontSize: '1.05em',
     textAlign: 'center',

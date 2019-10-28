@@ -2,11 +2,10 @@ import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
+import Button from '@material-ui/core/Button';
 
 // Import components
 import TextField from '/imports/client/components/TextField.jsx';
-import RaisedButton from '/imports/client/components/RaisedButton.jsx';
-import Button from '/imports/client/components/Button.jsx';
 
 class LoginForm extends Component {
 
@@ -68,10 +67,12 @@ class LoginForm extends Component {
 
         <div style={Object.assign({display: 'block', maxWidth: '100%'}, this.state.user && {display: 'none'})}>
           <div style={s.label}>Herhaal je wachtwoord</div>
-          <TextField type="password" ref="password2" placeholder="Repeat your " name="password2" style={s.textField} />
+          <TextField type="password" ref="password2" placeholder="Repeat your password" name="password2" style={s.textField} />
         </div>
-
-        <Button style={s.button} type='submit'>Meld me aan</Button>
+        
+        <div>
+          <Button style={{color:'black', backgroundColor: 'white'}}variant='outlined' type='submit'>{this.state.user? 'LOGIN':'REGISTER' } </Button>
+        </div>
 
       </form>
     )
@@ -82,8 +83,10 @@ class LoginForm extends Component {
 var s = {
   base: {
     display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center'
+    flexDirection: 'column',
+    // flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   label: {
     display: 'none',

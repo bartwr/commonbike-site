@@ -171,7 +171,7 @@ class AppMenu extends React.Component {
           {[
             { title: 'Search on the Map', onclick: this.doRedirect('/').bind(this) },
             { title: 'List of all bicycles', onclick: this.doRedirect('/objects').bind(this) },
-            { title: 'My Rentals', onclick: this.doRedirect('/admin/rentals').bind(this) },
+//            { title: 'My Rentals', onclick: this.doRedirect('/admin/rentals').bind(this) }, -> needs special version of objects page
             { title: 'My Wallet', onclick: this.doRedirect('/wallet').bind(this) },
             ].map((info, index) => (
             <ListItem button key={info.title} onClick={info.onclick}>

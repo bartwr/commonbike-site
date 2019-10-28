@@ -5,9 +5,9 @@ import { StyleProvider } from '/imports/client/StyleProvider.js'
 
 // Import components
 import EditObject from '/imports/client/containers/EditObject';
-import RaisedButton from '/imports/client/components/RaisedButton.jsx'
+// import RaisedButton from '/imports/client/components/RaisedButton.jsx'
 import ObjectBlock from '/imports/client/containers/ObjectBlock';
-import Button from '/imports/client/components/Button.jsx';
+// import Button from '/imports/client/components/Button.jsx';
 import CheckInOutProcessBase from '/imports/client/components/CheckInCode';
 import MapSummary from '/imports/client/MapSummary';
 import CheckInOutProcessPlainKey from '/imports/client/components/CheckInOutProcess/CheckInOutProcessPlainKey';
