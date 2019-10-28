@@ -29,7 +29,7 @@ class PageHeader extends Component {
     const { currentUser } = this.props
 
     return (
-      <div className={classes.root}>
+      <div className={`${classes.root} ${classes.PageHeader}`}>
         <AppBar position="static" className={classes.appbar}>
           <Toolbar>
             <div className={classes.menudiv}>
@@ -56,11 +56,14 @@ PageHeader.defaultProps = {
 }
 
 const styles = theme => ({
+  PageHeader: {
+    padding: '5px 0'
+  },
   root: {
     flexGrow: 1,
   },
   appbar: {
-    backgroundColor: 'transparent', //  '#fbae17',
+    backgroundColor: 'transparent',// '#fbae17',
   },
   menudiv: {
     position: 'absolute',
@@ -87,7 +90,7 @@ const styles = theme => ({
   },
   logo: {
     width: '300px',
-    height: '50px',
+    height: '35px',
     border: '1px solid green'
   }
 });
@@ -99,10 +102,10 @@ export default withStyles(styles)(withTracker((props) => {
   if(!settings) {
     return {}
   }
-  
+
   return {
     currentUser: Meteor.user(),
     showTestOptions: settings.developmentOptions && settings.developmentOptions.showTestButtons||false
-  };
+  }
 })(PageHeader))
 
