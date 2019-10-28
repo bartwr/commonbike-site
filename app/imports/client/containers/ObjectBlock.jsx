@@ -9,11 +9,8 @@ import AddObjectComponent from '/imports/client/components/AddObjectComponent.js
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 
-// Import models
 import { Objects } from '/imports/api/objects.js';
 
-// Import components
-// import CheckInOutProperties from '/imports/client/components/CheckInOutProperties/CheckInOutProperties';
 const styles = theme => ({
   card: {
     position: 'relative',

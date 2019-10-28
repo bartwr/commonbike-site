@@ -49,6 +49,35 @@ const styles = theme => ({
     width: '50vw',
     height: '30px',
     margin: '1vmin'
+  },
+  base: {
+    fontSize: 'default',
+    lineHeight: 'default',
+    padding: '20px 20px 0 20px',
+    textAlign: 'center',
+    minHeight: 'calc(100vh - 74px)',
+    display: 'flex',
+    justifyContent: 'space-below',
+    flexDirection: 'column'
+  },
+  list: {
+    margin: '0 auto',
+    padding: 0,
+    textAlign: 'center',
+    listStyle: 'none',
+  },
+  listitem: {
+    padding: '0 10px 0 0',
+    margin: '0 auto',
+    textAlign: 'center',
+    minHeight: '40px',
+    fontSize: '1.2em',
+    fontWeight: '500',
+    listStyle: 'none',
+  },
+  mediumFont: {
+    fontSize: '2em',
+    fontWeight: '1000',
   }
 });
 
@@ -67,64 +96,46 @@ class ObjectDetailsComponent extends Component {
   //    }
   // }
 
-  renderCheckInOutProcess(state) {
-    const {object} = this.props;
+  renderObjectState(state) {
+    const {object, classes} = this.props;
     
     if(this.props.object.state.state=="inuse") {
       return (
-        <div style={s.base}>
-          <ul style={s.list}>
-            <li style={s.listitem,s.mediumFont}>IN GEBRUIK</li>
+        <div className={classes.base}>
+          <ul className={classes.list}>
+            <li className={classes.listitem,s.mediumFont}>IN GEBRUIK</li>
           </ul>
         </div>
       );
     } else if(this.props.object.state.state!="available") {
       return (
-        <div style={s.base}>
-          <ul style={s.list}>
-            <li style={s.listitem,s.mediumFont}>NOT AVAILABLE</li>
+        <div className={classes.base}>
+          <ul className={classes.list}>
+            <li className={classes.listitem,s.mediumFont}>NOT AVAILABLE</li>
           </ul>
         </div>
       );
     } else {
       return (
-        <div style={s.base}>
-          <ul style={s.list}>
-            <li style={s.listitem,s.mediumFont}>UNKNOWN</li>
+        <div className={classes.base}>
+          <ul className={classes.list}>
+            <li className={classes.listitem,s.mediumFont}>UNKNOWN</li>
           </ul>
         </div>
       );
     }
-
-  //   var lockType = this.props.object.lock.type;
-  //
-  //   // If not logged in: refer to login page
-  //   if( ! this.props.currentUser)
-  //     return <Button onClick={RedirectTo.bind(this, '/login?redirectTo=/bike/details/'+this.props.object._id)}>Login to reserve</Button>
-  //
-  //   else if(lockType=='open-elock')
-  //     return <CheckInOutProcessOpenELock
-  //         object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-  //
-  // else if(lockType=='concox-bl10')
-  //   return <CheckInOutProcessConcoxBL10
-  //       object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
-  //
-  //   else
-  //     return <CheckInOutProcessPlainKey
-  //         object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
   }
   
   clickCreateBike(object) {
-    console.log("clickCreateBike", object);    
+    console.log("clickCreateBike", object);
   }
 
   clickReturnBike(object) {
-    console.log("clickReturnBike", object);    
+    console.log("clickReturnBike", object);
   }
 
   clickUpdateGPS(object) {
-    console.log("clickUpdateGPS", object);    
+    console.log("clickUpdateGPS", object);
   }
 
   render() {
@@ -149,34 +160,10 @@ class ObjectDetailsComponent extends Component {
         </div>
       </div>
     );
-    
-    {/*
-// Define what propTypes are allowed
-<center>
-  <MapSummary item={location} width={'60vmin'} height={'40vmin'} style={{border: '2px solid red'}}/>
-</center>
-
-            <ObjectBlock
-              item={this.props.object} />
-
-            { this.props.isEditable?
-              <EditObject objectId={this.props.object._id} />
-              :null }
-
-            { this.props.isEditable?
-              <ManageApiKeys keyOwnerId={this.props.object._id} keyType="object" />
-              :null }
-
-            <div>{ this.getBalance( this.props.object ) }</div>
-
-    */}
-
   }
 
 
 }
-
-var s = StyleProvider.getInstance().checkInOutProcess;
 
 ObjectDetailsComponent.propTypes = {
   currentUser: PropTypes.object,

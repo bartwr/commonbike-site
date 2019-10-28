@@ -19,7 +19,6 @@ import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
 // import ObjectList from '/imports/client/containers/ObjectList.jsx'
 import ObjectDetailsOld from '/imports/client/containers/ObjectDetailsOld.jsx'
 import LogList from '/imports/client/containers/LogList.jsx'
-import PaymentOrder from '/imports/client/components/PaymentOrder.jsx'
 import SystemSettings from '/imports/client/containers/SystemSettings.jsx'
 import NoMatch from '/imports/client/components/NoMatch.jsx'
 
@@ -127,8 +126,6 @@ class AppRoutes extends React.Component {
       <Route path='/bike/:objectId' component={UserAppObjectDetails}/>
 
       <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppObjectDetailsCheckin}/>
-
-      <RouteWhenLoggedIn path='/payment/:internalPaymentId' component={PaymentOrder}/>
 
       <RouteWhenLoggedIn path='/admin/bike/details/:objectId' component={UserAppAdminPageObjectDetails}/>
       <RouteWhenLoggedIn path='/systemwallet' component={UserAppSystemWallet}/>
