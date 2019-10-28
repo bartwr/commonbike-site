@@ -2,19 +2,72 @@ import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import { RedirectTo } from '/client/main'
 import { StyleProvider } from '/imports/client/StyleProvider.js'
+import { withStyles } from '@material-ui/core/styles';
 
-// Import components
-import EditObject from '/imports/client/containers/EditObject';
-// import RaisedButton from '/imports/client/components/RaisedButton.jsx'
-import ObjectBlock from '/imports/client/containers/ObjectBlock';
-// import Button from '/imports/client/components/Button.jsx';
-import CheckInOutProcessBase from '/imports/client/components/CheckInCode';
-import MapSummary from '/imports/client/MapSummary';
-import CheckInOutProcessPlainKey from '/imports/client/components/CheckInOutProcess/CheckInOutProcessPlainKey';
-import CheckInOutProcessOpenELock from '/imports/client/components/CheckInOutProcess/CheckInOutProcessOpenELock';
-import ManageApiKeys from '/imports/client/components/ManageApiKeys';
-import Balance from '/imports/client/components/Balance.jsx';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+
+
+//
+// Lisk.bike interaction
+//
+import { getTimestamp, getBike } from '/imports/api/lisk-blockchain/tests/_helpers.js';
+
+const renterAccount = {
+  "passphrase":"logic bid screen can inquiry midnight dry wing desk like bonus balance",
+  "privateKey":"c5cfaca33e5f4050e597b719b2ecf72ebdf611b234d501e054cdac8ba926ef7bbf00338dd92745170591ee2d81c4a4de444a171a79fe69860f75c040aa083bcb",
+  "publicKey":"bf00338dd92745170591ee2d81c4a4de444a171a79fe69860f75c040aa083bcb",
+  "address":"4847457929433585763L"
+}
+
+const bikeAccount = {
+  "passphrase":"raccoon fall pig couch damage hen skull sail base car drill excite",
+  "privateKey":"cdda6bf1fc611164e2c0787973f682c611a6c0bce807b2b5e9a0f4456e97d183ee7722d635438af30ab75e04c388e0cd13e5f204b4c7e5512fc24eefdc7bb1cf",
+  "publicKey":"ee7722d635438af30ab75e04c388e0cd13e5f204b4c7e5512fc24eefdc7bb1cf",
+  "address":"5971842226607831271L"
+}
+
+//
+//
+//
+const styles = theme => ({
+  root: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    background: 'transparent'
+  },
+  dialog: {
+    width: '60vw',
+    height: '80vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: '5vmin'
+  },
+  actionbutton: {
+    width: '50vw',
+    height: '30px',
+    margin: '1vmin'
+  }
+});
 
 class ObjectDetailsComponent extends Component {
 
@@ -78,22 +131,51 @@ class ObjectDetailsComponent extends Component {
   //     return <CheckInOutProcessPlainKey
   //         object={this.props.object} isProvider={this.props.isEditable} locationId={this.props.location._id} />
   }
+  
+  clickCreateBike(object) {
+    console.log("clickCreateBike", object);    
+  }
+
+  clickRentBike(object) {
+    console.log("clickRentBike", object);
+
+    getBike(client, bikeAccount).then(bike => {
+      console.log("bike:", bike);
+    
+      rentBike(bike, renterAccount).then(rentResult => {
+        console.log(rentResult);
+      });
+    });
+  }
+
+  clickReturnBike(object) {
+    console.log("clickReturnBike", object);    
+  }
+
+  clickUpdateGPS(object) {
+    console.log("clickUpdateGPS", object);    
+  }
 
   render() {
     if(this.props.object==undefined) {
       return (null);
     }
     
-    const { object } = this.props;
+    const { object, classes } = this.props;
 
     let location = object.state && object.state.lat_lng || [0,0];
     
     console.log("object %o / location: %o", object, location);
     
     return (
-      <div style={s.base}>
-        <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
-        { this.renderCheckInOutProcess(object.state.state) }
+      <div className={classes.root}>
+        <div className={classes.dialog}>
+          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.clickRentBike.bind(this, object)}>RENT BIKE</Button>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.clickReturnBike.bind(this, object)} disabled>RETURN BIKE</Button>
+          <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
+        </div>
       </div>
     );
     
@@ -136,4 +218,4 @@ ObjectDetailsComponent.defaultProps = {
   object: undefined,
 }
 
-export default ObjectDetailsComponent
+export default withStyles(styles)(ObjectDetailsComponent);
