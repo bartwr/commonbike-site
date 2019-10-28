@@ -7,25 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
-
-//
-// Lisk.bike interaction
-//
-import { getTimestamp, getBike } from '/imports/api/lisk-blockchain/tests/_helpers.js';
-
-const renterAccount = {
-  "passphrase":"logic bid screen can inquiry midnight dry wing desk like bonus balance",
-  "privateKey":"c5cfaca33e5f4050e597b719b2ecf72ebdf611b234d501e054cdac8ba926ef7bbf00338dd92745170591ee2d81c4a4de444a171a79fe69860f75c040aa083bcb",
-  "publicKey":"bf00338dd92745170591ee2d81c4a4de444a171a79fe69860f75c040aa083bcb",
-  "address":"4847457929433585763L"
-}
-
-const bikeAccount = {
-  "passphrase":"raccoon fall pig couch damage hen skull sail base car drill excite",
-  "privateKey":"cdda6bf1fc611164e2c0787973f682c611a6c0bce807b2b5e9a0f4456e97d183ee7722d635438af30ab75e04c388e0cd13e5f204b4c7e5512fc24eefdc7bb1cf",
-  "publicKey":"ee7722d635438af30ab75e04c388e0cd13e5f204b4c7e5512fc24eefdc7bb1cf",
-  "address":"5971842226607831271L"
-}
+import RentBikeButton from './RentBikeButton';
 
 //
 //
@@ -136,18 +118,6 @@ class ObjectDetailsComponent extends Component {
     console.log("clickCreateBike", object);    
   }
 
-  clickRentBike(object) {
-    console.log("clickRentBike", object);
-
-    getBike(client, bikeAccount).then(bike => {
-      console.log("bike:", bike);
-    
-      rentBike(bike, renterAccount).then(rentResult => {
-        console.log(rentResult);
-      });
-    });
-  }
-
   clickReturnBike(object) {
     console.log("clickReturnBike", object);    
   }
@@ -172,7 +142,7 @@ class ObjectDetailsComponent extends Component {
         <div className={classes.dialog}>
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
           <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
-          <Button variant="contained" className={classes.actionbutton} onClick={this.clickRentBike.bind(this, object)}>RENT BIKE</Button>
+          <RentBikeButton bike={this.props.object} classes={classes} />
           <Button variant="contained" className={classes.actionbutton} onClick={this.clickReturnBike.bind(this, object)} disabled>RETURN BIKE</Button>
           <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
         </div>

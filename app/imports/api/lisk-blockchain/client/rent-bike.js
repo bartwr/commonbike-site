@@ -1,18 +1,11 @@
-require('dotenv').config()
-const fs = require('fs');
 const { APIClient } = require('@liskhq/lisk-client');
 const RentBikeTransaction = require('../transactions/rent-bike');
 
 const { getTimestamp, getBike } = require('./_helpers.js');
-
-const client = new APIClient([`http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`]);
-const renterAccount = JSON.parse(fs.readFileSync('./accounts/'+process.argv[2]+'.json')); 
-const bikeAccount = JSON.parse(fs.readFileSync('./accounts/'+process.argv[3]+'.json')); 
-
+const client = new APIClient(['http://brainz.lisk.bike:4000']);
 
 const rentBike = (bike, renterAccount) => {
-
-    const tx =  new RentBikeTransaction({
+    const tx = new RentBikeTransaction({
         asset: {
             id: bike.id, // XXX or use bike.address
         },
@@ -31,9 +24,8 @@ const rentBike = (bike, renterAccount) => {
       console.error("rent-bike.err2:", err);
       // return Promise.reject(err);
     });
-  }
+}
 
-//
 const doRentBike = async (renterAccount, bikeAccount) => {
     const bike = await getBike(client, bikeAccount);
     console.log("bike:", bike);
@@ -44,4 +36,4 @@ const doRentBike = async (renterAccount, bikeAccount) => {
     return rentResult;
 }
 
-export default doRentBike;
+module.exports = {doRentBike}

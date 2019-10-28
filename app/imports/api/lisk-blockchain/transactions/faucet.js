@@ -1,4 +1,4 @@
-const { BigNum } = require('lisk-sdk');
+const { BigNum } = require('@liskhq/bignum');
 const { BaseTransaction } = require('@liskhq/lisk-transactions');
 
 class FaucetTransaction extends BaseTransaction {

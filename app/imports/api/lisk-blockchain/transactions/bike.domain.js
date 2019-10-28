@@ -1,4 +1,4 @@
-const { BigNum } = require('lisk-sdk');
+const { BigNum } = require('@liskhq/bignum');
 const { TransactionError } = require('@liskhq/lisk-transactions');
 
 module.exports = {
