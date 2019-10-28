@@ -181,6 +181,8 @@ class LocationsMap extends Component {
   }
 
   toggleTrackUser() {
+    if(!navigator||!navigator.geolocation) return;
+    
     if(this.state.watchId==undefined) {
       let options = {
         enableHighAccuracy: true,
