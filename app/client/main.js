@@ -12,12 +12,9 @@ import UserApp from '/imports/client/components/UserApp.jsx'
 import Login from '/imports/client/containers/Login.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
 import SystemWallet from '/imports/client/containers/SystemWallet.jsx'
-// import BikeWallet from '/imports/client/containers/BikeWallet.jsx'
-// import LocationsMap from '/imports/client/components/LocationsMap.jsx'
 import OverviewPage from '/imports/client/containers/OverviewPage.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
-// import ObjectList from '/imports/client/containers/ObjectList.jsx'
-import ObjectDetailsOld from '/imports/client/containers/ObjectDetailsOld.jsx'
+import ObjectDetails from '/imports/client/containers/ObjectDetails.jsx'
 import LogList from '/imports/client/containers/LogList.jsx'
 import SystemSettings from '/imports/client/containers/SystemSettings.jsx'
 import NoMatch from '/imports/client/components/NoMatch.jsx'
@@ -29,27 +26,15 @@ const UserAppLogin = ({match}) => {
 }
 const UserAppUserWallet = () => (<UserApp content={<div><UserWallet /></div>} />)
 
-// const UserAppLocationsMap = () => (<UserApp content={<LocationsMap />} />)
 const UserAppOverviewPage = () => (<UserApp content={<OverviewPage showMap={true} showList={true} />} />)
 
-const UserAppObjectList = () => (<UserApp content={<OverviewPage showMap={false} showList={true} />} />)
+const UserAppOverviewPageNoMap = () => (<UserApp content={<OverviewPage showMap={false} showList={true} />} />)
 
 const UserAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
 
 const UserAppObjectDetails = ({match}) => {
   return (
-    <UserApp content={<ObjectDetailsOld objectId={match.params.objectId}/>} />
-  )
-}
-const UserAppAdminPageObjectDetails = ({match}) => {
-  return (
-    <UserApp content={<ObjectDetailsOld isEditable="true" objectId={match.params.objectId}/>} />
-  )
-}
-
-const UserAppObjectDetailsCheckin = ({match}) => {
-  return (
-    <UserApp content={<ObjectDetailsOld objectId={match.params.objectId} checkedIn={true}/>} />
+    <UserApp content={<ObjectDetails objectId={match.params.objectId}/>} />
   )
 }
 
@@ -62,33 +47,16 @@ const UserAppSystemWallet = () => (<UserApp content={<div><SystemWallet /></div>
 const RouteWhenLoggedIn = ({ component: Component, ...rest }) => {
 
   if(Meteor.userId()) {
-//    console.log('route when logged in - render normal ', Meteor.userId());
     return (
       <Route {...rest} render={props => (<Component {...props}/> )}/>
     )
   } else {
-//    console.log('route when logged in - render redirect ', Meteor.userId());
     return (
       <Route {...rest} render={props => ( <Redirect to={{ pathname: '/login', state: { from: props.location }}}/> )}/>
     )
   }
 }
 
-// see: https://react-router.now.sh/auth-workflow
-const RouteWhenAdmin = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={props => (
-    Roles.userIsInRole(Meteor.userId(), 'admin') ? (
-      <Component {...props}/>
-    ) : (
-      <Redirect to={{
-        pathname: '/login',
-        state: { from: props.location }
-      }}/>
-    )
-  )}/>
-)
-
-//
 const EVENT_REDIRECTTO = 'EVENT_REDIRECTTO'
 
 export const RedirectTo = (path) => {
@@ -121,13 +89,10 @@ class AppRoutes extends React.Component {
       <Route exact path='/' component={UserAppOverviewPage}/>
 
       <Route path='/login' component={UserAppLogin}/>
-      <Route path='/objects' component={UserAppObjectList}/>
+      <Route path='/objects' component={UserAppOverviewPageNoMap}/>
       <Route path='/userwallet' component={UserAppUserWallet}/>
       <Route path='/bike/:objectId' component={UserAppObjectDetails}/>
 
-      <RouteWhenLoggedIn path='/bike/checkin/:objectId' component={UserAppObjectDetailsCheckin}/>
-
-      <RouteWhenLoggedIn path='/admin/bike/details/:objectId' component={UserAppAdminPageObjectDetails}/>
       <RouteWhenLoggedIn path='/systemwallet' component={UserAppSystemWallet}/>
 
       <RouteWhenLoggedIn path='/admin/users' component={UserAppAdminAdminUsersList}/>

@@ -8,7 +8,7 @@ import { Objects } from '/imports/api/objects.js';
 // Import components
 import ObjectDetailsComponent from '/imports/client/components/ObjectDetailsComponent';
 
-class ObjectDetailsOld extends Component {
+class ObjectDetails extends Component {
 
   constructor(props) {
     super(props);
@@ -25,13 +25,13 @@ class ObjectDetailsOld extends Component {
   }
 }
 
-ObjectDetailsOld.propTypes = {
+ObjectDetails.propTypes = {
   isEditable: PropTypes.any,
   object: PropTypes.object,
   onClickHandler: PropTypes.any
 };
 
-ObjectDetailsOld.defaultProps = {
+ObjectDetails.defaultProps = {
   isEditable: false,
   object: undefined,
 }
@@ -48,4 +48,4 @@ export default withTracker((props) => {
       currentUser: Meteor.user(),
       object: object
     };
-})(ObjectDetailsOld);
+})(ObjectDetails);

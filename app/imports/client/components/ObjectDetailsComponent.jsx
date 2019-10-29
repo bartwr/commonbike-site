@@ -128,11 +128,7 @@ class ObjectDetailsComponent extends Component {
   clickCreateBike(object) {
     console.log("clickCreateBike", object);
   }
-
-  clickReturnBike(object) {
-    console.log("clickReturnBike", object);
-  }
-
+  
   clickUpdateGPS(object) {
     console.log("clickUpdateGPS", object);
   }

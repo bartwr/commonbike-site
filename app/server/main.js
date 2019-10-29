@@ -4,7 +4,6 @@ import { Accounts } from 'meteor/accounts-base'
 import { Settings } from '/imports/api/settings.js';
 import '/imports/api/users.js'
 import { Objects } from '/imports/api/objects.js';
-import '/imports/api/api-keys.js'
 import { Log } from '/imports/api/log.js'
 import '/imports/server/testdata.js'
 import '/imports/api/databasetools.js';

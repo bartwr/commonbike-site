@@ -44,7 +44,7 @@ class Login extends Component {
   renderTeaser() {
     return (
       <div style={Object.assign({padding: '20px'}, s.base)}>
-        <p>Great you want to join us</p>
+        <p>Great that you want to join us</p>
         <p>Further explanatory text.<p>
         </p><a style={s.anchor} href="mailto:info@lisk.bike">Mail us</a> if you want to help us test.</p>
         <p>You will be the first we will notify when the next fase starts.</p>

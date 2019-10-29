@@ -4,9 +4,6 @@ import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import { RedirectTo } from '/client/main'
 
-// Import components
-import ObjectBlock from '/imports/client/containers/ObjectBlock';
-
 class UserDetails extends Component {
 
   constructor(props) {
