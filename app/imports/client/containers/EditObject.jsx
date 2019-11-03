@@ -1,15 +1,53 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
+import { withStyles } from '@material-ui/core/styles';
 import ContentEditable from 'react-contenteditable';
 import ReactDOM from 'react-dom';
 import { RedirectTo } from '/client/main'
 
-// Import components
 import EditFields from '/imports/client/components/EditFields';
+import {doCreateAccount} from '/imports/api/lisk-blockchain/client/create-account.js';
 
-// Import models
-import { Objects, ObjectsSchema } from '/imports/api/objects.js';
+import { Objects, createObject } from '/imports/api/objects.js';
+const { getSettingsClientSide } = require('/imports/api/settings.js');
+
+const styles = theme => ({
+  root: {
+    position: 'relative',
+    width: '100%',
+    height: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    background: 'transparent'
+  },
+  dialog: {
+    width: '90vw',
+    height: 'auto',
+    minHeight: '60vh',
+    paddingLeft: '2vmin',
+    paddingRight: '2vmin',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: '5vmin'
+  },
+});
 
 class EditObject extends Component {
 
@@ -24,19 +62,21 @@ class EditObject extends Component {
   }
 
   getLockFields() {
+    const {object} = this.props;
+  
   	var fields = [];
-    var lockType = this.props.object.lock.type;
+    var lockType = object.lock.locktype;
     if(lockType=='open-elock') {
       fields = [
         {
             fieldname: 'lock.settings.elockid',
-            fieldvalue: this.props.object.lock.settings.elockid,
+            fieldvalue: object.lock.settings.elockid,
             controltype: 'text',
             label: 'lock id'
         },
         {
             fieldname: 'lock.settings.code',
-            fieldvalue: this.props.object.lock.settings.code,
+            fieldvalue: object.lock.settings.code,
             controltype: 'text',
             label: 'code'
         }
@@ -45,208 +85,208 @@ class EditObject extends Component {
   		fields = [
 	  		{
 	          fieldname: 'lock.settings.keyid',
-	          fieldvalue: this.props.object.lock.settings.keyid,
+	          fieldvalue: object.lock.settings.keyid,
 	          controltype: 'text',
 	          label: 'Sleutelnr.'
 	  		}
 	  	]
     } else if(lockType=='concox-bl10') {
       fields = [
-        // {
-        //     fieldname: 'lock.settings.callbackurl',
-        //     fieldvalue: this.props.object.lock.settings.callbackurl,
-        //     controltype: 'text',
-        //     label: 'Callback URL'
-        // }
+        {
+            fieldname: 'lock.lockid',
+            fieldvalue: object.lock.lockid,
+            controltype: 'text',
+            label: 'Lock ID'
+        },
+        {
+            fieldname: 'lock.battery',
+            fieldvalue: object.lock.battery,
+            controltype: 'text-readonly',
+            label: 'Battery Voltage'
+        },
+        {
+            fieldname: 'lock.charging',
+            fieldvalue: object.lock.charging ? 'yes':'no',
+            controltype: 'text-readonly',
+            label: 'Charging'
+        }
       ]
     } else {
       console.error('unknown lock type %s', lockType)
     }
-
+  
     return fields;
   }
-
+  
   getCoinFields() {
     const { object } = this.props;
-    
+  
     let fields = [
       {
           controltype: 'header',
-          label: 'Wallet'
+          label: 'Bicycle Wallet'
       },
       {
-          fieldname: 'object.passphrase',
-          fieldvalue: this.props.passphrase,
+          fieldname: 'object.wallet.passphrase',
+          fieldvalue: object.wallet.passphrase,
           controltype: 'text',
           label: 'Passphrase'
       },
       {
           fieldname: 'object.privateKey',
-          fieldvalue: this.props.privateKey,
+          fieldvalue: object.wallet.privateKey,
           controltype: 'text',
           label: 'Private Key'
       },
       {
           fieldname: 'object.publicKey',
-          fieldvalue: this.props.publicKey,
+          fieldvalue: object.wallet.publicKey,
           controltype: 'text',
           label: 'Public Key'
       },
       {
           fieldname: 'object.address',
-          fieldvalue: this.props.address,
+          fieldvalue: object.wallet.address,
           controltype: 'text',
           label: 'Address'
       },
     ]
-
+  
     return fields;
   }
 
   render() {
-  	if(!this.props.object) {
+  	if(this.props.object==undefined) {
+      console.log('skip render because object is undefined');
     	return ( <div />);
   	}
 
-  	var validLocations = Locations.find({},{fields:{_id:1, title:1}}).fetch();
+    
+    const {classes, object, isnew } = this.props;
+
+    console.log('rendering editobject %o', object);
+
   	var lockTypes = [ { _id: 'concox-bl10', title: 'Concox BL10 e-lock'},
                       { _id: 'open-elock', title: 'Open e-lock'},
                     	{ _id: 'plainkey', title: 'sleutel'}];
-  	var timeUnits = [ { _id: 'day', title: 'dag'},
-  	                  { _id: 'halfday', title: 'dagdeel'},
-  	                  { _id: 'hour', title: 'uur'}];
-
   	var fields = [
   		{
           controltype: 'header',
-          label: 'Algemeen'
+          label: 'Blockchain asset'
+  		},
+      {
+          fieldname: 'id',
+          fieldvalue: object.blockchain.id,
+          controltype: 'text',
+          label: 'Asset ID'
   		},
   		{
           fieldname: 'title',
-          fieldvalue: this.props.object.title,
+          fieldvalue: object.blockchain.title,
           controltype: 'text',
-          label: 'Naam'
+          label: 'Title'
   		},
   		{
           fieldname: 'description',
-          fieldvalue: this.props.object.description,
+          fieldvalue: object.blockchain.description,
           controltype: 'text',
-          label: 'Beschrijving'
+          label: 'Description'
+  		},
+      {
+          fieldname: 'blockchain.lat_lng',
+          fieldvalue: '[' + object.blockchain.lat_lng[0] + ', ' + object.blockchain.lat_lng[0] + ']',
+          controltype: 'text-readonly',
+          label: 'Location on blockchain'
   		},
   		{
-          fieldname: 'imageUrl',
-          fieldvalue: this.props.object.imageUrl,
-          controltype: 'text',
-          label: 'Image'
+          fieldname: 'blockchain.pricePerHourInLSK',
+          fieldvalue: object.blockchain.pricePerHourInLSK,
+          controltype: 'number',
+          label: 'Price/Hour (LSK)'
+  		},
+      {
+          fieldname: 'blockchain.depositInLSK',
+          fieldvalue: object.blockchain.depositInLSK,
+          controltype: 'number',
+          label: 'Deposit (LSK)'
+  		},
+      {
+          fieldname: 'blockchain.rentedBy',
+          fieldvalue: object.blockchain.rentedBy,
+          controltype: 'text-readonly',
+          label: 'Renter ID'
+  		},
+      {
+          fieldname: 'blockchain.rentalStartDatetime',
+          fieldvalue: object.blockchain.rentedBy,
+          controltype: 'text-readonly',
+          label: 'Rental Start Date/Time'
+  		},
+      {
+          fieldname: 'blockchain.rentalEndDatetime',
+          fieldvalue: object.blockchain.rentedBy,
+          controltype: 'text-readonly',
+          label: 'Rental End Date/Time'
   		},
   		{
           controltype: 'header',
-          label: 'Huurprijs'
+          label: 'Lock'
   		},
   		{
-          fieldname: 'price.value',
-          fieldvalue: this.props.object.price.value,
-          controltype: 'text',
-          label: 'Bedrag'
-  		},
-  		{
-          fieldname: 'price.currency',
-          fieldvalue: this.props.object.price.currency,
-          controltype: 'text',
-          label: 'Munteenheid'
-  		},
-  		{
-          fieldname: 'price.timeunit',
-          fieldvalue: this.props.object.price.timeunit,
+          fieldname: 'lock.locktype',
+          fieldvalue: object.lock.locktype,
           controltype: 'combo',
-          label: 'Tijdeenheid',
-          options: timeUnits
-  		},
-  		{
-          fieldname: 'price.description',
-          fieldvalue: this.props.object.price.description,
-          controltype: 'text',
-          label: 'Beschrijving'
-  		},
-      {
-          controltype: 'header',
-          label: 'Status'
-  		},
-  		{
-          fieldname: 'state.state',
-          fieldvalue: this.props.object.state.state,
-          controltype: 'text-readonly',
-          label: 'State'
-  		},
-      {
-          fieldname: 'state.userId',
-          fieldvalue: this.props.object.state.userId,
-          controltype: 'text-readonly',
-          label: 'gebruikers ID'
-  		},
-      {
-          fieldname: 'state.timestamp',
-          fieldvalue: this.props.object.state.timestamp,
-          controltype: 'text-readonly',
-          label: 'timestamp'
-  		},
-  		{
-          controltype: 'header',
-          label: 'Slot'
-  		},
-  		{
-          fieldname: 'lock.type',
-          fieldvalue: this.props.object.lock.type,
-          controltype: 'combo',
-          label: 'Type Slot',
+          label: 'Type of Lock',
           options: lockTypes
   		}
   	]
 
   	fields = fields.concat(this.getLockFields());
-
+    
     fields = fields.concat(this.getCoinFields());
-
+    
     return (
-      <EditFields fields={fields} apply={this.update.bind(this)} />
+      <div className={classes.root}>
+        <div className={classes.dialog}>
+          <EditFields fields={fields} title={'EDIT OBJECT'} apply={this.update.bind(this)}  />
+        </div>
+      </div>
     );
   }
-
-}
-
-var s = {
-  base: {
-    background: '#fff',
-    display: 'flex',
-    fontWeight: 'normal',
-    lineHeight: 'normal',
-    padding: '10px',
-    maxWidth: '100%',
-    width: '400px',
-    margin: '20px auto',
-    borderBottom: 'solid 5px #bc8311',
-    textAlign: 'left',
-  },
 }
 
 EditObject.propTypes = {
-  objectId: PropTypes.string.isRequired
+  object: PropTypes.object,
+  isnew: PropTypes.bool
 };
 
 EditObject.defaultProps = {
-  objectId: ''
+  object: undefined,
+  isnew: true
 }
 
 export default withTracker((props) => {
   // Subscribe to models
   Meteor.subscribe('objects');
-  Meteor.subscribe('locations', true);
+  Meteor.subscribe('settings');
+  
+  let isnew = false;
+  let object = Objects.findOne({_id: props.objectId})
+  if(undefined==object) {
+    let settings = getSettingsClientSide();
+    if(settings) {
+      // const newAccount = await doCreateAccount(true)
+      isnew=true;
+      
+      object = createObject();
+    }
+  }
 
   // Return variables for use in this component
+  console.log("working with object %o", object);
   return {
-  	user: Meteor.user(),
-    objectId: props.objectId,
-    object: Objects.find({_id: props.objectId}).fetch()[0],
+    object:object,
+    isnew,
+    ...props,
   };
-
-})(EditObject);
+})(withStyles(styles) (EditObject));

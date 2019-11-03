@@ -10,6 +10,43 @@ import { Settings, SettingsSchema, defaultProfileName } from '/imports/api/setti
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
+const styles = theme => ({
+  root: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    background: 'transparent'
+  },
+  dialog: {
+    width: '90vw',
+    height: 'auto',
+    minHeight: '60vh',
+    paddingLeft: '2vmin',
+    paddingRight: '2vmin',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    '-moz-user-select': 'none',
+    '-khtml-user-select': 'none',
+    '-webkit-user-select': 'none',
+    '-ms-user-select': 'none',
+    'user-select': 'none',
+    backgroundColor: 'white',
+    color: 'black',
+    borderRadius: '5vmin'
+  },
+});
+
 class SystemSettings extends Component {
   constructor(props) {
     super(props);
@@ -40,16 +77,16 @@ class SystemSettings extends Component {
                   { _id: 'false', title: 'No'}];
 
   	var fields = [
-      {
-          controltype: 'header',
-          label: 'Server'
-      },
-      {
-          fieldname: 'baseurl',
-          fieldvalue: this.props.settings.baseurl,
-          controltype: 'text',
-          label: 'Base URL (server url)'
-  		},
+      // {
+      //     controltype: 'header',
+      //     label: 'Server'
+      // },
+      // {
+      //     fieldname: 'baseurl',
+      //     fieldvalue: this.props.settings.baseurl,
+      //     controltype: 'text',
+      //     label: 'Base URL (server url)'
+  		// },
       {
           controltype: 'header',
           label: 'Map'
@@ -66,37 +103,37 @@ class SystemSettings extends Component {
           controltype: 'text',
           label: 'UserId',
   		},
-      {
-          controltype: 'header',
-          label: 'Automatic Onboarding'
-      },
-  		{
-          fieldname: 'onboarding.enabled',
-          fieldvalue: this.props.settings.onboarding.enabled,
-          controltype: 'combo',
-          label: 'Enabled',
-          controltype: 'yesno'
-  		},
-      {
-          controltype: 'header',
-          label: 'MongoDB Backup'
-      },
-      {
-          fieldname: 'backup.location',
-          fieldvalue: this.props.settings.backup.location,
-          controltype: 'text',
-          label: 'storage directory'
-      },
-      {
-          controltype: 'header',
-          label: 'Use GPS Location'
-      },
-      {
-          fieldname: 'gps.enabled',
-          fieldvalue: this.props.settings.gps.enabled,
-          label: 'Enabled',
-          controltype: 'yesno'
-      },
+      // {
+      //     controltype: 'header',
+      //     label: 'Automatic Onboarding'
+      // },
+  		// {
+      //     fieldname: 'onboarding.enabled',
+      //     fieldvalue: this.props.settings.onboarding.enabled,
+      //     controltype: 'combo',
+      //     label: 'Enabled',
+      //     controltype: 'yesno'
+  		// },
+      // {
+      //     controltype: 'header',
+      //     label: 'MongoDB Backup'
+      // },
+      // {
+      //     fieldname: 'backup.location',
+      //     fieldvalue: this.props.settings.backup.location,
+      //     controltype: 'text',
+      //     label: 'storage directory'
+      // },
+      // {
+      //     controltype: 'header',
+      //     label: 'Use GPS Location'
+      // },
+      // {
+      //     fieldname: 'gps.enabled',
+      //     fieldvalue: this.props.settings.gps.enabled,
+      //     label: 'Enabled',
+      //     controltype: 'yesno'
+      // },
       {
           controltype: 'header',
           label: 'Lisk'
@@ -107,34 +144,34 @@ class SystemSettings extends Component {
           controltype: 'text',
           label: 'Provider URL'
       },
-      {
-          controltype: 'header',
-          label: 'System BikeCoin Wallet'
-      },
-      {
-          fieldname: 'bikecoin.wallet.passphrase',
-          fieldvalue: this.props.settings.bikecoin.wallet.passphrase,
-          controltype: 'text',
-          label: 'Passphrase'
-      },
-      {
-          fieldname: 'bikecoin.wallet.privateKey',
-          fieldvalue: this.props.settings.bikecoin.wallet.privateKey,
-          controltype: 'text',
-          label: 'Private Key'
-      },
-      {
-          fieldname: 'bikecoin.wallet.publicKey',
-          fieldvalue: this.props.settings.bikecoin.wallet.publicKey,
-          controltype: 'text',
-          label: 'PublicKey'
-      },
-      {
-          fieldname: 'bikecoin.wallet.address',
-          fieldvalue: this.props.settings.bikecoin.wallet.address,
-          controltype: 'text',
-          label: 'Address'
-      },
+      // {
+      //     controltype: 'header',
+      //     label: 'System BikeCoin Wallet'
+      // },
+      // {
+      //     fieldname: 'bikecoin.wallet.passphrase',
+      //     fieldvalue: this.props.settings.bikecoin.wallet.passphrase,
+      //     controltype: 'text',
+      //     label: 'Passphrase'
+      // },
+      // {
+      //     fieldname: 'bikecoin.wallet.privateKey',
+      //     fieldvalue: this.props.settings.bikecoin.wallet.privateKey,
+      //     controltype: 'text',
+      //     label: 'Private Key'
+      // },
+      // {
+      //     fieldname: 'bikecoin.wallet.publicKey',
+      //     fieldvalue: this.props.settings.bikecoin.wallet.publicKey,
+      //     controltype: 'text',
+      //     label: 'PublicKey'
+      // },
+      // {
+      //     fieldname: 'bikecoin.wallet.address',
+      //     fieldvalue: this.props.settings.bikecoin.wallet.address,
+      //     controltype: 'text',
+      //     label: 'Address'
+      // },
       {
           controltype: 'header',
           label: 'Development Options'
@@ -169,9 +206,11 @@ class SystemSettings extends Component {
     const { classes } = this.props;
 
     return (
-      <Paper className={classes.base}>
-        <EditFields title={'SYSTEM SETTINGS'} fields={fields} handlers={handlers} apply={this.update.bind(this)} enableCollapse={true} startOpen={true}/>
-      </Paper>
+      <div className={classes.root}>
+        <div className={classes.dialog}>
+          <EditFields title={'SYSTEM SETTINGS'} fields={fields} handlers={handlers} apply={this.update.bind(this)} enableCollapse={true} startOpen={true}/>
+        </div>
+      </div>
     );
   }
 }
@@ -182,21 +221,6 @@ SystemSettings.propTypes = {
 
 SystemSettings.defaultProps = {
 }
-
-const styles = {
-  base: {
-    // background: '#fff',
-    // display: 'flex',
-    // fontWeight: 'normal',
-    // lineHeight: 'normal',
-    // padding: '10px',
-    // maxWidth: '100%',
-    // width: '400px',
-    // margin: '20px auto',
-    // borderBottom: 'solid 5px #bc8311',
-    // textAlign: 'left',
-  },
-};
 
 export default withStyles(styles)(withTracker(props => {
   // Subscribe to models

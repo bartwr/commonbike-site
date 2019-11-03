@@ -1,4 +1,4 @@
-import { Objects, getStateChangeNeatDescription } from '/imports/api/objects.js'
+import { Objects } from '/imports/api/objects.js'
 import { getSettingsServerSide, Settings } from '/imports/api/settings.js';
 
 // demo of concox bl-10 usage (localhost)
@@ -119,7 +119,9 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
   
   let theLock = Objects.findOne({'lock.locktype': 'concox-bl10', 'lock.lockid': socket.lockid});
   if(theLock!=undefined) {
-    console.log('found the lock! HURRAY HURRAY HURRAY!');
+    console.log('found the lock! HURRAY HURRAY HURRAY! [%s]', socket.lockid);
+  } else {
+    console.log('incoming info from undefined lock %s', socket.lockid);
   }
   
   let lastts = dateFormat(new Date(), 'yymmddHHMMss', true);
@@ -176,11 +178,15 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         gsmstrength: gsmstrength
       }
       
-      console.log("%s sent hbtinfo %o", theLock._id, hbtinfo)
-      
       if(theLock!=undefined) {
-        Objects.update(theLock._id, {$set: {
+        console.log("%s sent hbtinfo %s", theLock.lock.lockid, JSON.stringify(hbtinfo,0,2));
+        console.log("doing update for object theLock._id", theLock.lock.lockid, JSON.stringify(hbtinfo,0,2));
+
+        Objects.update({'lock.lockid' : theLock.lock.lockid, 'lock.locktype': 'concox-bl10'}, {$set: {
           'state.state': hbtinfo.locked==false? 'available': 'inuse',
+          'state.timestamp': new Date(),
+          'lock.timestamp': new Date(),
+          'lock.locked': hbtinfo.locked,
           'lock.battery': hbtinfo.voltage,
           'lock.charging': hbtinfo.charging==true}
         });
@@ -223,7 +229,8 @@ const processInfoContent = (cmd, infocontent, serialNo, socket) => {
         if(gpsinfo.infolength>0)
         if(theLock!=undefined&&gpsinfo.infolength>0) {
           Objects.update(theLock._id, {$set: {
-            'state.lat_lng': [gpsinfo.latitude, gpsinfo.longitude] }
+            'lock.lat_lng': [gpsinfo.latitude, gpsinfo.longitude],
+            'lock.lat_lng_timestamp': new Date() }
           });
         }
 

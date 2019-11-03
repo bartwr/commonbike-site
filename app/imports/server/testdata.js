@@ -163,7 +163,7 @@ var createLock = function(locktype, locksettings) {
 }
 
 export const checkTestObjects = function() {
-  var timestamp =  new Date().valueOf();
+  var timestamp =  new Date();
   testObjects.forEach(function (object) {
     var gimmebike=Objects.findOne({title: object.title});
     if (!gimmebike) {
@@ -176,13 +176,6 @@ export const checkTestObjects = function() {
         lockinfo = createLock('plainkey');
       }
 
-      var priceinfo = {
-        value: '0',
-        currency: 'euro',
-        timeunit: 'day',
-        description: 'tijdelijk gratis'
-      };
-    
       // var firstproviderid = null;
       // _.each(locationData.providers, function (provider) {
       //   var hithere=Accounts.findUserByEmail(provider);
@@ -203,14 +196,16 @@ export const checkTestObjects = function() {
         state: { state: object.state,
                  timestamp: timestamp,
                  lat_lng: object.startcoordinates},
-        lock: lockinfo,
-        price: priceinfo,
+        lisk: { ownerAddress : "",
+                pricePerHourInLSK : 1,
+                depositInLSK : 20},
         wallet: {
           passphrase: '',
           privateKey: '',
           publicKey: '',
           address: ''
-        }
+        },
+        lock: lockinfo,
       });
     }
   });

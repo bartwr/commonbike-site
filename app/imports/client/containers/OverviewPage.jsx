@@ -1,30 +1,74 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
+import { withStyles } from '@material-ui/core/styles';
+import Redirect from 'react-router/Redirect'
 
-// Import models
-import { Settings } from '/imports/api/settings.js';
+import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
 import { Objects, createObject } from '/imports/api/objects.js';
 
-// Import components
 import ObjectList from '/imports/client/components/ObjectList';
 import LocationsMap from '/imports/client/components/LocationsMap';
+
+
+import {getAllBikes} from '/imports/api/lisk-blockchain/client/get-bikes.js';
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  mapcontainer: {
+    flex:  '1 1 auto',
+    height: '30vh',
+    width: '90vw'
+  },
+  listcontainer: {
+    flex:  '1 1 auto',
+    minHeight: '50vh'
+  }
+});
 
 class OverviewPage extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = { mapBoundaries: null }
+    
+    console.log("props %o", props);
+    
+    let timer = setTimeout(this.updateBikes.bind(this), 1000);
+    // let timer=false;
+    this.state = { redirect: false, mapBoundaries: null, timer: timer }
+  }
+  
+  componentWillUnmount() {
+    if(this.state.timer!=false) {
+      clearTimeout(this.state.timer);
+    }
+  }
+  
+  async updateBikes() {
+    let newBikes = await getAllBikes(this.props.settings.bikecoin.provider_url);
+    console.log("got bikes: %o", newBikes)
+    
+    this.setState((prevstate)=>{
+      return {
+        bikes: newBikes,
+        timer: setTimeout(this.updateBikes.bind(this), 5000)
+      }
+    });
   }
 
   newObjectHandler() {
-    var newName = prompt('Enter a name for the new bike');
-
-    if(newName){
-      Meteor.call('objects.insert', createObject(newName), this.newObjectAdded.bind(this));
-    }
+    this.setState((prevstate)=> {
+      return { redirect: '/admin/object/new' }
+    });
   }
+  
   newObjectAdded(error, result) {
     // Re-subscribe is necessary: otherwise the location does not show up
     // in the provider's location list without a full page reload (there is no
@@ -67,37 +111,38 @@ class OverviewPage extends Component {
     this.setState({ mapBoundaries: boundaries })
   }
 
-  getMap() {
-    if(!this.props.isEditable) {
-      return (
-        <LocationsMap
-          objects={this.props.objects}
-          settings={this.props.settings}
-          mapChanged={this.mapChanged.bind(this)} />
-      );
-    } else {
-      return (<div />);
-    }
-  }
-
   render() {
-    const { showMap, showList } = this.props;
+    const { showMap, showList, adminmode, classes } = this.props;
+    
+    console.log('render redirect %s', this.state.redirect);
+    if(false!==this.state.redirect) {
+      return (<Redirect to={this.state.redirect} push/>);
+    }
     
     return (
-      <div>
-       { showMap ? this.getMap() : null}
+      <div className={classes.root}>
+        { showMap ?
+            <div className={classes.mapcontainer}>
+              <LocationsMap
+                objects={this.props.objects}
+                settings={this.props.settings}
+                mapChanged={this.mapChanged.bind(this)} />
+            </div>
+          :
+            null
+        }
        { showList ?
-           <ObjectList isEditable={this.props.isEditable}
-            objects={this.props.objects}
-            newObjectHandler={this.newObjectHandler.bind(this)}
-            canCreateObjects={this.props.cancreateobjects} />
-            :
+            <div className={classes.listcontainer}>
+              <ObjectList isEditable={this.props.isEditable}
+                objects={this.props.objects}
+                newObjectHandler={adminmode==true ? this.newObjectHandler.bind(this): undefined } />
+            </div>
+          :
             null
         }
       </div>
     );
   }
-
 }
 
 var s = {
@@ -112,8 +157,6 @@ var s = {
 OverviewPage.propTypes = {
   settings: PropTypes.any,
   objects:  PropTypes.any,
-  newObject: PropTypes.any,
-  isAdmin: PropTypes.bool,
   showMap: PropTypes.bool,
   showList: PropTypes.bool,
 };
@@ -121,8 +164,6 @@ OverviewPage.propTypes = {
 OverviewPage.defaultProps = {
   settings: undefined,
   objects: undefined,
-  newObject: null,
-  isAdmin: false,
   showMap: false,
   showList: true
 }
@@ -131,14 +172,19 @@ export default withTracker((props) => {
   Meteor.subscribe('settings', false);
   Meteor.subscribe('objects');
 
-  var isAdmin = Roles.userIsInRole(Meteor.userId(), 'admin');
+  let settings = getSettingsClientSide();
+  if(!settings) {
+    console.log("no settings available");
+    return {};
+  } else {
+    console.log("got settings %o", settings);
+  }
   
   let objects = Objects.find({}, { sort: {title: 1} }).fetch();
-
+  
   return {
-    settings: Settings.findOne({}),
+    settings: getSettingsClientSide(),
     objects,
-    isAdmin,
     ...props
   };
-})(OverviewPage);
+})(withStyles(styles)(OverviewPage));

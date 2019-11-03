@@ -61,7 +61,7 @@ class SystemWallet extends Component {
   }
 
   createNewAccount = async () => {
-    const newData = await doCreateAccount()
+    const newData = await doCreateAccount(true)
     const walletdata = {
       "bikecoin.wallet.passphrase":newData.passphrase,
       "bikecoin.wallet.privateKey":newData.privateKey,

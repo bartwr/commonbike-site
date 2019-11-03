@@ -199,6 +199,7 @@ class AppMenu extends React.Component {
               <Collapse in={this.state.systemsettings} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {[
+                    { title: 'Bike Management', onclick: this.doRedirect('/admin/objects').bind(this) },
                     { title: 'User Management', onclick: this.doRedirect('/admin/users').bind(this) },
                     { title: 'System Settings', onclick: this.doRedirect('/systemsettings').bind(this) } ,
                     { title: 'System Wallet', onclick: this.doRedirect('/systemwallet').bind(this) } ,

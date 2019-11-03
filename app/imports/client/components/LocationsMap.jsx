@@ -1,5 +1,6 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import { RedirectTo } from '/client/main'
 import { Settings } from '/imports/api/settings.js';
 import L from 'leaflet'
@@ -8,6 +9,17 @@ import 'leaflet-search'
 import './Leaflet.EasyButton.js';
 
 import { Objects } from '/imports/api/objects.js';
+
+const styles = theme => ({
+  base: {
+    width: '100%',
+    height: '100%',
+    fontSize: 'default',
+    lineHeight: 'default',
+    background: '#e0e0e0',
+    textAlign: 'right'
+  }
+});
 
 class LocationsMap extends Component {
   constructor(props) {
@@ -69,12 +81,13 @@ class LocationsMap extends Component {
     map.setView(this.props.startLocation, this.props.startZoom);
 
     // Le easy button
-    L.easyButton( '<img src="'+ s.images.hier + '" style="width:22px;height:22px" />', this.toggleTrackUser.bind(this) ).addTo(map);
+    let imagefile = '/files/IconsButtons/compass-black.svg' // 'https://einheri.nl/assets/img/home_files/compass-black.svg'
+    L.easyButton( '<img src="'+ imagefile + '" style="width:22px;height:22px" />', this.toggleTrackUser.bind(this) ).addTo(map);
 
     var objectMarkersGroup = L.featureGroup().addTo(map);
     objectMarkersGroup.on("click", function (event) {
         var clickedMarker = event.layer;
-        RedirectTo('/bike/details/' + clickedMarker.bikeLocationId);
+        RedirectTo('/object/' + clickedMarker.bikeLocationId);
     }.bind(this));
 
     var trackingMarkersGroup = L.featureGroup().addTo(map);   // no tracking marker yet!
@@ -202,6 +215,8 @@ class LocationsMap extends Component {
   // rendering
   // ----------------------------------------------------------------------------
   render() {
+    const {classes} = this.props
+    
     if(this.state.map) {
       this.initializeMap();
       // this.initializeLocationsMarkers();
@@ -209,32 +224,8 @@ class LocationsMap extends Component {
     }
 
     return (
-      <div id='mapid' style={Object.assign({}, s.base, {width: this.props.width, height: this.props.height, maxWidth: '100%'})} />
+      <div id='mapid' className={classes.base} />
     );
-  }
-}
-
-var s = {
-  base: {
-    fontSize: 'default',
-    lineHeight: 'default',
-    background: '#e0e0e0',
-    textAlign: 'right'
-  },
-  images: {
-    hier: '/files/IconsButtons/compass-black.svg' // 'https://einheri.nl/assets/img/home_files/compass-black.svg'
-  },
-  searchForLocation: {
-    position: 'relative',
-    zIndex: 90000,
-    display: 'block',
-    width: 'calc(100vw - 40px)',
-    margin: '20px auto',
-    borderRadius: 0,
-    border: 'none',
-    height: '50px',
-    lineHeight: '50px',
-    boxShadow: '0px 0px 10px rgba(0,0,0,0.2)'
   }
 }
 
@@ -258,4 +249,4 @@ LocationsMap.defaultProps = {
   startZoom: 15
 }
 
-export default LocationsMap;
+export default withStyles(styles) (LocationsMap);

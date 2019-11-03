@@ -5,7 +5,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
-import AddObjectComponent from '/imports/client/components/AddObjectComponent.jsx';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 
@@ -52,7 +51,7 @@ const styles = theme => ({
     justifyContent: 'space-around',
     alignItems: 'center',
     background: 'white',
-    backgroundSize: 'cover',
+    backgroundSize: 'contain',
     backgroundRepeat:'no-repeat',
     backgroundPosition: 'center',
     border: '0.4vmin solid black',
@@ -169,34 +168,20 @@ class ObjectBlock extends Component {
 
   render() {
     // try {
-      const { classes, object, zoom, editmode, parentuuid } = this.props;
+      const { classes, object, zoom, adminmode, parentuuid } = this.props;
       
       if(undefined==object) {
-        // console.log('blank render %s!', zoom)
-        //           <div className={classes.card} />
-
-        return (
-          <div className={classes.card}>
-            { editmode ?
-                <div className={classes.card} style={{position: 'relative',zoom: zoom}}>
-                  <AddObjectComponent parentuuid={parentuuid} type={'Food'} zoom={0.5}/>
-                </div>
-              :
-                null
-            }
-        </div>
-        );
-        //
+        return (null);
       }
 
-      let imagelink='url(' + object.imageUrl + ')' ;
+      let imagelink='url(/files/Block/bike.png)' ;
       let statetext=this.state2text(object.state.state);
       return (
           <div className={classes.card} style={{position: 'relative'}}>
             <div className={classes.poster} style={{backgroundImage: imagelink}} onClick={ this.doHandler(object, 'selecthandler') }/>
             <div className={classes.state} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{statetext}</div>
             <div className={classes.title} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{object.title}</div>
-            { editmode ?
+            { adminmode ?
                 <div className={classes.buttons}>
                    <EditIcon className={classes.menuitem} title='Edit' onClick={this.doHandler(object, 'edithandler')} />
                    {
@@ -219,7 +204,7 @@ ObjectBlock.propTypes = {
   selecthandler: PropTypes.any,
   edithandler: PropTypes.any,
   deletehandler: PropTypes.any,
-  editmode: PropTypes.bool,
+  adminmode: PropTypes.bool,
 };
 
 ObjectBlock.defaultProps = {
@@ -227,7 +212,7 @@ ObjectBlock.defaultProps = {
   selecthandler: undefined,
   edithandler: undefined,
   deletehandler: undefined,
-  editmode: false,
+  adminmode: false,
 }
 
 export default withStyles(styles)(withRouter(ObjectBlock));

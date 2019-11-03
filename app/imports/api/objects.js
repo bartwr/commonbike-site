@@ -3,17 +3,27 @@ import { Mongo } from 'meteor/mongo';
 
 import { CoinSchema } from '/imports/api/bikecoinschema.js';
 
+const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
+const { Mnemonic } = require('@liskhq/lisk-passphrase');
+
 export const Objects = new Mongo.Collection('objects');
 
-export const StateSchema = new SimpleSchema({
-  'state': {
+export const LiskSchema = new SimpleSchema({
+  id: {
     type: String,
-    label: "State",
-    defaultValue: 'available'
+    label: "Asset ID",
+  },
+  title: {
+    type: String,
+    label: "Bike title",
+  },
+  description: {
+    type: String,
+    label: "Bike description",
   },
   lat_lng: {
     type:   Array,
-    label: "GPS location",
+    label: "Last GPS location",
     maxCount: 2
   },
   'lat_lng.$': {
@@ -21,71 +31,82 @@ export const StateSchema = new SimpleSchema({
     decimal: true,
     optional: true
   },
-  'timestamp': {
-    type: Date,
-    label: "Timestamp",
-    defaultValue: ''
+  pricePerHourInLSK: {
+    type: Number,
+    label: "Price per hour (LSK)",
+    defaultValue: 1
   },
-  'userId': {
+  depositInLSK: {
+    type: Number,
+    label: "Deposit (LSK)",
+    defaultValue: 29
+  },
+  rentedBy: {
     type: String,
-    label: "User Id",
-    defaultValue: ''
+    label: "Renter ID"
   },
+  rentalStartDatetime: {
+    type: Date,
+    label: "Start Date/Time"
+  },
+  rentalEndDatetime: {
+    type: Date,
+    label: "End Date/Time"
+  }
 });
 
-export const PriceSchema = new SimpleSchema({
-  'value': {
+export const LockSchema = new SimpleSchema({
+  locktype: {
     type: String,
-    label: "Value",
-    defaultValue: '0'
+    label: "Lock type",
+    max: 32
   },
-  'currency': {
+  lockid: {
     type: String,
-    label: "Currency",
-    defaultValue: 'euro'
+    label: "Lock ID",
   },
-  'timeunit': {
-    type: String,
-    label: "Timeunit",
-    defaultValue: 'hour'
+  lat_lng: {
+    type:   Array,
+    label: "Last GPS location",
+    maxCount: 2
   },
-  'description': {
-    type: String,
-    label: "Description",
-    defaultValue: 'tijdelijk gratis'
+  'lat_lng.$': {
+    type: Number,
+    decimal: true,
+    optional: true
+  },
+  lat_lng_timestamp: {
+    type: Date,
+    label: "Last lock state change",
+  },
+  state_timestamp: {
+    type: Date,
+    label: "Last lock state change",
+  },
+  locked: {
+    type: Boolean,
+    label: "Locked state",
+  },
+  battery: {
+    type: Number,
+    label: "Battery Voltage",
+  },
+  charging: {
+    type: Boolean,
+    label: "Charging state",
   },
 });
 
 export const ObjectsSchema = new SimpleSchema({
-  title: {
-    type: String,
-    label: "Title",
-    max: 200
-  },
-  description: {
-    type: String,
-    label: "Description",
-    optional: true,
-  },
-  imageUrl: {
-    type: String,
-    label: "Image URL",
-    optional: true,
-    max: 1000
-  },
-  state: {
-    type: StateSchema
-  },
-  price: {
-    type: PriceSchema
-  },
-  lock: {
-    type: Object,
-    blackbox: true
+  blockchain: {
+    type: LiskSchema
   },
   wallet: {
     type: CoinSchema
   },
+  lock: {
+    type: LockSchema
+  }
 });
 
 if (Meteor.isServer) {
@@ -94,51 +115,48 @@ if (Meteor.isServer) {
   });
 }
 
-export function getStateChangeNeatDescription(objectTitle, newState) {
-  var description = ""
-  if(newState=='reserved') {
-    description = objectTitle + " reserved"
-  } else if(newState=='inuse') {
-    description = objectTitle + " rented"
-  } else if(newState=='available') {
-    description = objectTitle + " returned"
-  } else if(newState=='outoforder') {
-    description = objectTitle + " set out of order"
-  } else {
-    description = objectTitle + " set to state '" + newState + "'"
-  }
-
-  return description;
-}
-
-export const createObject = (title) => {
+export const createObject = () => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
 
   var data = {
-    title: title,
-    description: '',
-    imageUrl: '/files/Block/bike.png',
-    state: {state: 'available',
-            timestamp: new Date(),
-            lat_lng: [0, 0],
-            userId: ''
+    blockchain: {
+      id: '',
+      title: '',
+      description: '',
+      lat_lng: [0,0],
+      pricePerHourInLSK: 1,
+      depositInLSK: 20,
+      rentedBy: '',
+      rentalStartDatetime: new Date(),
+      rentalEndDatetime: new Date(),
     },
     lock: {locktype: 'concox-bl10',
            lockid: '',
+           lat_lng: [999,999],
+           lat_lng_timestamp: new Date(),
+           state_timestamp: new Date(),
+           locked: false,
            battery: 0,
            charging: false
           },
-    price: {value: '0',
-            currency: 'euro',
-            timeunit: 'day',
-            description: 'temporarily free'},
     wallet: { passphrase :  '',
               privateKey :  '',
               publicKey : '',
               address :  '' }
   }
-  // state -> 'state': String / lat_lng: [0,0] / timestamp: number / userid: ''
+  
+  // assign new keypair to object
+  const passphrase = Mnemonic.generateMnemonic();
+  const { privateKey, publicKey } = getKeys(passphrase);
+  const address = getAddressFromPublicKey(publicKey);
+
+  data.wallet = {
+    passphrase,
+    privateKey,
+    publicKey,
+    address
+  };
 
   try {
     var context =  ObjectsSchema.newContext();
@@ -152,111 +170,79 @@ export const createObject = (title) => {
 }
 
 Meteor.methods({
-  'objects.insert'(data) {
-
-    // Make sure the user is logged in
-    if (! Meteor.userId()) throw new Meteor.Error('not-authorized');
-
-    try {
-      check(data, ObjectsSchema);
-    } catch(ex) {
-      console.log('data for new object does not match schema: ' + ex.message);
-      return;
-    }
-
-  	// Strip HTML Tags
-    data.title = data.title.replace(/<.*?>/g, " ").replace(/\s+/g, " ").trim();
-
-    // assign new keypair to object
-    const passphrase = Mnemonic.generateMnemonic();
-    const { privateKey, publicKey } = getKeys(passphrase);
-    const address = getAddressFromPublicKey(publicKey);
-
-    data.wallet = {
-      passphrase,
-      privateKey,
-      publicKey,
-      address
-    };
-
-    // Insert object
-    var objectId = Objects.insert(data);
-
-    var object = Objects.findOne(objectId, {title:1, locationId:1});
-    var description = 'A new bike was added: ' + object.title;
-    console.log(description);
-  },
-  'objects.update'(objectId, data) {
-
-    // Make sure the user is logged in
-    if (! Meteor.userId()) throw new Meteor.Error('not-authorized');
-
-    // check(data, ObjectsSchema);
-
-	  var strippedTitle = data.title.replace(/<.*?>/g, " ").replace(/\s+/g, " ").trim();
-
-    Objects.update(objectId, {$set:{
-      locationId: data.locationId,
-      title: strippedTitle,
-      description: data.description,
-      imageUrl: data.imageUrl
-    }});
-  },
   'objects.applychanges'(_id, changes) {
 
     // Make sure the user is logged in
     if (! Meteor.userId()) throw new Meteor.Error('not-authorized');
-
-    var context =  ObjectsSchema.newContext();
-    if(context.validate({ $set: changes}, {modifier: true} )) {
-      var object = Objects.findOne(_id);
-
-      var logchanges = {};
-      Object.keys(changes).forEach((fieldname) => {
-        // convert dot notation to actual value
-        val = new Function('_', 'return _.' + fieldname)(object);
-        logchanges[fieldname] = { new: changes[fieldname],
-                                  prev: val||'undefined' };
-      });
-
-      // apply changes
-      Objects.update(_id, {$set : changes} );
-
-      var description = 'Settings changed for ' + object.title;
-      console.log(description);
+    
+    let object = Objects.findOne({uuid: uuid});
+    if(object) {
+      var context =  ObjectsSchema.newContext();
+      if(context.validate({ $set: changes}, {modifier: true} )) {
+        // apply changes
+        Objects.update(_id, {$set : changes} );
+        console.log('Settings changed for ' + object.blockchain.title);
+        
+        return {
+          result: true,
+          message: 'Object ' + item.title + ' updated',
+          uuid
+        }
+      } else {
+        return {
+          result: false,
+          message: 'Object ' + item.title + ' contains invalid data',
+          uuid
+        }
+      };
     } else {
-      console.log('unable to update object with id ' + _id);
-      console.log(context);
-    };
+      // make sure that no item exists with same title / category
+      item = Objects.findOne({'blockchain.title':changes.title})
+      if(item) {
+        return {
+          result: true,
+          message: 'There is already an object with this title registered (' + changes.title + ')',
+          _id: item.id
+        }
+      }
+      
+      item = Object.assign({}, createObject(), changes);
+      Objects.insert(item);
+      return {
+        result: true,
+        message: 'Object ' + changes.title + ' created',
+        uuid
+      }
+    }
   },
   'objects.remove'(objectId){
     var object = Objects.findOne(objectId);
 
     Objects.remove(objectId);
 
-    var description = 'Bike ' + object.title + ' was removed';
+    var description = 'Object ' + object.title + ' was removed';
     console.log(description);
   },
-  'objects.setState'(objectId, userId, newState){
-    // Make sure the user is logged in
-    if (! Meteor.userId()) throw new Meteor.Error('not-authorized');
-
-    Objects.update({_id: objectId}, { $set: {
-        'state.userId': userId,
-        'state.state': newState,
-        'state.timestamp': new Date() }
-    });
-
-    return;
-  },
-  'objects.returnBike'(object) {
-    console.log('returning bike %o', object);
-    
-    let bikeaddress = object.wallet.address;
-    
-    
-    return {
-      result: 'ok'
-    }
-  }
+  // 'objects.setState'(objectId, userId, newState){
+  //   // Make sure the user is logged in
+  //   if (! Meteor.userId()) throw new Meteor.Error('not-authorized');
+  //
+  //   Objects.update({_id: objectId}, { $set: {
+  //       'state.userId': userId,
+  //       'state.state': newState,
+  //       'state.timestamp': new Date() }
+  //   });
+  //
+  //   return;
+  // },
+  // 'objects.returnBike'(object) {
+  //   console.log('returning bike %o', object);
+  //
+  //   let bikeaddress = object.wallet.address;
+  //
+  //
+  //   return {
+  //     result: 'ok'
+  //   }
+  // }
 });

@@ -10,7 +10,7 @@ configDevnet.app.label = 'lisk-bike-blockchain-app'; // change the label of the 
 configDevnet.components.storage.password = 'lisk123'; // replace password with the password for your database user
 configDevnet.components.logger.logFileName = '/storage/lisk.bike/lisk-logs/devnet/lisk.log'; // define name and path of the log file. Default: logs/lisk.log
 configDevnet.components.fileLogLevel = "debug"; // Minimum loglevel, that should be logged in the log file. Available values: trace, debug, info(default), warn, error, fatal, none.
-configDevnet.components.consoleLogLevel = "info";// Minimum loglevel, that should be logged in the console, when starting the node. Available values: trace, debug, info, warn, error, fatal, none(default).
+configDevnet.components.consoleLogLevel = "node";// Minimum loglevel, that should be logged in the console, when starting the node. Available values: trace, debug, info, warn, error, fatal, none(default).
 
 configDevnet.modules.http_api.access.public = true;
 

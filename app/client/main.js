@@ -18,6 +18,7 @@ import ObjectDetails from '/imports/client/containers/ObjectDetails.jsx'
 import LogList from '/imports/client/containers/LogList.jsx'
 import SystemSettings from '/imports/client/containers/SystemSettings.jsx'
 import NoMatch from '/imports/client/components/NoMatch.jsx'
+import EditObject from '/imports/client/containers/EditObject.jsx'
 
 const UserAppLogin = ({match}) => {
   // TEMPORARY because I can't find the way to get query params via react-router:
@@ -32,13 +33,13 @@ const UserAppOverviewPageNoMap = () => (<UserApp content={<OverviewPage showMap=
 
 const UserAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
 
-const UserAppObjectDetails = ({match}) => {
-  return (
-    <UserApp content={<ObjectDetails objectId={match.params.objectId}/>} />
-  )
-}
+const UserAppObjectDetails = ({match}) => (<UserApp content={<ObjectDetails objectId={match.params.objectId}/>} />)
 
 const UserAppAdminAdminUsersList = () => (<UserApp content={<AdminUsersList />} />)
+
+const UserAppAdminOverviewPage = () => (<UserApp content={<OverviewPage showMap={true} showList={true} adminmode={true} />} />)
+
+const UserAppAdminEditObject = ({match}) => (<UserApp content={<EditObject  objectId={match.params.objectId}/>} />)
 
 const UserAppSystemSettings = () => (<UserApp content={<SystemSettings />} />)
 
@@ -91,11 +92,14 @@ class AppRoutes extends React.Component {
       <Route path='/login' component={UserAppLogin}/>
       <Route path='/objects' component={UserAppOverviewPageNoMap}/>
       <Route path='/userwallet' component={UserAppUserWallet}/>
-      <Route path='/bike/:objectId' component={UserAppObjectDetails}/>
+      <Route path='/object/:objectId' component={UserAppObjectDetails}/>
 
       <RouteWhenLoggedIn path='/systemwallet' component={UserAppSystemWallet}/>
 
       <RouteWhenLoggedIn path='/admin/users' component={UserAppAdminAdminUsersList}/>
+      <RouteWhenLoggedIn path='/admin/objects' component={UserAppAdminOverviewPage}/>
+      <RouteWhenLoggedIn path='/admin/object/:objectId' component={UserAppAdminEditObject}/>
+      
       <RouteWhenLoggedIn path='/systemsettings' component={UserAppSystemSettings}/>
       <RouteWhenLoggedIn path='/admin/log' component={UserAppLogList}/>
 

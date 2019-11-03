@@ -10,7 +10,7 @@ export const defaultProfileName = 'default';   // FUTURE: multiple profiles
 
 // set fields/objects that are also visible to the client here
 const publicFieldset = {profileName:1, mapbox:1, gps: 1,
-	                      "bikecoin.provider_url": 1 };
+	                      "bikecoin.provider_url": 1, "bikecoin.wallet.address": 1 };
 
 if (Meteor.isServer) {
 	Meteor.publish('settings', function settingsPublication(profileName) {

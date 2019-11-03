@@ -84,7 +84,7 @@ class UserWallet extends Component {
   }
 
   createNewAccount = async () => {
-    const newAccount = await doCreateAccount()
+    const newAccount = await doCreateAccount(true)
     wallet.set(newAccount)
   }
 

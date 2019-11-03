@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Redirect from 'react-router/Redirect'
 
 // Import models
-import { Objects } from '/imports/api/objects.js';
+import { Locks } from '/imports/api/locks.js';
 
 const styles = theme => ({
   root: {
@@ -56,7 +56,7 @@ const styles = theme => ({
   
 });
 
-class ObjectList extends Component {
+class LockList extends Component {
 
   constructor(props) {
     super(props);
@@ -69,13 +69,13 @@ class ObjectList extends Component {
     this.setState({redirect: location});
   }
   
-  newObject() {
-    if(this.props.newObject) {
-      this.props.newObject();
+  newLock() {
+    if(this.props.newLock) {
+      this.props.newLock();
     }
   }
   
-  handleObjectSelection = (object) => {
+  handleLockSelection = (object) => {
     // console.log('select catalogitem %o', menuitem.catalogitem.uuid);
     this.setState({redirect: '/object/'+object._id});
   }
@@ -112,7 +112,7 @@ class ObjectList extends Component {
   renderObject(object) {
     return (
       <ObjectBlock key={object._id} object={object}
-        selecthandler={this.handleObjectSelection}
+        selecthandler={this.handleLockSelection}
         edithandler={this.handleEditSelection} />
      )
   }
@@ -145,14 +145,14 @@ class ObjectList extends Component {
   }
 }
 
-ObjectList.propTypes = {
+LockList.propTypes = {
   objects: PropTypes.array,
   newObjectHandler: PropTypes.any
 };
 
-ObjectList.defaultProps = {
+LockList.defaultProps = {
   objects: [],
   newObjectHandler: undefined
 }
 
-export default withStyles(styles)(ObjectList)
+export default withStyles(styles)(LockList)

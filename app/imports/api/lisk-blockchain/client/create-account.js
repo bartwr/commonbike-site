@@ -55,13 +55,13 @@ const createAccount = (providerUrl, addFunds=true) => {
   }
 }
 
-const doCreateAccount = async () => {
+const doCreateAccount = async (addfunds=false) => {
     const settings = await getSettingsClientSide();
     if(!settings) return false;
     
     console.log("calling createaccount with provider %s", settings.bikecoin.provider_url);
     
-    const createAccountResult = await createAccount(settings.bikecoin.provider_url);
+    const createAccountResult = await createAccount(settings.bikecoin.provider_url, addfunds);
     console.log('createAccountResult', createAccountResult);
 
     return createAccountResult;

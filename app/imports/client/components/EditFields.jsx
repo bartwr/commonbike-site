@@ -26,14 +26,25 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const styles = theme => ({
   container: {
+    boxSizing: 'border-box',
     display: 'flex',
     flexWrap: 'wrap',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
-    width: '100%'
+    width: '100%',
+    margin: '4vmin'
   },
   details: {
+    display: 'flex',
     flexDirection: 'column',
+    width: '100%',
+  },
+  title: {
+    boxSizing: 'border-box',
+    marginTop: '2vmin',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    width: '100%'
   },
   formheader: {
     padding: theme.spacing(1),
@@ -208,7 +219,7 @@ class EditFields extends Component {
       case 'header':
         return (
             <div key={key} className={classes.headerfield}>
-              <Typography key={"typo-"+key} variant="h4" color="inherit">{field.label}</Typography>
+              <Typography key={"typo-"+key} variant="h6" color="inherit">{field.label}</Typography>
               <Divider />
             </div>
         );
@@ -419,28 +430,23 @@ class EditFields extends Component {
     }
 
     return (
-      <div>
-        <ExpansionPanel expanded={open||this.props.enableCollapse==false} onChange={this.toggleExpansion}>
-          <ExpansionPanelSummary expandIcon={this.props.enableCollapse==true?<ExpandMoreIcon />:null}>
-            <Typography variant="h6">{ this.props.title }</Typography>
-          </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.details}>
-                {
-                  this.props.fields.map((field,index) => this.getField(classes, index, field, field.controltype+'-'+index, this.actionhandler.bind(this))) // || 'control' -> because lab4
-                }
-                <div style={{textAlign:'center'}}>
-                <Button className={classes.actionButton} disabled={!enablebuttons} variant='contained' onClick={this.apply()}>APPLY</Button>
-                <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>RESET</Button>
-                { this.props.delete !== false ?
-                    <Button className={classes.actionButton} disabled={false} variant='outlined' onClick={this.delete()}>DELETE</Button>
-                  :
-                    null
-                }
-                </div>
-            </ExpansionPanelDetails>
-        </ExpansionPanel>
+      <div className={classes.container}>
+        <Typography variant="h5" className={classes.title}>{ this.props.title }</Typography>
+        <div className={classes.details}>
+          {
+            this.props.fields.map((field,index) => this.getField(classes, index, field, field.controltype+'-'+index, this.actionhandler.bind(this))) // || 'control' -> because lab4
+          }
+          <div style={{textAlign:'center'}}>
+            <Button className={classes.actionButton} disabled={!enablebuttons} variant='contained' onClick={this.apply()}>APPLY</Button>
+            <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>RESET</Button>
+            { this.props.delete !== false ?
+                <Button className={classes.actionButton} disabled={false} variant='outlined' onClick={this.delete()}>DELETE</Button>
+              :
+                null
+            }
+          </div>
+        </div>
       </div>
-
     );
   }
 }
