@@ -4,9 +4,13 @@ import { Mongo } from 'meteor/mongo';
 import { CoinSchema } from '/imports/api/bikecoinschema.js';
 import { getSettingsServerSide } from '/imports/api/settings.js';
 
+import { getTimestamp } from '/imports/api/lisk-blockchain/_helpers.js';
+
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
 const BigNum = require('@liskhq/bignum');
 const { Mnemonic } = require('@liskhq/lisk-passphrase');
+const { APIClient } = require('@liskhq/lisk-client');
+const transactions = require('@liskhq/lisk-transactions');
 
 const CreateBikeTransaction = require('./lisk-blockchain/transactions/create-bike.js');
 
@@ -238,52 +242,51 @@ if(Meteor.isServer) {
     },
     async 'objects.registeronblockchain'(objectId){
 
-      return { result: false, message: 'this is not working yet!'}
+      // Get object
+      var object = Objects.findOne(objectId);
 
-      // var object = Objects.findOne(objectId);
-      //
-      // if(object.blockchain.title=='') {
-      //   return { result: false, message: 'please provide a title for this object!'}
-      // } else if(object.blockchain.description=='') {
-      //   return { result: false, message: 'please provide a description for this object!'}
-      // }
-      //
-      // Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
-      //
-      // let settings = await getSettingsServerSide();
-      //
-      // // Create tx
-      // const tx = new CreateBikeTransaction({
-      //   senderPublicKey: settings.bikecoin.wallet.publicKey,
-      //   recipientId: settings.bikecoin.wallet.address,
-      //   timestamp: getTimestamp(),
-      //   asset: {
-      //
-      //     id: object.wallet.publicKey,
-      //     title: object.blockchain.title,
-      //     description: object.blockchain.description,
-      //     pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain.pricePerHourInLSK),
-      //     deposit: transactions.utils.convertLSKToBeddows(object.blockchain.depositInLSK),
-      //     latitude: null,
-      //     longitude: null
-      //   }
-      // });
-      // console.log(tx);
-      //
-      // // Sign transaction
-      // tx.sign(settings.bikecoin.wallet.passphrase);
-      //
-      // // Broadcast the tx to the blockchain
-      // const broadcastTx = client.transactions.broadcast(tx.toJSON());
-      //
-      // broadcastTx.then(() => {
-      //   Objects.update(objectId, {$set: {'blockchain.id': object.wallet.publicKey}});
-      // })
-      // .catch(error => {
-      //   console.error(error);
-      // });
-      //
-      // return { result: true, message: 'registration transaction has been sent to the blockchain!'}
+      if(object.title=='') {
+        return { result: false, message: 'please provide a title for this object!'}
+      } else if(object.description=='') {
+        return { result: false, message: 'please provide a description for this object!'}
+      }
+      
+      Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
+      
+      let settings = await getSettingsServerSide();
+      const client = new APIClient([settings.bikecoin.provider_url]);
+
+      // Create tx
+      const tx = new CreateBikeTransaction({
+        senderPublicKey: settings.bikecoin.wallet.publicKey,
+        recipientId: settings.bikecoin.wallet.address,
+        timestamp: getTimestamp(),
+        asset: {
+          id: object.wallet.address,
+          title: object.title,
+          description: object.description,
+          pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.pricePerHourInLSK).toString() : Number(object.lisk.pricePerHourInLSK).toString()),
+          deposit: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.depositInLSK).toString() : Number(object.lisk.depositInLSK).toString()),
+          latitude: null,
+          longitude: null
+        }
+      });
+      console.log(tx);
+      
+      // Sign transaction
+      tx.sign(settings.bikecoin.wallet.passphrase);
+      
+      // Broadcast the tx to the blockchain
+      const broadcastTx = client.transactions.broadcast(tx.toJSON());
+      
+      broadcastTx.then(() => {
+        Objects.update(objectId, {$set: {'blockchain.id': object.wallet.publicKey}});
+      })
+      .catch(error => {
+        console.error(error);
+      });
+      
+      return { result: true, message: 'registration transaction has been sent to the blockchain!'}
     },
   });
 }

@@ -3,7 +3,7 @@ const fs = require('fs');
 const { APIClient } = require('@liskhq/lisk-client');
 const transactions = require('@liskhq/lisk-transactions');
 const client = new APIClient([`http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`]);
-const { getTimestamp } = require('./_helpers.js');
+const { getTimestamp } = require('../_helpers.js');
 
 // Get custom transaction types
 const CreateBikeTransaction = require('../transactions/create-bike'); // require the newly created transaction type 'HelloTransaction'
