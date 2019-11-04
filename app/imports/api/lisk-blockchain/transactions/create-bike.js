@@ -27,11 +27,8 @@ class CreateBikeTransaction extends BaseTransaction {
     validateAsset() {
         const errors = [];
 
-        if (this.senderId !== this.recipientId) {
-            errors.push(new TransactionError('Invalid user or company account', this.id, '.recipientId', this.recipientId, 'You can only add bike to your own account'));
-        }
-
         const validId = BikeValidator.id(this.id, this.asset.id);
+        const validOwnerId = BikeValidator.id(this.senderId, this.asset.id);
         const validPricePerHour = BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
         const validDeposit = BikeValidator.deposit(this.id, this.asset.pricePerHour);
 
@@ -61,34 +58,27 @@ class CreateBikeTransaction extends BaseTransaction {
         const errors = [];
 
         const recipient = store.account.get(this.recipientId);
-
-        if (recipient.bikes && recipient.bikes[this.asset.id] !== undefined) {
-            errors.push(new TransactionError("Bike with this Id already exist", this.id, 'this.asset.id', this.asset.id, "A non-registered Id"));
+        if (recipient.asset !== undefined) {
+          errors.push(new TransactionError("Bike with this Id already exist", this.id, 'this.asset.id', this.asset.id, "A non-registered Id"));
         }
 
-        const newBike = new Bike();
         const providedLocation = {
             latitude: this.asset.latitude,
             longitude: this.asset.longitude,
         };
+
         const location = BikeValidator.location(this.id, providedLocation) === true ? providedLocation : defaultLocation;
-
-        newBike.id = this.asset.id;
-        newBike.title = this.asset.title;
-        newBike.description = this.asset.description;
-        newBike.pricePerHour = this.asset.pricePerHour.toString();
-        newBike.deposit = this.asset.deposit.toString();
-        newBike.location = providedLocation || defaultLocation;
-
-        if (recipient.asset === undefined) {
-            recipient.asset = {};
+        
+        let assetdata = {
+          id: recipient.id;
+          title: this.asset.title,
+          description: this.asset.description,
+          ownerId: this.senderId,
+          pricePerHour: this.asset.pricePerHour.toString(),
+          deposit: this.asset.deposit.toString(),
+          location: location
         }
-
-        if (recipient.asset.bikes === undefined) {
-            recipient.asset.bikes = {};
-        }
-
-        recipient.asset.bikes[newBike.id] = newBike;
+        recipient.asset = assetdata;
 
         store.account.set(this.recipientId, recipient);
 
@@ -99,7 +89,7 @@ class CreateBikeTransaction extends BaseTransaction {
         const errors = [];
         const recipient = store.account.get(this.recipientId);
 
-        delete recipient.asset.bikes[this.asset.id];
+        delete recipient.asset;
 
         store.account.set(this.recipientId, recipient);
 

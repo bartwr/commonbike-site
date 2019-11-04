@@ -9,13 +9,13 @@ export const getObjectStatus = async (providerUrl, id) => {
   
   const client = new APIClient([providerUrl]);
   
-  let accountstatus = await client.transactions.get({id: id });
-  console.log("got accountstatus" , accountstatus);
+  // let accountstatus = await client.accounts.get({address: id });
+  // console.log("got accountstatus" , accountstatus);
   
   // let filter = (tx) => tx.asset.id == id;
-  // // let bikestatus = await client.transactions.get({ senderId: filter, sort: 'timestamp:desc', limit: 2 });
-  // let bikestatus = await client.transactions.get(filter);
-  // console.log("got bike status: %o", bikestatus);
+  // let bikestatus = await client.transactions.get({ senderId: filter, sort: 'timestamp:desc', limit: 2 });
+  let bikestatus = await client.transactions.get({asset_contains: id});
+  console.log("got bike status: %o", bikestatus);
   // if(undefined!=bikestatus) {
   //   return bikestatus.asset
   // } else {

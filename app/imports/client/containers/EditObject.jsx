@@ -153,7 +153,7 @@ class EditObject extends Component {
             controltype: 'combo',
             label: 'Type of Lock',
             options: lockTypes
-        },
+        },Asset
         {
             fieldname: 'lock.lockid',
             fieldvalue: object.lock.lockid,
@@ -176,7 +176,7 @@ class EditObject extends Component {
         },
         {
             fieldname: 'lock.battery',
-            fieldvalue: object.lock.battery,
+            fieAssetldvalue: object.lock.battery,
             controltype: 'text-readonly',
             label: 'Battery Voltage'
         },
@@ -197,7 +197,7 @@ class EditObject extends Component {
   getCoinFields() {
     const { object } = this.props;
   
-    let fields = [
+    let fields =Asset [
       {
           fieldname: 'wallet.passphrase',
           fieldvalue: object.wallet.passphrase,
@@ -206,14 +206,14 @@ class EditObject extends Component {
       },
       {
           fieldname: 'wallet.privateKey',
-          fieldvalue: object.wallet.privateKey,
+          fieldvAssetalue: object.wallet.privateKey,
           controltype: 'text',
           label: 'Private Key'
       },
       {
           fieldname: 'wallet.publicKey',
           fieldvalue: object.wallet.publicKey,
-          controltype: 'text',
+          controAssetltype: 'text',
           label: 'Public Key'
       },
       {
@@ -312,6 +312,12 @@ class EditObject extends Component {
             fieldvalue: object.blockchain.description,
             controltype: 'text-readonly',
             label: 'Description'
+    		},
+        {
+            fieldname: 'blockchain.ownerid',
+            fieldvalue: "",
+            controltype: 'text-readonly',
+            label: 'Owner ID'
     		},
         {
             fieldname: 'blockchain.lat_lng',

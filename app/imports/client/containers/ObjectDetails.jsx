@@ -109,7 +109,8 @@ class ObjectDetails extends Component {
   async updateObjectStatus() {
     try {
       console.log("update object status for object %s", this.props.object.wallet.address)
-      let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.settings.bikecoin.wallet.address);
+      // let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.settings.bikecoin.wallet.address);
+      let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.object.wallet.address);
       // console.info("got object status: %o", newStatus)
       
       if(newStatus!=false) {

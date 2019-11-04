@@ -29,6 +29,10 @@ export const LiskSchema = new SimpleSchema({
     type: String,
     label: "Bike description",
   },
+  ownerId: {
+    type: String,
+    label: "Owner ID",
+  },
   lat_lng: {
     type:   Array,
     label: "Last GPS location",
@@ -259,12 +263,13 @@ if(Meteor.isServer) {
       // Create tx
       const tx = new CreateBikeTransaction({
         senderPublicKey: settings.bikecoin.wallet.publicKey,
-        recipientId: settings.bikecoin.wallet.address,
+        recipientId: object.wallet.address,
         timestamp: getTimestamp(),
         asset: {
-          id: object.wallet.publicKey,
+          id: object.wallet.address,
           title: object.blockchain.title,
           description: object.blockchain.description,
+          ownerid: settings.bikecoin.wallet.address,
           pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain.pricePerHourInLSK),
           deposit: transactions.utils.convertLSKToBeddows(object.blockchain.depositInLSK),
           latitude: null,
