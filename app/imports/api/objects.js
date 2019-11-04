@@ -276,8 +276,8 @@ if(Meteor.isServer) {
           title: object.blockchain.title,
           description: object.blockchain.description,
           ownerid: settings.bikecoin.wallet.address,
-          pricePerHour: Number(object.blockchain.pricePerHourInLSK).toString(),
-          deposit: Number(object.blockchain.depositInLSK).toString(),
+          pricePerHour: object.blockchain.pricePerHourInLSK,
+          deposit: object.blockchain.depositInLSK,
           latitude: null,
           longitude: null
         }
