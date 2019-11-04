@@ -192,7 +192,7 @@ export const checkTestObjects = function() {
       var keyid = Objects.insert({
         title: object.title,
         description: object.description,
-        imageUrl: cTestBikeImage,
+        imageUrl: 'url(' + cTestBikeImage + ')',
         state: { state: object.state,
                  timestamp: timestamp,
                  lat_lng: object.startcoordinates},

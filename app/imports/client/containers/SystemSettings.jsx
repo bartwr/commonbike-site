@@ -30,6 +30,7 @@ const styles = theme => ({
     width: '90vw',
     height: 'auto',
     minHeight: '60vh',
+    padding: '4vmin',
     paddingLeft: '2vmin',
     paddingRight: '2vmin',
     display: 'flex',
@@ -208,7 +209,7 @@ class SystemSettings extends Component {
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
-          <EditFields title={'SYSTEM SETTINGS'} fields={fields} handlers={handlers} apply={this.update.bind(this)} enableCollapse={true} startOpen={true}/>
+          <EditFields title={'SYSTEM SETTINGS'} fields={fields} handlers={handlers} apply={this.update.bind(this)} enableCollapse={false} startOpen={true}/>
         </div>
       </div>
     );

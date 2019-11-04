@@ -91,32 +91,42 @@ class ObjectDetails extends Component {
   
   renderObjectState(state) {
     const {object, classes} = this.props;
+
+    let statetext = object.lock.locked ? "AVAILABLE" : "IN USE"
+    return (
+      <div className={classes.base}>
+        <ul className={classes.list}>
+          <li className={classes.listitem,s.mediumFont}>{statetext}</li>
+        </ul>
+      </div>
+    );
     
-    if(this.props.object.state.state=="inuse") {
-      return (
-        <div className={classes.base}>
-          <ul className={classes.list}>
-            <li className={classes.listitem,s.mediumFont}>IN GEBRUIK</li>
-          </ul>
-        </div>
-      );
-    } else if(this.props.object.state.state!="available") {
-      return (
-        <div className={classes.base}>
-          <ul className={classes.list}>
-            <li className={classes.listitem,s.mediumFont}>NOT AVAILABLE</li>
-          </ul>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classes.base}>
-          <ul className={classes.list}>
-            <li className={classes.listitem,s.mediumFont}>UNKNOWN</li>
-          </ul>
-        </div>
-      );
-    }
+    
+    // if(this.props.object.lock.locked==false) {
+    //   return (
+    //     <div className={classes.base}>
+    //       <ul className={classes.list}>
+    //         <li className={classes.listitem,s.mediumFont}>IN GEBRUIK</li>
+    //       </ul>
+    //     </div>
+    //   );
+    // } else if(this.props.object.state.state!="available") {
+    //   return (
+    //     <div className={classes.base}>
+    //       <ul className={classes.list}>
+    //         <li className={classes.listitem,s.mediumFont}>NOT AVAILABLE</li>
+    //       </ul>
+    //     </div>
+    //   );
+    // } else {
+    //   return (
+    //     <div className={classes.base}>
+    //       <ul className={classes.list}>
+    //         <li className={classes.listitem,s.mediumFont}>UNKNOWN</li>
+    //       </ul>
+    //     </div>
+    //   );
+    // }
   }
   
   clickCreateBike(object) {
@@ -134,7 +144,7 @@ class ObjectDetails extends Component {
     
     const { object, classes } = this.props;
 
-    let location = object.state && object.state.lat_lng || [0,0];
+    let location = object.lock && object.lock.lat_lng || [0,0];
     
     console.log("object %o / location: %o", object, location);
     

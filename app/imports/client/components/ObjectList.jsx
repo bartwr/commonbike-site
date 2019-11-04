@@ -64,7 +64,7 @@ class ObjectList extends Component {
     this.state = {redirect: false}
   }
   
-  doRedirect = (location) => () => {
+  doRedirect = (location) => {
     console.log("do redirect %s", location);
     this.setState({redirect: location});
   }
@@ -76,44 +76,42 @@ class ObjectList extends Component {
   }
   
   handleObjectSelection = (object) => {
-    // console.log('select catalogitem %o', menuitem.catalogitem.uuid);
     this.setState({redirect: '/object/'+object._id});
   }
   
   handleEditSelection = (object) => {
-    // console.log('edit catalogitem %o', menuitem.catalogitem.uuid);
-    RedirectTo((this.props.isEditable ? '/admin/bike/details/' : '/bike/details/') + this.props.item._id)
-    this.setState({showeditscreen: true, selectedobjectid: object._id});
+    this.doRedirect((this.props.adminmode ? '/admin/object/' : '/object/') + object._id)
   }
 
-  // handleDeleteSelection = (menuitem) => {
-  //   if( ! confirm('Are you sure that you want to delete bicycle '+ object.title +'?'))
-  //     return;
-  //
-  //   Meteor.call('objects.remove', object._id, this.processServerResultDeleteItem.bind(this));
-  //
-  //   return true;
-  //   // this.setState({showeditscreen: true, selectedobjectid: menuitem.catalogitem.uuid});
-  // }
-  //
-  // processServerResultDeleteItem = (err, serverResult) => {
-  //   const { item  } = this.props;
-  //
-  //   // var util = require('util')
-  //   // if(err) {
-  //   //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, JSON.stringify(err)), snackbarOptions.error);
-  //   // } else if (serverResult.result!==true) {
-  //   //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, serverResult.message), snackbarOptions.error);
-  //   // } else {
-  //   //   this.doSnack(serverResult.message,snackbarOptions.success);
-  //   // }
-  // };
+  handleDeleteSelection = (object) => {
+    if( ! confirm('Are you sure that you want to delete bicycle '+ object.title +'?'))
+      return;
+  
+    Meteor.call('objects.remove', object._id, this.processServerResultDeleteItem.bind(this));
+  
+    return true;
+  }
+  
+  processServerResultDeleteItem = (err, serverResult) => {
+    const { item  } = this.props;
+  
+    // var util = require('util')
+    // if(err) {
+    //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, JSON.stringify(err)), snackbarOptions.error);
+    // } else if (serverResult.result!==true) {
+    //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, serverResult.message), snackbarOptions.error);
+    // } else {
+    //   this.doSnack(serverResult.message,snackbarOptions.success);
+    // }
+  };
   
   renderObject(object) {
     return (
       <ObjectBlock key={object._id} object={object}
         selecthandler={this.handleObjectSelection}
-        edithandler={this.handleEditSelection} />
+        edithandler={this.handleEditSelection}
+        deletehandler={this.handleDeleteSelection}
+        adminmode={this.props.adminmode} />
      )
   }
 
@@ -121,6 +119,7 @@ class ObjectList extends Component {
     if(!this.props.objects ) return (null);
     
     if(false!==this.state.redirect) {
+      console.log("redirect to %s", this.state.redirect);
       return (<Redirect to={this.state.redirect} push/>);
     }
 
@@ -147,12 +146,14 @@ class ObjectList extends Component {
 
 ObjectList.propTypes = {
   objects: PropTypes.array,
-  newObjectHandler: PropTypes.any
+  newObjectHandler: PropTypes.any,
+  adminmode: PropTypes.bool
 };
 
 ObjectList.defaultProps = {
   objects: [],
-  newObjectHandler: undefined
+  newObjectHandler: undefined,
+  adminmode: false
 }
 
 export default withStyles(styles)(ObjectList)

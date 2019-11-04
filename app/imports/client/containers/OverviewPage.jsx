@@ -64,20 +64,22 @@ class OverviewPage extends Component {
   }
 
   newObjectHandler() {
-    this.setState((prevstate)=> {
-      return { redirect: '/admin/object/new' }
-    });
+    Meteor.call('objects.createnew', this.newObjectAdded.bind(this));
   }
   
   newObjectAdded(error, result) {
-    // Re-subscribe is necessary: otherwise the location does not show up
-    // in the provider's location list without a full page reload (there is no
-    // subscription relation with the user table that maintains the list
-    // of managed locations per user)
-    Meteor.subscribe('objects', this.props.isEditable);
+    if(error) {
+      alert('Unable to add a new object to the system');
+      return false;
+    }
 
-    alert('The bike has been added to the system');
+      if(result._id!=undefined) {
+        this.setState((prevstate)=> {
+          return { redirect: '/admin/object/' + result._id }
+        });
+      }
   }
+  
 
   /*
     getVisibleObjectsOnly :: ? -> ?
@@ -87,7 +89,7 @@ class OverviewPage extends Component {
   getVisibleObjectsOnly(object) {
 
     // Every object needs a lat/lng
-    if( ! object.state.lat_lng)
+    if( ! object.lock.lat_lng)
       return false;
 
     // If mapBoundaries is not set: exclude this object
@@ -133,9 +135,10 @@ class OverviewPage extends Component {
         }
        { showList ?
             <div className={classes.listcontainer}>
-              <ObjectList isEditable={this.props.isEditable}
+              <ObjectList adminmode={this.props.adminmode}
                 objects={this.props.objects}
-                newObjectHandler={adminmode==true ? this.newObjectHandler.bind(this): undefined } />
+                newObjectHandler={adminmode==true ? this.newObjectHandler.bind(this): undefined }
+                />
             </div>
           :
             null
@@ -159,13 +162,15 @@ OverviewPage.propTypes = {
   objects:  PropTypes.any,
   showMap: PropTypes.bool,
   showList: PropTypes.bool,
+  adminmode: PropTypes.bool,
 };
 
 OverviewPage.defaultProps = {
   settings: undefined,
   objects: undefined,
   showMap: false,
-  showList: true
+  showList: true,
+  adminmode: false
 }
 
 export default withTracker((props) => {

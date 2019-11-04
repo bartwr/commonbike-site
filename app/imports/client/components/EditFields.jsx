@@ -32,32 +32,28 @@ const styles = theme => ({
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
     width: '100%',
-    margin: '4vmin'
+    // margin: '4vmin'
+  },
+  expansionpanel: {
+    width: '100%'
   },
   details: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
   },
-  title: {
-    boxSizing: 'border-box',
-    marginTop: '2vmin',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    width: '100%'
-  },
   formheader: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   },
   headerfield: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(1)
   },
   messagefield: {
-    paddingBottom: theme.spacing(2),
+    paddingBottom: theme.spacing(2)
   },
-  textfield: {
+  textField: {
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   apikeyFormcontrol: {
   },
@@ -76,22 +72,15 @@ const styles = theme => ({
     height: '35px'
   },
   combo: {
-    margin: 0,
-    marginTop: theme.spacing(1)
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   yesnoswitch: {
     margin: theme.spacing(1)
   },
-  imagepreview: {
-    width: '100%',
-    height: '20vh',
-    backgroundSize: 'contain',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-  },
   actionButton: {
     margin: theme.spacing(1),
-    align: 'center center',
+    align: "center",
   },
   expandIcon: {
     position: 'absolute',
@@ -164,12 +153,6 @@ class EditFields extends Component {
     this.setState( { changes: { } } );
   }
 
-  delete = () => e => {
-    if(this.props.delete) {
-      this.props.delete();
-    }
-  }
-
   onFieldChange = index => e => {
     let field = this.props.fields[index];
 
@@ -177,6 +160,7 @@ class EditFields extends Component {
     let value;
     switch(field.controltype) {
       case 'yesno':
+      case 'yesno-readonly':
         value =  e.target.checked
         break;
       case 'text-array':
@@ -219,7 +203,7 @@ class EditFields extends Component {
       case 'header':
         return (
             <div key={key} className={classes.headerfield}>
-              <Typography key={"typo-"+key} variant="h6" color="inherit">{field.label}</Typography>
+              <Typography key={"typo-"+key} variant="h4" color="inherit">{field.label}</Typography>
               <Divider />
             </div>
         );
@@ -242,7 +226,7 @@ class EditFields extends Component {
             id={key}
             key={key}
             label={field.label}
-            className={classes.textfield}
+            className={classes.textField}
             value ={tmpvalue}
             onChange={this.onFieldChange(fieldindex)}
             margin="normal"
@@ -257,7 +241,7 @@ class EditFields extends Component {
             id={key}
             key={key}
             label={field.label}
-            className={classes.textfield}
+            className={classes.textField}
             value={this.state.changes[field.fieldname]!=undefined?this.state.changes[field.fieldname]:field.fieldvalue.join(';')}
             onChange={this.onFieldChange(fieldindex)}
             margin="normal"
@@ -279,7 +263,7 @@ class EditFields extends Component {
             key={key}
             label={field.label}
             type="date"
-            className={classes.textfield}
+            className={classes.textField}
             value={value}
             onChange={this.onFieldChange(fieldindex)}
             margin="normal"
@@ -312,7 +296,7 @@ class EditFields extends Component {
               id={key}
               key={key}
               label={field.label}
-              className={classes.textfield}
+              className={classes.textField}
               value={this.state.changes[field.fieldname]!=undefined?this.state.changes[field.fieldname]:field.fieldvalue}
               onChange={this.onFieldChange(fieldindex)}
               margin="normal"
@@ -323,6 +307,7 @@ class EditFields extends Component {
         );
         break;
       case 'yesno':
+      case 'yesno-readonly':
         return (
           <FormControlLabel
             key={key}
@@ -334,7 +319,8 @@ class EditFields extends Component {
                 color="primary" />
             }
             label={field.label}
-            labelPlacement="end" />
+            labelPlacement="end"
+            disabled={ field.controltype=='yesno-readonly' } />
        )
        break;
        return (
@@ -351,19 +337,8 @@ class EditFields extends Component {
            labelPlacement="end" />
       )
       break;
-   case 'image-preview':
-     if(field.fieldvalue && field.fieldvalue!='') {
-       return (
-         <div
-           className={classes.imagepreview}
-           style={{backgroundImage: 'url(' + field.fieldvalue + ')'}}
-           key={key} />);
-     } else {
-        return null;
-     }
-     break;
    case 'clientside-action':
-       let idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
+       var idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
        // console.log(field.fieldname + ' is using handler ' + idx);
 
        return (
@@ -376,6 +351,22 @@ class EditFields extends Component {
        );
 
        break;
+     case 'clientside-action-nochanges':
+        let haschanges = Object.keys(this.state.changes).length>0;
+         var idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
+
+         return (
+           <Button
+           key={'csa_'+field.fieldname}
+           onClick={idx!=undefined?this.props.handlers[idx].action.bind(this):null}
+           disabled={haschanges}
+           variant='contained'
+           className={classes.clientsideaction}
+           >{field.label}</Button>
+         );
+
+         break;
+       
       case 'serverside-action':
         return (
           <Button
@@ -428,26 +419,40 @@ class EditFields extends Component {
     } else {
       open=this.state.expand==true;
     }
+    
+    if(this.props.enableCollapse) {
+      return (
+        <div className={classes.container} >
+          <ExpansionPanel className={classes.expansionpanel} expanded={open||this.props.enableCollapse==false} onChange={this.toggleExpansion}>
+            <ExpansionPanelSummary expandIcon={this.props.enableCollapse==true?<ExpandMoreIcon />:null}>
+              <Typography variant="h6">{ this.props.title }</Typography>
+            </ExpansionPanelSummary>
+              <ExpansionPanelDetails className={classes.details}>
+                  {
+                    this.props.fields.map((field,index) => this.getField(classes, index, field, field.controltype+'-'+index, this.actionhandler.bind(this))) // || 'control' -> because lab4
+                  }
+                  <div style={{textAlign:'center'}}>
+                  <Button className={classes.actionButton} disabled={!enablebuttons} variant='contained' onClick={this.apply()}>APPLY</Button>
+                  <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>RESET</Button>
+                  </div>
+              </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </div>
 
-    return (
-      <div className={classes.container}>
-        <Typography variant="h5" className={classes.title}>{ this.props.title }</Typography>
+      );
+    } else {
+      return (
         <div className={classes.details}>
           {
             this.props.fields.map((field,index) => this.getField(classes, index, field, field.controltype+'-'+index, this.actionhandler.bind(this))) // || 'control' -> because lab4
           }
           <div style={{textAlign:'center'}}>
-            <Button className={classes.actionButton} disabled={!enablebuttons} variant='contained' onClick={this.apply()}>APPLY</Button>
-            <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>RESET</Button>
-            { this.props.delete !== false ?
-                <Button className={classes.actionButton} disabled={false} variant='outlined' onClick={this.delete()}>DELETE</Button>
-              :
-                null
-            }
+          <Button className={classes.actionButton} disabled={!enablebuttons} variant='contained' onClick={this.apply()}>APPLY</Button>
+          <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>RESET</Button>
           </div>
         </div>
-      </div>
-    );
+      )
+    }
   }
 }
 
@@ -472,9 +477,6 @@ EditFields.propTypes = {
           ),
   apply: PropTypes.func,
   reset: PropTypes.func,
-  delete: PropTypes.oneOfType([
-            PropTypes.func,
-            PropTypes.bool]),
   handleExpansion: PropTypes.func,
   panelId: PropTypes.string,
   enableCollapse: PropTypes.bool,
@@ -488,8 +490,7 @@ EditFields.defaultProps = {
   handlers: [],
   panelId: 'editfields-panel',
   enableCollapse: true,
-  startOpen: false,
-  delete: false
+  startOpen: false
 }
 
 export default withStyles(styles)(EditFields);

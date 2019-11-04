@@ -174,18 +174,18 @@ class ObjectBlock extends Component {
         return (null);
       }
 
-      let imagelink='url(/files/Block/bike.png)' ;
-      let statetext=this.state2text(object.state.state);
+      let imagelink='url(/files/ObjectDetails/liskbike.png)' ;
+      let statetext= object.lock.locked? 'LOCKED': 'UNLOCKED';
       return (
           <div className={classes.card} style={{position: 'relative'}}>
             <div className={classes.poster} style={{backgroundImage: imagelink}} onClick={ this.doHandler(object, 'selecthandler') }/>
             <div className={classes.state} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{statetext}</div>
-            <div className={classes.title} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{object.title}</div>
+            <div className={classes.title} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{object.blockchain.title}</div>
             { adminmode ?
                 <div className={classes.buttons}>
                    <EditIcon className={classes.menuitem} title='Edit' onClick={this.doHandler(object, 'edithandler')} />
                    {
-                     this.props.deletehandler && (object.hasChildren == false) ?
+                     this.props.deletehandler ?
                         <DeleteIcon className={classes.menuitem} title='Delete' onClick={this.doHandler(object, 'deletehandler')} />
                       :
                         <div />

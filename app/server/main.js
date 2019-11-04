@@ -27,17 +27,10 @@ Meteor.startup(() => {
 				Objects.update(objectData._id, {$set:{ wallet: {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
 			}
 			
-			if("lisk" in objectData == false) {
-				console.log("updating lisk data for " + objectData.title)
-				Objects.update(objectData._id, {$unset:{ 'state.userId': "" }});
-				Objects.update(objectData._id, {$unset:{ 'price': "" }});
-				Objects.update(objectData._id, {$set:{ lisk: { ownerAddress: '', pricePerHourInLSK: 1, depositInLSK: 20 }}});
-			}
-			
-			if(objectData.title=="Lisk Bike #1" && objectData.wallet.privatekey!=cDefaultBikeAccount.privateKey) {
-				console.log("initialize bike #1 with default bike account");
-				Objects.update(objectData._id, {$set:{ wallet: cDefaultBikeAccount}});
-			}
+			// if(objectData.title=="Lisk Bike #1" && objectData.wallet.privatekey!=cDefaultBikeAccount.privateKey) {
+			// 	console.log("initialize bike #1 with default bike account");
+			// 	Objects.update(objectData._id, {$set:{ wallet: cDefaultBikeAccount}});
+			// }
 		});
 
 		var myUsers = Meteor.users.find().fetch();

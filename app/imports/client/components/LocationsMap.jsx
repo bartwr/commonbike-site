@@ -137,8 +137,8 @@ class LocationsMap extends Component {
         });
 
     this.props.objects.map((object) => {
-      if(object.state.lat_lng) {
-        var marker = L.marker(object.state.lat_lng, {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
+      if(object.lock.lat_lng) {
+        var marker = L.marker(object.lock.lat_lng, {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
         marker.bikeLocationId = object._id;
         // markers.push(marker); // .bindPopup(location.title)
         this.state.objectMarkersGroup.addLayer(marker);
