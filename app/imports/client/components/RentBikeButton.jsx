@@ -11,10 +11,10 @@ class RentBikeButton extends Component {
   }
 
   clickRentBike(bike) {
-    console.log("clickRentBike", bike);
-
     doRentBike(renterAccount, bikeAccount).then(res => {
       console.log(res)
+    }).catch(err => {
+      console.error(err)
     });
 
     // getBike(client, bikeAccount).then(bike => {
