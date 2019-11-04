@@ -84,15 +84,12 @@ class EditObject extends Component {
 
   updateLocalSettings(changes) {
     // update the object settings that are backend specific in the local mongodb
-    console.log("changes %o", changes);
-    
     Meteor.call('objects.applychanges', this.props.object._id, changes);
-
     return true;
   }
 
   handleExpansion = (panelId, expanded) => {
-    console.log('objectsettings - panel %s changed to %s ',panelId, expanded?'open':'closed');
+    // console.log('objectsettings - panel %s changed to %s ',panelId, expanded?'open':'closed');
     this.setState({ openpanel: expanded ? panelId: 'none' });
   };
 
@@ -103,8 +100,6 @@ class EditObject extends Component {
                       { _id: 'open-elock', title: 'Open e-lock'},
                     	{ _id: 'plainkey', title: 'Key'}];
     
-    console.log("get lockfields for %o", object.lock);
-  
     let fields=[];
     
     if(object.lock.locktype=='open-elock') {
@@ -230,8 +225,6 @@ class EditObject extends Component {
   getBlockchainFields() {
     const {object} = this.props;
     
-    console.log(object)
-
     let fields = [];
     if(! object.blockchain || object.blockchain.id=='') {
       fields = [
@@ -363,14 +356,10 @@ class EditObject extends Component {
 
   render() {
   	if(this.props.object==undefined) {
-      console.log('skip render because object is undefined');
     	return ( <div />);
   	}
 
-    
-    const {classes, object, isnew } = this.props;
-
-    console.log('rendering editobject %o', object);
+    const {classes, object, isnew} = this.props;
     
     return (
       <div className={classes.root}>
@@ -436,7 +425,6 @@ export default withTracker((props) => {
   }
 
   // Return variables for use in this component
-  console.log("working with object %o", object);
   return {
     object:object,
     isnew,

@@ -16,14 +16,6 @@ class RentBikeButton extends Component {
     }).catch(err => {
       console.error(err)
     });
-
-    // getBike(client, bikeAccount).then(bike => {
-    //   console.log("bike:", bike);
-    
-    //   rentBike(bike, renterAccount).then(rentResult => {
-    //     console.log(rentResult);
-    //   });
-    // });
   }
 
   render() {

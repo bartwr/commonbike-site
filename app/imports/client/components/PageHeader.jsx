@@ -27,13 +27,8 @@ class PageHeader extends Component {
   render() {
     const classes = this.props.classes;
     const { currentUser, settings } = this.props
+    const useraddress = settings ? settings.bikecoin.wallet.address: '-----------------'
     
-    // let useraddress = currentUser ? currentUser.profile.wallet.address : '----------------------';
-    console.log("settings %o", settings);
-    let useraddress = settings ? settings.bikecoin.wallet.address: '-----------------'
-    
-    console.log("got useraddress %s", useraddress)
-
     return (
       <div className={`${classes.root} ${classes.PageHeader}`}>
         <AppBar position="static" className={classes.appbar}>

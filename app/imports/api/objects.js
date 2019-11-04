@@ -13,6 +13,7 @@ const { APIClient } = require('@liskhq/lisk-client');
 const transactions = require('@liskhq/lisk-transactions');
 
 const CreateBikeTransaction = require('./lisk-blockchain/transactions/create-bike.js');
+// const { doCreateAccount } = require('./lisk-blockchain/client/create-account.js');
 
 export const Objects = new Mongo.Collection('objects');
 
@@ -130,10 +131,13 @@ if (Meteor.isServer) {
 export const createObject = () => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
-  
+
+  // Create seed  
   const words = Mnemonic.generateMnemonic().split(" ");
+  // Create object title
   const title = words[0] + " " + words[1];
 
+  // Set object data
   var data = {
     blockchain: {
       id: '',
@@ -147,22 +151,27 @@ export const createObject = () => {
       rentalStartDatetime: new Date(),
       rentalEndDatetime: new Date(),
     },
-    lock: {locktype: 'concox-bl10',
-           lockid: '',
-           lat_lng: [999,999],
-           lat_lng_timestamp: new Date(),
-           state_timestamp: new Date(),
-           locked: false,
-           battery: 0,
-           charging: false
-          },
-    wallet: { passphrase :  '',
-              privateKey :  '',
-              publicKey : '',
-              address :  '' }
+    lock: {
+      locktype: 'concox-bl10',
+      lockid: '',
+      lat_lng: [999,999],
+      lat_lng_timestamp: new Date(),
+      state_timestamp: new Date(),
+      locked: false,
+      battery: 0,
+      charging: false
+    },
+    wallet: {
+      passphrase :  '',
+      privateKey :  '',
+      publicKey : '',
+      address :  ''
+    }
   }
   
-  // assign new keypair to object
+  // Assign new keypair to object
+  // doCreateAccount(true)
+
   const passphrase = Mnemonic.generateMnemonic();
   const { privateKey, publicKey } = getKeys(passphrase);
   const address = getAddressFromPublicKey(publicKey);
@@ -174,12 +183,17 @@ export const createObject = () => {
     address
   };
 
+  // Validate data
   try {
-    var context =  ObjectsSchema.newContext();
+    var context = ObjectsSchema.newContext();
     check(data, ObjectsSchema);
   } catch(ex) {
     console.log('Error in data: ',ex.message );
     return;
+  }
+
+  const sendFundsToAddress = () => {
+    
   }
 
   return data;
@@ -253,8 +267,6 @@ if(Meteor.isServer) {
     async 'objects.registeronblockchain'(objectId){
       var object = Objects.findOne(objectId);
       
-      // return { result: false, message: 'this is not working yet!'}
-
       if(object.blockchain.title=='') {
         return { result: false, message: 'please provide a title for this object!'}
       } else if(object.blockchain.description=='') {

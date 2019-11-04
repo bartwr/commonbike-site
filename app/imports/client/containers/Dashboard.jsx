@@ -5,6 +5,7 @@ const { APIClient } = require('@liskhq/lisk-client');
 import { withTracker } from 'meteor/react-meteor-data';
 import {getAllBikes} from '/imports/api/lisk-blockchain/client/get-bikes.js';
 import {getBikeStatus} from '/imports/api/lisk-blockchain/client/get-bike-status.js';
+import {getObjectStatus} from '/imports/api/lisk-blockchain/client/get-object-status.js';
 import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
 import { Objects, createObject } from '/imports/api/objects.js';
 import * as R from 'ramda';
@@ -18,6 +19,11 @@ class Bike extends Component {
       this.props.data.id
     )
     console.log('bikeStatus', bikeStatus)
+    const objectStatus = await getObjectStatus(
+      this.props.settings.bikecoin.provider_url, 
+      this.props.data.id
+    )
+    console.log('objectStatus', objectStatus)
   }
 
   render() {

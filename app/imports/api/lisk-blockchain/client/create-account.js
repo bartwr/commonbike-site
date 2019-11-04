@@ -7,7 +7,6 @@ const transactions = require('@liskhq/lisk-transactions');
 const { getTimestamp } = require('../_helpers.js');
 const { getSettingsClientSide } = require('/imports/api/settings.js');
 
-
 const createAccount = (providerUrl, addFunds=true) => {
   const passphrase = Mnemonic.generateMnemonic();
   const { privateKey, publicKey } = getKeys(passphrase);
