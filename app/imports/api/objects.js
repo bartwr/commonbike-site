@@ -261,7 +261,7 @@ if(Meteor.isServer) {
         return { result: false, message: 'please provide a description for this object!'}
       }
       
-      Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
+      // Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
       
       let settings = await getSettingsServerSide();
       const client = new APIClient([settings.bikecoin.provider_url]);
@@ -282,16 +282,16 @@ if(Meteor.isServer) {
           longitude: null
         }
       });
-      // console.log(tx);
+      console.log("create transaction %o", tx);
       
       // Sign transaction
-      tx.sign(settings.bikecoin.wallet.passphrase);
+      tx.sign(object.wallet.passphrase);
       
       // Broadcast the tx to the blockchain
       const broadcastTx = client.transactions.broadcast(tx.toJSON());
       
       broadcastTx.then(() => {
-        Objects.update(objectId, {$set: {'blockchain.id': object.wallet.publicKey}});
+        Objects.update(objectId, {$set: {'blockchain.id': object.wallet.address}});
       })
       .catch(error => {
         console.error(error);
