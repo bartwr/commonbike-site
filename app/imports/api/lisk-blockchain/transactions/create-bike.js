@@ -28,21 +28,20 @@ class CreateBikeTransaction extends BaseTransaction {
         const errors = [];
 
         const validId = BikeValidator.id(this.id, this.asset.id);
-        const validOwnerId = BikeValidator.id(this.senderId, this.asset.id);
-        const validPricePerHour = BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
-        const validDeposit = BikeValidator.deposit(this.id, this.asset.pricePerHour);
+        // const validPricePerHour = true || BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
+        // const validDeposit = true || BikeValidator.deposit(this.id, this.asset.pricePerHour);
 
         if (validId !== true) {
             errors.push(validId);
         }
 
-        if (validPricePerHour !== true) {
-            errors.push(validPricePerHour);
-        }
-
-        if (validDeposit !== true) {
-            errors.push(validDeposit);
-        }
+        // if (validPricePerHour !== true) {
+        //     errors.push(validPricePerHour);
+        // }
+        //
+        // if (validDeposit !== true) {
+        //     errors.push(validDeposit);
+        // }
 
         return errors;
     }
