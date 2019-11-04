@@ -1,7 +1,10 @@
+let BigNum;
 if(Meteor.isServer) {
-  const { BigNum } = require('lisk-sdk');
+  const LiskSdkForServerSide = require('lisk-sdk');
+  BigNum = LiskSdkForServerSide.BigNum;
 } else {
-  const { BigNum } = require('@liskhq/bignum');
+  const LiskSdkForClientSide = require('@liskhq/bignum');
+  BigNum = LiskSdkForClientSide.BigNum;
 }
 
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
