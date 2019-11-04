@@ -181,8 +181,6 @@ export default withTracker((props) => {
   if(!settings) {
     console.log("no settings available");
     return {};
-  } else {
-    console.log("got settings %o", settings);
   }
   
   let objects = Objects.find({}, { sort: {title: 1} }).fetch();

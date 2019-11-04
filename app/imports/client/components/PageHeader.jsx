@@ -16,7 +16,7 @@ import LiskBikeLogo from '/imports/client/components/LiskBikeLogo.jsx'
 import { RedirectTo } from '/client/main'
 import AppMenu from '/imports/client/components/AppMenu.jsx'
 
-import { Settings } from '/imports/api/settings.js';
+import { getSettingsClientSide } from '/imports/api/settings.js';
 
 class PageHeader extends Component {
 
@@ -26,7 +26,13 @@ class PageHeader extends Component {
 
   render() {
     const classes = this.props.classes;
-    const { currentUser } = this.props
+    const { currentUser, settings } = this.props
+    
+    // let useraddress = currentUser ? currentUser.profile.wallet.address : '----------------------';
+    console.log("settings %o", settings);
+    let useraddress = settings ? settings.bikecoin.wallet.address: '-----------------'
+    
+    console.log("got useraddress %s", useraddress)
 
     return (
       <div className={`${classes.root} ${classes.PageHeader}`}>
@@ -34,13 +40,14 @@ class PageHeader extends Component {
           <Toolbar>
             <div className={classes.menudiv}>
               <AppMenu testitems={this.props.showTestOptions} user={currentUser} />
+              <div className={classes.useraddress}>{useraddress}</div>
             </div>
             <div onClick={() => RedirectTo('/')} className={classes.logodiv}>
               <LiskBikeLogo className={classes.logo}/>
             </div>
           </Toolbar>
         </AppBar>
-        {this.props.children}
+        {this.props.children}    Meteor.subscribe('settings');
       </div>
     );
   }
@@ -49,7 +56,7 @@ class PageHeader extends Component {
 PageHeader.propTypes = {
   children: PropTypes.any,
   showTestOptions: PropTypes.bool
-};
+};    Meteor.subscribe('settings');
 
 PageHeader.defaultProps = {
   showTestOptions: false
@@ -69,10 +76,10 @@ const styles = theme => ({
     position: 'absolute',
     left: theme.spacing(1),
     top: theme.spacing(1),
-    width: 'auto',
+    width: '95%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'left',
+    justifyContent: 'space-between',
     alignItems: 'center',
     zIndex: '100'
   },
@@ -92,20 +99,24 @@ const styles = theme => ({
     width: '300px',
     height: '35px',
     border: '1px solid green'
+  },
+  useraddress: {
+    color: 'white',
   }
 });
 
 export default withStyles(styles)(withTracker((props) => {
   Meteor.subscribe('settings');
 
-  var settings = Settings.findOne();
+  var settings = getSettingsClientSide();
   if(!settings) {
     return {}
   }
 
   return {
     currentUser: Meteor.user(),
-    showTestOptions: settings.developmentOptions && settings.developmentOptions.showTestButtons||false
+    showTestOptions: settings.developmentOptions && settings.developmentOptions.showTestButtons||false,
+    settings
   }
 })(PageHeader))
 

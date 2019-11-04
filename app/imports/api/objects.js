@@ -246,13 +246,13 @@ if(Meteor.isServer) {
       console.log(description);
     },
     async 'objects.registeronblockchain'(objectId){
-
-      // Get object
       var object = Objects.findOne(objectId);
+      
+      // return { result: false, message: 'this is not working yet!'}
 
-      if(object.title=='') {
+      if(object.blockchain.title=='') {
         return { result: false, message: 'please provide a title for this object!'}
-      } else if(object.description=='') {
+      } else if(object.blockchain.description=='') {
         return { result: false, message: 'please provide a description for this object!'}
       }
       
@@ -267,11 +267,11 @@ if(Meteor.isServer) {
         recipientId: settings.bikecoin.wallet.address,
         timestamp: getTimestamp(),
         asset: {
-          id: object.wallet.address,
-          title: object.title,
-          description: object.description,
-          pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.pricePerHourInLSK).toString() : Number(object.lisk.pricePerHourInLSK).toString()),
-          deposit: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.depositInLSK).toString() : Number(object.lisk.depositInLSK).toString()),
+          id: object.wallet.publicKey,
+          title: object.blockchain.title,
+          description: object.blockchain.description,
+          pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain.pricePerHourInLSK),
+          deposit: transactions.utils.convertLSKToBeddows(object.blockchain.depositInLSK),
           latitude: null,
           longitude: null
         }
