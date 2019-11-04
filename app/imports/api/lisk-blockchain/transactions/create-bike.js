@@ -1,6 +1,5 @@
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('./bike.domain');
-const { BigNum } = require('@liskhq/bignum');
 
 const defaultLocation = {
     latitude: '48.8534',
@@ -29,9 +28,8 @@ class CreateBikeTransaction extends BaseTransaction {
         const errors = [];
 
         const validId = BikeValidator.id(this.id, this.asset.id);
-        const validOwnerId = BikeValidator.id(this.senderId, this.asset.id);
-        // const validPricePerHour = BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
-        // const validDeposit = BikeValidator.deposit(this.id, this.asset.pricePerHour);
+        // const validPricePerHour = true || BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
+        // const validDeposit = true || BikeValidator.deposit(this.id, this.asset.pricePerHour);
 
         if (validId !== true) {
             errors.push(validId);
@@ -40,7 +38,7 @@ class CreateBikeTransaction extends BaseTransaction {
         // if (validPricePerHour !== true) {
         //     errors.push(validPricePerHour);
         // }
-
+        //
         // if (validDeposit !== true) {
         //     errors.push(validDeposit);
         // }
@@ -75,8 +73,8 @@ class CreateBikeTransaction extends BaseTransaction {
           title: this.asset.title,
           description: this.asset.description,
           ownerId: this.senderId,
-          pricePerHour: transactions.utils.convertLSKToBeddows("1"),
-          deposit: transactions.utils.convertLSKToBeddows("20"),
+          pricePerHour:  transactions.utils.convertLSKToBeddows("1"), // this.asset.pricePerHour.toString()
+          deposit: transactions.utils.convertLSKToBeddows("20"), // this.asset.deposit.toString()
           location: location
         }
         recipient.asset = assetdata;

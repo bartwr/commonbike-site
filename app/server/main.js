@@ -22,7 +22,7 @@ Meteor.startup(() => {
 	if(true) {
 		var myObjects = Objects.find().fetch();
 		_.each(myObjects, function (objectData) {
-			if("passphrase" in objectData.wallet == false) {
+			if(objectData.wallet && "passphrase" in objectData.wallet == false) {
 				console.log("updating object wallet for " + objectData.title)
 		    Objects.update(objectData._id, {$unset:{ wallet: "" }});
 				Objects.update(objectData._id, {$set:{ wallet: {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});

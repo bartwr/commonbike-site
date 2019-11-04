@@ -11,7 +11,7 @@ import ObjectList from '/imports/client/components/ObjectList';
 import LocationsMap from '/imports/client/components/LocationsMap';
 
 
-import {getAllBikes} from '/imports/api/lisk-blockchain/client/get-bikes.js';
+import {getAllBikes} from '/imports/api/lisk-blockchain/methods/get-bikes.js';
 
 const styles = theme => ({
   root: {

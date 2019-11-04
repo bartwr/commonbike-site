@@ -13,7 +13,7 @@ const { APIClient } = require('@liskhq/lisk-client');
 const transactions = require('@liskhq/lisk-transactions');
 
 const CreateBikeTransaction = require('./lisk-blockchain/transactions/create-bike.js');
-// const { doCreateAccount } = require('./lisk-blockchain/client/create-account.js');
+const { doCreateAccount } = require('./lisk-blockchain/methods/create-account.js');
 
 export const Objects = new Mongo.Collection('objects');
 
@@ -128,12 +128,14 @@ if (Meteor.isServer) {
   });
 }
 
-export const createObject = () => {
+export const createObject = async () => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
 
-  // Create seed  
-  const words = Mnemonic.generateMnemonic().split(" ");
+  // Create seed
+  const wallet = await doCreateAccount(true)
+  console.log(wallet);
+  const words = wallet.passphrase.split(" ");
   // Create object title
   const title = words[0] + " " + words[1];
 
@@ -168,20 +170,8 @@ export const createObject = () => {
       address :  ''
     }
   }
-  
-  // Assign new keypair to object
-  // doCreateAccount(true)
 
-  const passphrase = Mnemonic.generateMnemonic();
-  const { privateKey, publicKey } = getKeys(passphrase);
-  const address = getAddressFromPublicKey(publicKey);
-
-  data.wallet = {
-    passphrase,
-    privateKey,
-    publicKey,
-    address
-  };
+  data.wallet = wallet;
 
   // Validate data
   try {
@@ -273,7 +263,7 @@ if(Meteor.isServer) {
         return { result: false, message: 'please provide a description for this object!'}
       }
       
-      Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
+      // Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
       
       let settings = await getSettingsServerSide();
       const client = new APIClient([settings.bikecoin.provider_url]);
@@ -294,7 +284,7 @@ if(Meteor.isServer) {
           longitude: null
         }
       });
-      // console.log(tx);
+      console.log("create transaction %o", tx);
       
       // Sign transaction
       tx.sign(settings.bikecoin.wallet.passphrase);
@@ -303,7 +293,7 @@ if(Meteor.isServer) {
       const broadcastTx = client.transactions.broadcast(tx.toJSON());
       
       broadcastTx.then(() => {
-        Objects.update(objectId, {$set: {'blockchain.id': object.wallet.publicKey}});
+        Objects.update(objectId, {$set: {'blockchain.id': object.wallet.address}});
       })
       .catch(error => {
         console.error(error);

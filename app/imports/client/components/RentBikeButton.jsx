@@ -2,7 +2,7 @@ import React, { Component, } from 'react';
 import Button from '@material-ui/core/Button';
 
 import {bikeAccount, renterAccount} from '../../config.js';
-import {doRentBike} from '../../api/lisk-blockchain/client/rent-bike.js';
+import {doRentBike} from '../../api/lisk-blockchain/methods/rent-bike.js';
 
 class RentBikeButton extends Component {
 

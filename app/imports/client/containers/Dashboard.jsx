@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor'
 const { APIClient } = require('@liskhq/lisk-client');
 import { withTracker } from 'meteor/react-meteor-data';
-import {getAllBikes} from '/imports/api/lisk-blockchain/client/get-bikes.js';
-import {getBikeStatus} from '/imports/api/lisk-blockchain/client/get-bike-status.js';
-import {getObjectStatus} from '/imports/api/lisk-blockchain/client/get-object-status.js';
+import {getAllBikes} from '/imports/api/lisk-blockchain/methods/get-bikes.js';
+import {getBikeStatus} from '/imports/api/lisk-blockchain/methods/get-bike-status.js';
+import {getObjectStatus} from '/imports/api/lisk-blockchain/methods/get-object-status.js';
 import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
 import { Objects, createObject } from '/imports/api/objects.js';
 import * as R from 'ramda';

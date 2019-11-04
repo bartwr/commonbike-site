@@ -4,7 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 const { defaultProfileName, getSettingsClientSide } = require('/imports/api/settings.js');
 
-import {doCreateAccount} from '../../api/lisk-blockchain/client/create-account.js';
+import {doCreateAccount} from '../../api/lisk-blockchain/methods/create-account.js';
 
 // Import components
 import Wallet from '/imports/client/components/Wallet';

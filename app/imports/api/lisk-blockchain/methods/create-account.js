@@ -44,8 +44,8 @@ const createAccount = (providerUrl, addFunds=true) => {
           resolve(account);
         })
         .catch(err => {
-          alert(JSON.stringify(err.errors[0].message));
           console.log('err', err)
+          alert(JSON.stringify(err.errors[0].message));
           reject(account);
         });
     })
