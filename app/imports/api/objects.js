@@ -209,7 +209,7 @@ if(Meteor.isServer) {
             changes,
             { title: changes['blockchain.title'] }
           )});
-          console.log('Settings changed for ' + object.title || "unnamed object");
+          console.log('Settings changed for ' + (changes['blockchain.title'] || "unnamed object"));
 
           return {
             result: true,
@@ -276,8 +276,8 @@ if(Meteor.isServer) {
           title: object.blockchain.title,
           description: object.blockchain.description,
           ownerid: settings.bikecoin.wallet.address,
-          pricePerHour: object.blockchain.pricePerHourInLSK,
-          deposit: object.blockchain.depositInLSK,
+          pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.pricePerHourInLSK).toString() : Number(object.lisk.pricePerHourInLSK)),
+          deposit: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.depositInLSK).toString() : Number(object.lisk.depositInLSK)),
           latitude: null,
           longitude: null
         }

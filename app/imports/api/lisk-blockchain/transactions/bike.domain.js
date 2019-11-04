@@ -16,8 +16,9 @@ module.exports = {
       }
     },
     BikeValidator: {
-      id: (transactionId, param) => (param && typeof param === 'string' && param.length > 0) ? true :
-        new TransactionError('Missing or invalid "asset.id" defined on transaction', transactionId, '.asset.id', param, 'A string'),
+      id: (transactionId, param) => (param && typeof param === 'string' && param.length > 0)
+        ? true
+        : new TransactionError('Missing or invalid "asset.id" defined on transaction', transactionId, '.asset.id', param, 'A string'),
       pricePerHour: (transactionId, param) => {
         try {
             const pricePerHour = new BigNum(param);
