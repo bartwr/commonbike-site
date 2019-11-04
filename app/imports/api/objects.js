@@ -8,7 +8,7 @@ const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography'
 const BigNum = require('@liskhq/bignum');
 const { Mnemonic } = require('@liskhq/lisk-passphrase');
 
-// const CreateBikeTransaction = require('./lisk-blockchain/transactions/create-bike.js').CreateBikeTransaction;
+const CreateBikeTransaction = require('./lisk-blockchain/transactions/create-bike.js');
 
 export const Objects = new Mongo.Collection('objects');
 
@@ -258,6 +258,7 @@ if(Meteor.isServer) {
       //   recipientId: settings.bikecoin.wallet.address,
       //   timestamp: getTimestamp(),
       //   asset: {
+      //
       //     id: object.wallet.publicKey,
       //     title: object.blockchain.title,
       //     description: object.blockchain.description,

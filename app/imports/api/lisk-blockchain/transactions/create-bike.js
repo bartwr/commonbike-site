@@ -1,4 +1,9 @@
-const { BigNum } = require('@liskhq/bignum');
+if(Meteor.isServer) {
+  const { BigNum } = require('lisk-sdk');
+} else {
+  const { BigNum } = require('@liskhq/bignum');
+}
+
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('./bike.domain');
 
