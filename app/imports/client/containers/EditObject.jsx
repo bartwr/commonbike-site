@@ -162,13 +162,15 @@ class EditObject extends Component {
         },
         {
             fieldname: 'lock._state', // generated field
-            fieldvalue: (object.lock.locked ? 'Locked':'Unlocked') +  ' @ ' + object.lock.state_timestamp.toLocaleString(),
+            fieldvalue: (object.lock.locked ? 'Locked':'Unlocked') +  ' @ '
+                        + (object.lock.state_timestamp ? object.lock.state_timestamp.toLocaleString() : 'unknown'),
             controltype: 'text-readonly',
             label: 'Locked'
         },
         {
             fieldname: 'lock._location', // generated field
-            fieldvalue: '[' + object.lock.lat_lng[0] + ',' + object.lock.lat_lng[1] + '] @ ' + object.lock.lat_lng_timestamp.toLocaleString(),
+            fieldvalue: '[' + (object.lock.lat_lng ? object.lock.lat_lng[0] : 'x') + ',' + (object.lock.lat_lng ? object.lock.lat_lng[1] : 'x') + '] @ '
+                        + (object.lock.lat_lng_timestamp ? object.lock.lat_lng_timestamp.toLocaleString() : 'unknown'),
             controltype: 'text-readonly',
             label: 'Battery Voltage'
         },
@@ -228,8 +230,10 @@ class EditObject extends Component {
   getBlockchainFields() {
     const {object} = this.props;
     
+    console.log(object)
+
     let fields = [];
-    if(object.blockchain.id=='') {
+    if(! object.blockchain || object.blockchain.id=='') {
       fields = [
         {
             fieldname: 'blockchain.id',
@@ -239,25 +243,25 @@ class EditObject extends Component {
     		},
     		{
             fieldname: 'blockchain.title',
-            fieldvalue: object.blockchain.title,
+            fieldvalue: (object.blockchain ? object.blockchain.title : object.title),
             controltype: 'text',
             label: 'Title'
     		},
     		{
             fieldname: 'blockchain.description',
-            fieldvalue: object.blockchain.description,
+            fieldvalue: (object.blockchain ? object.blockchain.description : object.description),
             controltype: 'text',
             label: 'Description'
     		},
     		{
             fieldname: 'blockchain.pricePerHourInLSK',
-            fieldvalue: object.blockchain.pricePerHourInLSK,
+            fieldvalue: (object.blockchain ? object.blockchain.pricePerHourInLSK : object.lisk.pricePerHourInLSK),
             controltype: 'number',
             label: 'Price/Hour (LSK)'
     		},
         {
             fieldname: 'blockchain.depositInLSK',
-            fieldvalue: object.blockchain.depositInLSK,
+            fieldvalue: (object.blockchain ? object.blockchain.depositInLSK : object.lisk.depositInLSK),
             controltype: 'number',
             label: 'Deposit (LSK)'
     		},

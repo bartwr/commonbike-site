@@ -53,7 +53,7 @@ class OverviewPage extends Component {
   
   async updateBikes() {
     let newBikes = await getAllBikes(this.props.settings.bikecoin.provider_url);
-    console.log("got bikes: %o", newBikes)
+    console.info("got bikes: %o", newBikes)
     
     this.setState((prevstate)=>{
       return {

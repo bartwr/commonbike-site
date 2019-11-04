@@ -41,13 +41,7 @@ Meteor.startup(() => {
 			if(!user.profile || !user.profile.name) {
 				Meteor.users.update(user._id, {$set : { 'profile.name' : 'anonymous' }});
 			}
-			if("passphrase" in user.profile.wallet == false) {
-				console.log()
-		    Meteor.users.update(user._id, {$unset:{ 'profile.wallet': "" }});
-				Meteor.users.update(user._id, {$set:{ 'profile.wallet': {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
-			}
-
-			if("passphrase" in user.profile.wallet == false) {
+			if(! user.profile.wallet || "passphrase" in user.profile.wallet == false) {
 				console.log()
 		    Meteor.users.update(user._id, {$unset:{ 'profile.wallet': "" }});
 				Meteor.users.update(user._id, {$set:{ 'profile.wallet': {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
