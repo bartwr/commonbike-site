@@ -139,6 +139,7 @@ export const createObject = () => {
       id: '',
       title: title,
       description: '',
+      ownerId: '',
       lat_lng: [0,0],
       pricePerHourInLSK: 1,
       depositInLSK: 20,
@@ -270,8 +271,8 @@ if(Meteor.isServer) {
           title: object.blockchain.title,
           description: object.blockchain.description,
           ownerid: settings.bikecoin.wallet.address,
-          pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain.pricePerHourInLSK),
-          deposit: transactions.utils.convertLSKToBeddows(object.blockchain.depositInLSK),
+          pricePerHour: transactions.utils.convertLSKToBeddows(Number(object.blockchain.pricePerHourInLSK).toString()),
+          deposit: transactions.utils.convertLSKToBeddows(Number(object.blockchain.depositInLSK).toString()),
           latitude: null,
           longitude: null
         }
