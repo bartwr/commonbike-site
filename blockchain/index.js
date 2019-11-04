@@ -1,10 +1,10 @@
 //index.js
 const { Application, genesisBlockDevnet, configDevnet } = require('lisk-sdk'); // require application class, the default genesis block and the default config for the application
-const CreateBikeTransaction = require('./transactions/create-bike'); // require the newly created transaction type 'HelloTransaction'
-const FaucetTransaction = require('./transactions/faucet'); // require the newly created transaction type 'HelloTransaction'
-const UpdateBikeLocationTransaction = require('./transactions/update-bike-location'); // require the newly created transaction type 'HelloTransaction'
-const RentBikeTransaction = require('./transactions/rent-bike'); // require the newly created transaction type 'HelloTransaction'
-const ReturnBikeTransaction = require('./transactions/return-bike');
+const CreateBikeTransaction = require('../import/api/lisk-blockchain/transactions/create-bike'); // require the newly created transaction type 'HelloTransaction'
+const FaucetTransaction = require('../import/api/lisk-blockchain/transactions/faucet'); // require the newly created transaction type 'HelloTransaction'
+const UpdateBikeLocationTransaction = require('../import/api/lisk-blockchain/transactions/update-bike-location'); // require the newly created transaction type 'HelloTransaction'
+const RentBikeTransaction = require('../import/api/lisk-blockchain/transactions/rent-bike'); // require the newly created transaction type 'HelloTransaction'
+const ReturnBikeTransaction = require('../import/api/lisk-blockchain/transactions/return-bike');
 
 configDevnet.app.label = 'lisk-bike-blockchain-app'; // change the label of the app
 configDevnet.components.storage.password = 'lisk123'; // replace password with the password for your database user
