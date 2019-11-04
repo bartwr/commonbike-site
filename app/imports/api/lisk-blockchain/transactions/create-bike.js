@@ -1,18 +1,9 @@
-let BigNum;
-if(Meteor.isServer) {
-  const LiskSdkForServerSide = require('lisk-sdk');
-  BigNum = LiskSdkForServerSide.BigNum;
-} else {
-  const LiskSdkForClientSide = require('@liskhq/bignum');
-  BigNum = LiskSdkForClientSide.BigNum;
-}
-
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
 const { Bike, BikeValidator } = require('./bike.domain');
 
 const defaultLocation = {
-    latitude: new BigNum(48.8534).toString(),
-    longitude: new BigNum(2.3488).toString(),
+    latitude: '48.8534',
+    longitude: '2.3488',
 }; // Paris
 
 /**
