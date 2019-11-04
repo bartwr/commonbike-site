@@ -29,6 +29,7 @@
     "lisk-sdk": "^2.3.6",
     "meteor-node-stubs": "~0.2.0",
     "pg-native": "^3.0.0",
+    "ramda": "^0.26.1",
     "react": "^16.11.0",
     "react-addons-pure-render-mixin": "^15.3.1",
     "react-contenteditable": "^2.0.1",

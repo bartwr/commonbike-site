@@ -152,10 +152,9 @@ class ObjectDetails extends Component {
       <div className={classes.root}>
         <div className={classes.dialog}>
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
-          <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
+          <br />
           <RentBikeButton bike={this.props.object} classes={classes} />
           <ReturnBikeButton bike={this.props.object} classes={classes} />
-          <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
         </div>
       </div>
     );

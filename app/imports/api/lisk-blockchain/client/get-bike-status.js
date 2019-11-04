@@ -1,6 +1,6 @@
 const { APIClient } = require('@liskhq/lisk-client');
 
-export const getAllBikes = async (providerUrl) => {
+export const getBikeStatus = async (providerUrl) => {
   if(undefined==providerUrl) return [];
   
   const client = new APIClient([providerUrl]);

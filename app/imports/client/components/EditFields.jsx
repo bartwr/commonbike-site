@@ -438,7 +438,6 @@ class EditFields extends Component {
               </ExpansionPanelDetails>
           </ExpansionPanel>
         </div>
-
       );
     } else {
       return (

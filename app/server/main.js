@@ -16,7 +16,8 @@ Meteor.startup(() => {
 		"passphrase":"debris glare sustain expire cloth shove paper grit flock vital object laptop",
 		"privateKey":"49f24b696c7d31b6f85ae496aad43869c3e40cf553b17080e7550639b93338dcb6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962",
 		"publicKey":"b6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962",
-		"address":"5079673205830650891L"}
+		"address":"5079673205830650891L"
+  }
 	
 	if(true) {
 		var myObjects = Objects.find().fetch();
@@ -26,11 +27,6 @@ Meteor.startup(() => {
 		    Objects.update(objectData._id, {$unset:{ wallet: "" }});
 				Objects.update(objectData._id, {$set:{ wallet: {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
 			}
-			
-			// if(objectData.title=="Lisk Bike #1" && objectData.wallet.privatekey!=cDefaultBikeAccount.privateKey) {
-			// 	console.log("initialize bike #1 with default bike account");
-			// 	Objects.update(objectData._id, {$set:{ wallet: cDefaultBikeAccount}});
-			// }
 		});
 
 		var myUsers = Meteor.users.find().fetch();
@@ -86,8 +82,6 @@ Meteor.startup(() => {
 		}
 
 	});
-
-
 });
 
 Meteor.methods( {
@@ -108,7 +102,7 @@ var resetsent = false;
 var server = net.createServer(Meteor.bindEnvironment(function(socket) {
   console.log('incoming connection from %s',  socket.remoteAddress);
   socket.on('data', Meteor.bindEnvironment(function(data) {
-		console.log('incoming data from %s',  socket.remoteAddress);
+		console.log('incoming data from %s', socket.remoteAddress);
     const buf = data.toString('hex');
     const cmdSplit = buf.split(/(?=7878|7979)/gi)
     cmdSplit.map( buf => {

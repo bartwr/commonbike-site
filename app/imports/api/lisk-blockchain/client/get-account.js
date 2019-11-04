@@ -1,7 +1,6 @@
 const { APIClient } = require('@liskhq/lisk-client');
 const { getSettingsClientSide } = require('/imports/api/settings.js');
 
-
 const getAccount = (providerUrl, address) => {
   const client = new APIClient([providerUrl]);
 
