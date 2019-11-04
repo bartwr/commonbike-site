@@ -27,21 +27,7 @@ class ReturnBikeTransaction extends BaseTransaction {
     }
 
     prepare(store) {
-
         const promises = [super.prepare(store), store.account.cache([ { address: this.recipientId }])];
-
-        // if (this.asset.lastRentTransactionId) {
-        //     promises.push(store.transaction.cache({
-        //         id: this.asset.lastRentTransactionId,
-        //     }));
-        // }
-
-        // if (this.asset.lastReturnTransactionId) {
-        //     promises.push(store.transaction.cache({
-        //         id: this.asset.lastReturnTransactionId,
-        //     }));
-        // }
-
         return Promise.all(promises);
     }
 
@@ -49,42 +35,27 @@ class ReturnBikeTransaction extends BaseTransaction {
 
         const errors = [];
 
-        // const lastRentTransaction = store.transaction.find(t => t.id === this.asset.lastRentTransactionId);
-        // const lastReturnTransaction = store.transaction.find(t => t.id === this.asset.lastReturnTransactionId);
         const sender = store.account.get(this.senderId);
         const recipient = store.account.get(this.recipientId);
-        const rentedBike = recipient.asset.bikes[this.asset.id];
+        const object = store.account.get(this.asset.id);
 
-        if (rentedBike === undefined) {
-            errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
+        if (object === undefined) {
+            errors.push(new TransactionError("Object not found", this.id, "this.asset.id", this.asset.id, "An existing object ID on recipient account"));
         }
 
-        if (rentedBike.rentedBy === undefined) {
-            errors.push(new TransactionError("Bike not currently rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently rented bike"));
-            // errors.push(new TransactionError(`Bike not currently rented (returned by tx ${rentedBike.lastReturnTransactionId})`, this.id, "this.asset.id", this.asset.id, "The ID of a currently rented bike"));
+        if (object.rentedBy === undefined) {
+            errors.push(new TransactionError("Object not currently rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently rented object"));
         }
 
-        if (rentedBike.rentedBy !== this.senderId) {
+        if (object.rentedBy !== this.senderId) {
             errors.push(new TransactionError(`Bike can only be returned by the one who rented it`, this.id, "this.asset.id", this.asset.id, "Nice try"));
         }
 
-        // if (lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
-        //     errors.push(new TransactionError('Invalid lastRentTransactionId for this bike', this.id, '.asset.id', this.asset.lastRentTransactionId, 'The last rent transaction id of the bike you want to rent'));
-        // }
-
-        // if (rentedBike.lastReturnTransactionId && lastReturnTransaction.id !== rentedBike.lastReturnTransactionId) {
-        //     errors.push(new TransactionError('Invalid lastReturnTransactionId for this bike', this.id, '.asset.id', this.asset.lastReturnTransactionId, 'The last transaction id of the bike you want to rent'));
-        // }
-
-        // const rentStartTimestamp = lastRentTransaction.timestamp; // XXX how to this without lastRentTransaction?
-        const rentStartTimestamp = rentedBike.rentalStartDatetime; // this.timestamp - 15 * 60; // 15 minutes
-
+        const rentStartTimestamp = object.rentalStartDatetime; // this.timestamp - 15 * 60; // 15 minutes
         const rentalDuration = this.timestamp - rentStartTimestamp;
         const billedHours = Math.ceil(rentalDuration / 3600);
-        const billedAmount = new BigNum(rentedBike.pricePerHour).mul(billedHours);
-        
-        // const paidAmount = lastRentTransaction.amount; // XXX how to this without lastRentTransaction?
-        const paidAmount = rentedBike.deposit;
+        const billedAmount = new BigNum(object.pricePerHour).mul(billedHours);        
+        const paidAmount = object.deposit;
         
         const netDepositReturn = new BigNum(paidAmount).sub(billedAmount);
         const newRecipientBalance = new BigNum(recipient.balance).sub(netDepositReturn).toString();
@@ -92,9 +63,8 @@ class ReturnBikeTransaction extends BaseTransaction {
 
         store.account.set(this.senderId, { ...sender, balance: newSenderBalance});
 
-        rentedBike.rentalEndDatetime = this.timestamp;
-        // rentedBike.lastReturnTransactionId = this.id;
-        rentedBike.rentedBy = undefined;
+        object.rentalEndDatetime = this.timestamp;
+        object.rentedBy = undefined;
 
         recipient.balance = newRecipientBalance;
 
@@ -107,24 +77,21 @@ class ReturnBikeTransaction extends BaseTransaction {
 
         const errors = [];
 
-        // const lastRentTransaction = store.transaction.find(t => t.id === this.asset.lastRentTransactionId) || {};
-        // const lastReturnTransaction = store.transaction.find(t => t.id === this.asset.lastReturnTransactionId) || {};
         const sender = store.account.get(this.senderId);
         const recipient = store.account.get(this.recipientId);
-        const rentedBike = recipient.asset.bikes[this.asset.id];
+        const object = store.account.get[this.asset.id];
 
         const rentalDuration = this.timestamp - lastRentTransaction.timestamp;
         const billedHours = Math.ceil(rentalDuration / 3600);
-        const billedAmount = new BigNum(rentedBike.pricePerHour).mul(billedHours);
+        const billedAmount = new BigNum(object.pricePerHour).mul(billedHours);
         const netDepositReturn = new BigNum(lastRentTransaction.deposit).sub(billedAmount);
         const newRecipientBalance = new BigNum(recipient.balance).add(netDepositReturn).toString();
         const newSenderBalance = new BigNum(sender.balance).sub(netDepositReturn).toString();
 
         store.account.set(this.senderId, { ...sender, balance: newSenderBalance});
 
-        rentedBike.rentalEndDatetime = this.timestamp;
-        // rentedBike.lastReturnTransactionId = lastReturnTransaction.id;
-        rentedBike.rentedBy = this.senderId;
+        object.rentalEndDatetime = this.timestamp;
+        object.rentedBy = this.senderId;
 
         recipient.balance = newRecipientBalance;
 

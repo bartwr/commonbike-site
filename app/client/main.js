@@ -10,6 +10,7 @@ import Settings from '/imports/api/settings.js';
 
 import UserApp from '/imports/client/components/UserApp.jsx'
 import Login from '/imports/client/containers/Login.jsx'
+import Dashboard from '/imports/client/containers/Dashboard.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
 import SystemWallet from '/imports/client/containers/SystemWallet.jsx'
 import OverviewPage from '/imports/client/containers/OverviewPage.jsx'
@@ -58,6 +59,8 @@ const RouteWhenLoggedIn = ({ component: Component, ...rest }) => {
   }
 }
 
+const UserAppDashboard = () => (<UserApp content={<div><Dashboard /></div>} />)
+
 const EVENT_REDIRECTTO = 'EVENT_REDIRECTTO'
 
 export const RedirectTo = (path) => {
@@ -93,6 +96,7 @@ class AppRoutes extends React.Component {
       <Route path='/objects' component={UserAppOverviewPageNoMap}/>
       <Route path='/userwallet' component={UserAppUserWallet}/>
       <Route path='/object/:objectId' component={UserAppObjectDetails}/>
+      <Route path='/dashboard' component={Dashboard}/>
 
       <RouteWhenLoggedIn path='/systemwallet' component={UserAppSystemWallet}/>
 

@@ -321,7 +321,7 @@ class EditObject extends Component {
     		},
         {
             fieldname: 'blockchain.lat_lng',
-            fieldvalue: '[' + object.blockchain.lat_lng[0] + ', ' + object.blockchain.lat_lng[0] + ']',
+            fieldvalue: '[' + object.lock.lat_lng[0] + ', ' + object.lock.lat_lng[0] + ']',
             controltype: 'text-readonly',
             label: 'Location on blockchain'
     		},

@@ -36,18 +36,6 @@ class RentBikeTransaction extends TransferTransaction {
 
         const promises = [super.prepare(store)];
 
-        // if (this.asset.lastRentTransactionId) {
-        //     promises.push(store.transaction.cache({
-        //         id: this.asset.lastRentTransactionId,
-        //     }));
-        // }
-
-        // if (this.asset.lastReturnTransactionId) {
-        //     promises.push(store.transaction.cache({
-        //         id: this.asset.lastReturnTransactionId,
-        //     }));
-        // }
-
         return Promise.all(promises);
     }
 
@@ -56,49 +44,36 @@ class RentBikeTransaction extends TransferTransaction {
 
         const errors = [];
 
-        // const lastRentTransaction = store.transaction.find(t => t.id === this.asset.lastRentTransactionId);
-        // const lastReturnTransaction = store.transaction.find(t => t.id === this.asset.lastReturnTransactionId);
-        const recipient = store.account.get(this.recipientId);
+        // const recipient = store.account.get(this.recipientId);
+        // const sender = store.account.get(this.senderId);
+        const object = store.account.get(this.asset.id);
 
-        if (recipient.asset.bikes === undefined) {
-            errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
+        // Check if this object does exist
+        if (object === undefined) {
+            errors.push(new TransactionError("Object not found", this.id, "this.asset.id", this.asset.id, "An existing object ID on recipient account"));
         }
 
-        if (Object.values(recipient.asset.bikes).some(bike => bike.rentedBy === this.senderId)) {
-            errors.push(new TransactionError("You are already renting a bike", this.id));
+        // Check if object is not rented
+        if (object.rentedBy !== undefined) {
+            errors.push(new TransactionError("Object already rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently non-rented object"));
         }
 
-        const rentedBike = recipient.asset.bikes[this.asset.id];
+        // Get the deposit amount
+        const deposit = new BigNum(object.deposit);
 
-        if (rentedBike === undefined) {
-            errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
+        // Check if user sent the exact deposit amount
+        if (! deposit.eq(this.amount)) {
+            errors.push(new TransactionError("Invalid amount", this.id, "this.amount", this.amount, `The precise amount of the objects deposit : ${object.deposit.toString()}`));
         }
 
-        if (rentedBike.rentedBy !== undefined) {
-            errors.push(new TransactionError("Bike already rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently non-rented bike"));
-            // errors.push(new TransactionError(`Bike already rented (tx ${rentedBike.lastRentTransactionId})`, this.id, "this.asset.id", this.asset.id, "The ID of a currently non-rented bike"));
-        }
+        // Ok, everything is fine
+        // Set who's the new renter for this object:
+        object.rentedBy = this.senderId;
+        object.rentalStartDatetime = this.timestamp;
+        object.rentalEndDatetime = undefined;
 
-        // if (rentedBike.lastRentTransactionId && lastRentTransaction && lastRentTransaction.id !== rentedBike.lastRentTransactionId) {
-        //     errors.push(new TransactionError('Invalid lastRentTransactionId for this bike', this.id, '.asset.id', this.asset.lastRentTransactionId, 'The last rent transaction id of the bike you want to rent'));
-        // }
-
-        // if (rentedBike.lastReturnTransactionId && lastReturnTransaction && lastReturnTransaction.id !== rentedBike.lastReturnTransactionId) {
-        //     errors.push(new TransactionError('Invalid lastReturnTransactionId for this bike', this.id, '.asset.id', this.asset.lastReturnTransactionId, 'The last transaction id of the bike you want to rent'));
-        // }
-
-        const deposit = new BigNum(rentedBike.deposit);
-
-        if (!deposit.eq(this.amount)) {
-            errors.push(new TransactionError("Invalid amount", this.id, "this.amount", this.amount, `The precise amount of the bike's deposit : ${rentedBike.deposit.toString()}`));
-        }
-
-        rentedBike.rentedBy = this.senderId;
-        rentedBike.rentalStartDatetime = this.timestamp;
-        rentedBike.rentalEndDatetime = undefined;
-        // rentedBike.lastRentTransactionId = this.id;
-
-        store.account.set(this.recipientId, recipient);
+        // Finally, set this info in the recipients account
+        store.account.set(this.asset.id, object);
 
         return errors;
     }
@@ -108,19 +83,14 @@ class RentBikeTransaction extends TransferTransaction {
 
         const errors = [];
 
-        // const lastRentTransaction = store.transaction.find(t => t.id === this.asset.lastRentTransactionId) || {};
-        // const lastReturnTransaction = store.transaction.find(t => t.id === this.asset.lastReturnTransactionId) || {};
+        // Get object
+        const object = store.account.get(this.asset.id);
 
-        const recipient = store.account.get(this.recipientId);
-        const rentedBike = recipient.asset.bikes[this.asset.id];
+        // Set: Not currently rented
+        object.rentedBy = null;
+        store.account.set(this.asset.id, object);
 
-        rentedBike.rentedBy = lastRentTransaction.senderId;
-        rentedBike.rentalStartDatetime = lastRentTransaction.timestamp;
-        rentedBike.rentalEndDatetime = lastReturnTransaction.timestamp;
-        // rentedBike.lastRentTransactionId = this.id;
-
-        store.account.set(this.recipientId, recipient);
-
+        // If errors: Return
         return errors;
     }
 }

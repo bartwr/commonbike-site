@@ -47,26 +47,24 @@ class UpdateBikeLocationTransaction extends BaseTransaction {
         const errors = [];
 
         const recipient = store.account.get(this.recipientId);
-        const rentedBike = recipient.asset.bikes[this.asset.id];
+        const object = store.account.get(this.asset.id);
 
-        if (rentedBike === undefined) {
-            errors.push(new TransactionError("Bike not found", this.id, "this.asset.id", this.asset.id, "An existing bike ID on recipient account"));
+        if (object === undefined) {
+            errors.push(new TransactionError("Object not found", this.id, "this.asset.id", this.asset.id, "An existing object ID on recipient account"));
         }
 
-        if (rentedBike.id !== this.senderId) {
-            errors.push(new TransactionError(`Bike position can only be updated by the bike itself`, this.id, "this.asset.id", this.asset.id, "Nice try"));
+        if (object.id !== this.senderId) {
+            errors.push(new TransactionError(`Object position can only be updated by the object itself`, this.id, "this.asset.id", this.asset.id, "Nice try"));
         }
 
-        if (this.asset.previousLatitude !== rentedBike.location.latitude || this.asset.previousLongitude !== rentedBike.location.longitude) {
+        if (this.asset.previousLatitude !== object.location.latitude || this.asset.previousLongitude !== object.location.longitude) {
             errors.push(new TransactionError("Invalid previous location", this.id));
         }
 
-        rentedBike.location.latitude = this.asset.latitude;
-        rentedBike.location.longitude = this.asset.longitude;
+        object.location.latitude = this.asset.latitude;
+        object.location.longitude = this.asset.longitude;
 
-        recipient.asset.bikes[rentedBike.id] = rentedBike;
-
-        store.account.set(this.recipientId, recipient);
+        store.account.set(this.asset.id, object);
 
         return errors;
     }
@@ -74,15 +72,12 @@ class UpdateBikeLocationTransaction extends BaseTransaction {
     undoAsset(store) {
         const errors = [];
         const recipient = store.account.get(this.recipientId);
+        const object = store.account.get(this.asset.id);
 
-        const rentedBike = recipient.asset.bikes[this.asset.id];
+        object.location.latitude = this.asset.previousLatitude;
+        object.location.longitude = this.asset.previousLongitude;
 
-        rentedBike.location.latitude = this.asset.previousLatitude;
-        rentedBike.location.longitude = this.asset.previousLongitude;
-
-        recipient.asset.bikes[rentedBike.id] = rentedBike;
-
-        store.account.set(this.recipientId, recipient);
+        store.account.set(this.asset.id, object);
 
         return errors;
     }

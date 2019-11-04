@@ -5,12 +5,12 @@ module.exports = {
     Bike: class {
       constructor() {
         this.id = undefined;
+        this.ownerId = undefined;
+        this.title = undefined;
         this.description = undefined;
         this.rentedBy = undefined;
         this.pricePerHour = undefined;
         this.deposit = undefined;
-        // this.lastRentTransactionId = undefined;
-        // this.lastReturnTransactionId = undefined;
         this.rentalStartDatetime = undefined;
         this.rentalEndDatetime = undefined;
       }

@@ -128,9 +128,7 @@ class ObjectDetails extends Component {
   //   console.log("clickCreateBike", object);
   // }
   //
-  // clickUpdateGPS(object) {
-  //   console.log("clickUpdateGPS", object);
-  // }
+ // }
 
   render() {
     if(this.props.object==undefined) {

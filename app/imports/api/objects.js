@@ -201,26 +201,31 @@ if(Meteor.isServer) {
       let object = Objects.findOne(_id);
       if(object) {
         var context =  ObjectsSchema.newContext();
+        console.log('changes')
+        console.log(changes)
         if(context.validate({ $set: changes}, {modifier: true} )) {
           // apply changes
-          Objects.update(_id, {$set : changes} );
-          console.log('Settings changed for ' + object.blockchain.title || "unnamed object");
-          
+          Objects.update(_id, {$set: Object.assign({},
+            changes,
+            { title: changes['blockchain.title'] }
+          )});
+          console.log('Settings changed for ' + object.title || "unnamed object");
+
           return {
             result: true,
-            message: 'Object ' + object.blockchain.title + ' updated',
+            message: 'Object ' + object.title + ' updated',
             id: object._id
           }
         } else {
           return {
             result: false,
-            message: 'Object ' + object.blockchain.title + ' contains invalid data',
+            message: 'Object ' + object.title + ' contains invalid data',
             id: object._id
           }
         };
       } else {
         // make sure that no object exists with same title / category
-        object = Objects.findOne({'blockchain.title':changes.title})
+        object = Objects.findOne({'blockchain.title': changes.title})
         if(object) {
           return {
             result: true,
@@ -242,7 +247,7 @@ if(Meteor.isServer) {
 
       Objects.remove(objectId);
 
-      var description = 'Object ' + object.blockchain.title + ' was removed';
+      var description = 'Object ' + object.title + ' was removed';
       console.log(description);
     },
     async 'objects.registeronblockchain'(objectId){
@@ -277,7 +282,7 @@ if(Meteor.isServer) {
           longitude: null
         }
       });
-      console.log(tx);
+      // console.log(tx);
       
       // Sign transaction
       tx.sign(settings.bikecoin.wallet.passphrase);

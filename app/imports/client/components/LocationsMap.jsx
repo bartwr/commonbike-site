@@ -126,7 +126,7 @@ class LocationsMap extends Component {
   }
 
   initializeObjectsMarkers() {
-    console.log("locationsmap.initializeObjectsMarkers objects %o", this.props.objects)
+    // console.log("locationsmap.initializeObjectsMarkers objects %o", this.props.objects)
 
     if(!this.props.objects) return;
     
