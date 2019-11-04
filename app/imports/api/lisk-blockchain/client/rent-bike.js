@@ -1,7 +1,7 @@
 const { APIClient } = require('@liskhq/lisk-client');
 const RentBikeTransaction = require('../transactions/rent-bike');
 
-const { getTimestamp, getBike } = require('./_helpers.js');
+const { getTimestamp, getBike } = require('../_helpers.js');
 const client = new APIClient(['http://brainz.lisk.bike:4000']);
 
 import { Promise } from 'meteor/promise';

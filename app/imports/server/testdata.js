@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Objects } from '/imports/api/objects.js';
 import '/imports/api/users.js';
 import { getUserDescription } from '/imports/api/users.js';
+import { Mnemonic } from '@liskhq/lisk-passphrase';
+import { getAddressFromPublicKey, getKeys } from '@liskhq/lisk-cryptography';
 
 var testUsers = [
     {name:"user1",email:"user1@lisk.bike",
@@ -118,10 +120,10 @@ export const checkTestUsers = function() {
         password: userData.password,
         profile: { name: userData.name,
                    wallet: {
-                     passphrase: '',
-                     privateKey: '',
-                     publicKey: '',
-                     address: ''
+                     passphrase: passphrase,
+                     privateKey: privateKey,
+                     publicKey: publicKey,
+                     address: address
                    }
         }
       });
@@ -189,6 +191,12 @@ export const checkTestObjects = function() {
       //   }
       // });
 
+      // Create account for bike lock
+      const passphrase = Mnemonic.generateMnemonic();
+      const { privateKey, publicKey } = getKeys(passphrase);
+      const address = getAddressFromPublicKey(publicKey);
+      const wallet = { passphrase, privateKey, publicKey, address };
+
       var keyid = Objects.insert({
         title: object.title,
         description: object.description,
@@ -200,10 +208,10 @@ export const checkTestObjects = function() {
                 pricePerHourInLSK : 1,
                 depositInLSK : 20},
         wallet: {
-          passphrase: '',
-          privateKey: '',
-          publicKey: '',
-          address: ''
+          passphrase: wallet.passphrase,
+          privateKey: wallet.privateKey,
+          publicKey: wallet.publicKey,
+          address: wallet.address
         },
         lock: lockinfo,
       });

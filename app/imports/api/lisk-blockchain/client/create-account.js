@@ -4,7 +4,7 @@ const FaucetTransaction = require('../transactions/faucet.js');
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
 const { Mnemonic } = require('@liskhq/lisk-passphrase');
 const transactions = require('@liskhq/lisk-transactions');
-const { getTimestamp } = require('./_helpers.js');
+const { getTimestamp } = require('../_helpers.js');
 const { getSettingsClientSide } = require('/imports/api/settings.js');
 
 
