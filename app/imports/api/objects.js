@@ -285,7 +285,7 @@ if(Meteor.isServer) {
       console.log("create transaction %o", tx);
       
       // Sign transaction
-      tx.sign(object.wallet.passphrase);
+      tx.sign(settings.bikecoin.wallet.passphrase);
       
       // Broadcast the tx to the blockchain
       const broadcastTx = client.transactions.broadcast(tx.toJSON());
