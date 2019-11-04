@@ -23,7 +23,7 @@ class ReturnBikeButton extends Component {
         className={this.props.classes.actionbutton}
         onClick={this.clickReturnBike.bind(this, this.props.bike)}
         >
-        RETURN BIKE BUTTON
+        RETURN BIKE
       </Button>
     )
   }

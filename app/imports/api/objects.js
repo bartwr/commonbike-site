@@ -237,53 +237,52 @@ if(Meteor.isServer) {
       console.log(description);
     },
     async 'objects.registeronblockchain'(objectId){
+      var object = Objects.findOne(objectId);
+      
+      // return { result: false, message: 'this is not working yet!'}
 
-      return { result: false, message: 'this is not working yet!'}
-
-      // var object = Objects.findOne(objectId);
-      //
-      // if(object.blockchain.title=='') {
-      //   return { result: false, message: 'please provide a title for this object!'}
-      // } else if(object.blockchain.description=='') {
-      //   return { result: false, message: 'please provide a description for this object!'}
-      // }
-      //
-      // Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
-      //
-      // let settings = await getSettingsServerSide();
-      //
-      // // Create tx
-      // const tx = new CreateBikeTransaction({
-      //   senderPublicKey: settings.bikecoin.wallet.publicKey,
-      //   recipientId: settings.bikecoin.wallet.address,
-      //   timestamp: getTimestamp(),
-      //   asset: {
-      //
-      //     id: object.wallet.publicKey,
-      //     title: object.blockchain.title,
-      //     description: object.blockchain.description,
-      //     pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain.pricePerHourInLSK),
-      //     deposit: transactions.utils.convertLSKToBeddows(object.blockchain.depositInLSK),
-      //     latitude: null,
-      //     longitude: null
-      //   }
-      // });
-      // console.log(tx);
-      //
-      // // Sign transaction
-      // tx.sign(settings.bikecoin.wallet.passphrase);
-      //
-      // // Broadcast the tx to the blockchain
-      // const broadcastTx = client.transactions.broadcast(tx.toJSON());
-      //
-      // broadcastTx.then(() => {
-      //   Objects.update(objectId, {$set: {'blockchain.id': object.wallet.publicKey}});
-      // })
-      // .catch(error => {
-      //   console.error(error);
-      // });
-      //
-      // return { result: true, message: 'registration transaction has been sent to the blockchain!'}
+      if(object.blockchain.title=='') {
+        return { result: false, message: 'please provide a title for this object!'}
+      } else if(object.blockchain.description=='') {
+        return { result: false, message: 'please provide a description for this object!'}
+      }
+      
+      Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
+      
+      let settings = await getSettingsServerSide();
+      
+      // Create tx
+      const tx = new CreateBikeTransaction({
+        senderPublicKey: settings.bikecoin.wallet.publicKey,
+        recipientId: settings.bikecoin.wallet.address,
+        timestamp: getTimestamp(),
+        asset: {
+      
+          id: object.wallet.publicKey,
+          title: object.blockchain.title,
+          description: object.blockchain.description,
+          pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain.pricePerHourInLSK),
+          deposit: transactions.utils.convertLSKToBeddows(object.blockchain.depositInLSK),
+          latitude: null,
+          longitude: null
+        }
+      });
+      console.log(tx);
+      
+      // Sign transaction
+      tx.sign(settings.bikecoin.wallet.passphrase);
+      
+      // Broadcast the tx to the blockchain
+      const broadcastTx = client.transactions.broadcast(tx.toJSON());
+      
+      broadcastTx.then(() => {
+        Objects.update(objectId, {$set: {'blockchain.id': object.wallet.publicKey}});
+      })
+      .catch(error => {
+        console.error(error);
+      });
+      
+      return { result: true, message: 'registration transaction has been sent to the blockchain!'}
     },
   });
 }

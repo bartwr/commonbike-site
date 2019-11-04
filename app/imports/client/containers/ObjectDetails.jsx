@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 
+import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
+
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 import RentBikeButton from '/imports/client/components/RentBikeButton';
 import ReturnBikeButton from '/imports/client/components/ReturnBikeButton';
+import { getObjectStatus } from '/imports/api/lisk-blockchain/client/get-object-status.js';
 
 import { Objects } from '/imports/api/objects.js';
 
@@ -87,55 +90,46 @@ class ObjectDetails extends Component {
 
   constructor(props) {
     super(props);
-  }
-  
-  renderObjectState(state) {
-    const {object, classes} = this.props;
-
-    let statetext = object.lock.locked ? "AVAILABLE" : "IN USE"
-    return (
-      <div className={classes.base}>
-        <ul className={classes.list}>
-          <li className={classes.listitem,s.mediumFont}>{statetext}</li>
-        </ul>
-      </div>
-    );
     
+    const { object } = this.props;
     
-    // if(this.props.object.lock.locked==false) {
-    //   return (
-    //     <div className={classes.base}>
-    //       <ul className={classes.list}>
-    //         <li className={classes.listitem,s.mediumFont}>IN GEBRUIK</li>
-    //       </ul>
-    //     </div>
-    //   );
-    // } else if(this.props.object.state.state!="available") {
-    //   return (
-    //     <div className={classes.base}>
-    //       <ul className={classes.list}>
-    //         <li className={classes.listitem,s.mediumFont}>NOT AVAILABLE</li>
-    //       </ul>
-    //     </div>
-    //   );
-    // } else {
-    //   return (
-    //     <div className={classes.base}>
-    //       <ul className={classes.list}>
-    //         <li className={classes.listitem,s.mediumFont}>UNKNOWN</li>
-    //       </ul>
-    //     </div>
-    //   );
-    // }
+    let timer = setTimeout(this.updateObjectStatus.bind(this), 1000);
+    // let timer=false;
+    this.state = {
+      timer: timer
+    }
   }
   
-  clickCreateBike(object) {
-    console.log("clickCreateBike", object);
+  componentWillUnmount() {
+    if(this.state.timer!=false) {
+      clearTimeout(this.state.timer);
+    }
   }
   
-  clickUpdateGPS(object) {
-    console.log("clickUpdateGPS", object);
+  async updateObjectStatus() {
+    try {
+      console.log("update object status for object %s", this.props.object.wallet.address)
+      let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.settings.bikecoin.wallet.address);
+      // console.info("got object status: %o", newStatus)
+      
+      if(newStatus!=false) {
+        this.setState((prevstate)=>{ return { status: newStatus } });
+      }
+    } catch(ex) {
+      console.error(ex);
+    } finally {
+      this.setState((prevstate)=>{
+        return { timer: setTimeout(this.updateObjectStatus.bind(this), 2000) } });
+    }
   }
+  
+  // clickCreateBike(object) {
+  //   console.log("clickCreateBike", object);
+  // }
+  //
+  // clickUpdateGPS(object) {
+  //   console.log("clickUpdateGPS", object);
+  // }
 
   render() {
     if(this.props.object==undefined) {
@@ -146,19 +140,19 @@ class ObjectDetails extends Component {
 
     let location = object.lock && object.lock.lat_lng || [0,0];
     
-    console.log("object %o / location: %o", object, location);
-    
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
-          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.title}</Typography>
-          <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
+          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.blockchain.title}</Typography>
+          <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{object.wallet.address}</Typography>
           <RentBikeButton bike={this.props.object} classes={classes} />
           <ReturnBikeButton bike={this.props.object} classes={classes} />
-          <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
         </div>
       </div>
     );
+    // <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
+    // <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
+    
   }
 }
 
@@ -176,14 +170,20 @@ ObjectDetails.defaultProps = {
 
 export default withTracker((props) => {
     Meteor.subscribe('objects');
+    Meteor.subscribe('settings');
     
     let object = Objects.findOne({_id: props.objectId});
-
-    console.log("found object %o", object);
-
+    
+    let settings = getSettingsClientSide();
+    if(!settings) {
+      console.log("no settings available");
+      return {};
+    }
+    
     // Return variables for use in this component
     return {
       currentUser: Meteor.user(),
-      object: object
+      object: object,
+      settings: settings
     };
 })(withStyles(styles) (ObjectDetails));
