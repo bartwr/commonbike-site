@@ -74,8 +74,8 @@ class CreateBikeTransaction extends BaseTransaction {
           title: this.asset.title,
           description: this.asset.description,
           ownerId: this.senderId,
-          pricePerHour:  transactions.utils.convertLSKToBeddows(this.asset.pricePerHour).toString(),
-          deposit: transactions.utils.convertLSKToBeddows(this.asset.deposit).toString(),
+          pricePerHour:  transactions.utils.convertLSKToBeddows(this.asset.pricePerHour),
+          deposit: transactions.utils.convertLSKToBeddows(this.asset.deposit),
           location: location
         }
         recipient.asset = assetdata;
