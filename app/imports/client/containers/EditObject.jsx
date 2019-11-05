@@ -55,7 +55,7 @@ class EditObject extends Component {
   constructor(props) {
     super(props);
     
-    this.state = { openpanel: 'exp-contr-settings-lock' }
+    this.state = { openpanel: 'exp-contr-settings-blockchain' }
   }
   
   componentDidMount() {
@@ -80,6 +80,10 @@ class EditObject extends Component {
       alert('unable to register this object on the blockchain: ' + result.message);
       return;
     }
+  }
+  
+  transferSeedFunds() {
+    
   }
 
   updateLocalSettings(changes) {
@@ -266,6 +270,12 @@ class EditObject extends Component {
             label: 'Deposit (LSK)'
     		},
         {
+            fieldname: 'transferseedfunds',
+            fieldvalue: 'transferseedfunds',
+            controltype: 'clientside-action-nochanges',
+            label: 'TRANSFER SEED FUNDS'
+    		},
+        {
             fieldname: 'registeronblockchain',
             fieldvalue: 'registeronblockchain',
             controltype: 'clientside-action-nochanges',
@@ -375,35 +385,34 @@ class EditObject extends Component {
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
-          <EditFields
-             title="LOCK SETTINGS"
-             fields={this.getLockFields()}
-             apply={this.updateLocalSettings.bind(this)}
-             handleExpansion={this.handleExpansion.bind(this)}
-             panelId={'exp-contr-settings-lock'}
-             externalPanelId={this.state.openpanel} />
-           
-          <EditFields
-             title="BLOCKCHAIN SETTINGS"
-             fields={this.getBlockchainFields()}
-             apply={this.updateLocalSettings.bind(this)}
-             handleExpansion={this.handleExpansion.bind(this)}
-             panelId={'exp-contr-settings-blockchain'}
-             externalPanelId={this.state.openpanel}
-             handlers={[
-                {name:'registeronblockchain', action:this.sendSettingsToBlockchain.bind(this)},
-               ]
-             } />
-          
-          <EditFields
-             title="WALLET SETTINGS"
-             fields={this.getCoinFields()}
-             apply={this.updateLocalSettings.bind(this)}
-             handleExpansion={this.handleExpansion.bind(this)}
-             panelId={'exp-contr-settings-wallet'}
-             externalPanelId={this.state.openpanel} />
+            <EditFields
+               title="BLOCKCHAIN SETTINGS"
+               fields={this.getBlockchainFields()}
+               apply={this.updateLocalSettings.bind(this)}
+               handleExpansion={this.handleExpansion.bind(this)}
+               panelId={'exp-contr-settings-blockchain'}
+               externalPanelId={this.state.openpanel}
+               handlers={[
+                  {name:'registeronblockchain', action:this.sendSettingsToBlockchain.bind(this)},
+                  {name:'transferseedfunds', action:this.transferSeedFunds.bind(this)},
+                 ]
+               } />
+            <EditFields
+               title="WALLET SETTINGS"
+               fields={this.getCoinFields()}
+               apply={this.updateLocalSettings.bind(this)}
+               handleExpansion={this.handleExpansion.bind(this)}
+               panelId={'exp-contr-settings-wallet'}
+               externalPanelId={this.state.openpanel} />
+            <EditFields
+               title="LOCK SETTINGS"
+               fields={this.getLockFields()}
+               apply={this.updateLocalSettings.bind(this)}
+               handleExpansion={this.handleExpansion.bind(this)}
+               panelId={'exp-contr-settings-lock'}
+               externalPanelId={this.state.openpanel} />
+          </div>
         </div>
-      </div>
     );
   }
 }

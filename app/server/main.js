@@ -22,11 +22,18 @@ Meteor.startup(() => {
 	if(true) {
 		var myObjects = Objects.find().fetch();
 		_.each(myObjects, function (objectData) {
-			if("passphrase" in objectData.wallet == false) {
-				console.log("updating object wallet for " + objectData.title)
-		    Objects.update(objectData._id, {$unset:{ wallet: "" }});
-				Objects.update(objectData._id, {$set:{ wallet: {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
+			if("wallet" in objectData == false||"lock" in objectData == false||"blockchain" in objectData == false) {
+				// bad object created during testing!
+				console.log("remove bad object");
+				Objects.remove(objectData._id);
+			} else {
+				if("passphrase" in objectData.wallet == false) {
+					console.log("updating object wallet for " + objectData.title)
+			    Objects.update(objectData._id, {$unset:{ wallet: "" }});
+					Objects.update(objectData._id, {$set:{ wallet: {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
+				}
 			}
+			
 		});
 
 		var myUsers = Meteor.users.find().fetch();

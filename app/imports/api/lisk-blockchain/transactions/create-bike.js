@@ -1,5 +1,5 @@
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
-const { Bike, BikeValidator } = require('./bike.domain');
+const { BikeValidator } = require('./bike.domain');
 
 const defaultLocation = {
     latitude: '48.8534',

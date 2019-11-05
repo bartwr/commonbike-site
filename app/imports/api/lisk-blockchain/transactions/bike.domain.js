@@ -2,19 +2,6 @@ const { BigNum } = require('@liskhq/bignum');
 const { TransactionError } = require('@liskhq/lisk-transactions');
 
 module.exports = {
-    Bike: class {
-      constructor() {
-        this.id = undefined;
-        this.ownerId = undefined;
-        this.title = undefined;
-        this.description = undefined;
-        this.rentedBy = undefined;
-        this.pricePerHour = undefined;
-        this.deposit = undefined;
-        this.rentalStartDatetime = undefined;
-        this.rentalEndDatetime = undefined;
-      }
-    },
     BikeValidator: {
       id: (transactionId, param) => (param && typeof param === 'string' && param.length > 0) ? true :
         new TransactionError('Missing or invalid "asset.id" defined on transaction', transactionId, '.asset.id', param, 'A string'),

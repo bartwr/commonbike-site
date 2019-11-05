@@ -151,6 +151,7 @@ export const createObject = () => {
            lockid: '',
            lat_lng: [999,999],
            lat_lng_timestamp: new Date(),
+           
            state_timestamp: new Date(),
            locked: false,
            battery: 0,
@@ -166,14 +167,14 @@ export const createObject = () => {
   const passphrase = Mnemonic.generateMnemonic();
   const { privateKey, publicKey } = getKeys(passphrase);
   const address = getAddressFromPublicKey(publicKey);
-
+  
   data.wallet = {
     passphrase,
     privateKey,
     publicKey,
     address
   };
-
+  
   try {
     var context =  ObjectsSchema.newContext();
     check(data, ObjectsSchema);
@@ -188,6 +189,7 @@ export const createObject = () => {
 if(Meteor.isServer) {
   Meteor.methods({
     'objects.createnew'() {
+      console.log("calling createnew")
       let newObject = createObject();
       let newId = Objects.insert(newObject);
       return { _id: newId }
@@ -251,6 +253,7 @@ if(Meteor.isServer) {
       console.log(description);
     },
     async 'objects.registeronblockchain'(objectId){
+      
       var object = Objects.findOne(objectId);
       
       // return { result: false, message: 'this is not working yet!'}
@@ -262,7 +265,6 @@ if(Meteor.isServer) {
       }
       
       // Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
-      
       let settings = await getSettingsServerSide();
       const client = new APIClient([settings.bikecoin.provider_url]);
 

@@ -170,7 +170,7 @@ class ObjectBlock extends Component {
     // try {
       const { classes, object, zoom, adminmode, parentuuid } = this.props;
       
-      if(undefined==object) {
+      if(undefined==object||undefined==object.lock) {
         return (null);
       }
 

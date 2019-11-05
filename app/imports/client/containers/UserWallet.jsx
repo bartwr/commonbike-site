@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 
-import {doCreateAccount} from '../../api/lisk-blockchain/client/create-account.js';
+import {doCreateAccount} from '/imports/api/lisk-blockchain/client/create-account.js';
 
 // Import components
 import Wallet from '/imports/client/components/Wallet';
