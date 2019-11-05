@@ -158,7 +158,12 @@ var createLock = function(locktype, locksettings) {
   if(locktype=='plainkey') {
     lockInfo = Object.assign({locktype: locktype, keyid: '0000' }, locksettings);
   } else if(locktype=='concox-bl10') {
-    lockInfo = Object.assign({locktype: locktype, lockid: ''}, locksettings);
+    lockInfo = Object.assign({
+      locktype: locktype,
+      lockid: '',
+      lat_lng: [999,999],
+      lat_lng_timestamp: new Date
+    }, locksettings);
   }
 
   return lockInfo;

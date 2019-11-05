@@ -13,6 +13,7 @@ const { APIClient } = require('@liskhq/lisk-client');
 const transactions = require('@liskhq/lisk-transactions');
 
 const CreateBikeTransaction = require('./lisk-blockchain/transactions/create-bike.js');
+const { doCreateAccount } = require('./lisk-blockchain/methods/create-account.js');
 
 export const Objects = new Mongo.Collection('objects');
 
@@ -130,10 +131,12 @@ if (Meteor.isServer) {
 export const createObject = () => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
-  
-  const words = Mnemonic.generateMnemonic().split(" ");
+
+  const words = wallet.passphrase.split(" ");
+  // Create object title
   const title = words[0] + " " + words[1];
 
+  // Set object data
   var data = {
     blockchain: {
       id: '',
@@ -176,11 +179,15 @@ export const createObject = () => {
   };
   
   try {
-    var context =  ObjectsSchema.newContext();
+    var context = ObjectsSchema.newContext();
     check(data, ObjectsSchema);
   } catch(ex) {
     console.log('Error in data: ',ex.message );
     return;
+  }
+
+  const sendFundsToAddress = () => {
+    
   }
 
   return data;
@@ -211,7 +218,7 @@ if(Meteor.isServer) {
             changes,
             { title: changes['blockchain.title'] }
           )});
-          console.log('Settings changed for ' + object.title || "unnamed object");
+          console.log('Settings changed for ' + (changes['blockchain.title'] || "unnamed object"));
 
           return {
             result: true,
@@ -256,8 +263,6 @@ if(Meteor.isServer) {
       
       var object = Objects.findOne(objectId);
       
-      // return { result: false, message: 'this is not working yet!'}
-
       if(object.blockchain.title=='') {
         return { result: false, message: 'please provide a title for this object!'}
       } else if(object.blockchain.description=='') {
@@ -278,8 +283,8 @@ if(Meteor.isServer) {
           title: object.blockchain.title,
           description: object.blockchain.description,
           ownerid: settings.bikecoin.wallet.address,
-          pricePerHour: object.blockchain.pricePerHourInLSK,
-          deposit: object.blockchain.depositInLSK,
+          pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.pricePerHourInLSK).toString() : Number(object.lisk.pricePerHourInLSK)),
+          deposit: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.depositInLSK).toString() : Number(object.lisk.depositInLSK)),
           latitude: null,
           longitude: null
         }

@@ -4,7 +4,7 @@ import { RedirectTo } from '/client/main'
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import {doGetAccount} from '../../api/lisk-blockchain/client/get-account.js';
+import {doGetAccount} from '../../api/lisk-blockchain/methods/get-account.js';
 const transactions = require('@liskhq/lisk-transactions');
 
 const styles = theme => ({

@@ -11,7 +11,7 @@ import ObjectList from '/imports/client/components/ObjectList';
 import LocationsMap from '/imports/client/components/LocationsMap';
 
 
-import {getAllBikes} from '/imports/api/lisk-blockchain/client/get-bikes.js';
+import {getAllBikes} from '/imports/api/lisk-blockchain/methods/get-bikes.js';
 
 const styles = theme => ({
   root: {
@@ -38,8 +38,6 @@ class OverviewPage extends Component {
   constructor(props) {
     super(props);
     
-    console.log("props %o", props);
-    
     let timer = setTimeout(this.updateBikes.bind(this), 1000);
     // let timer=false;
     this.state = { redirect: false, mapBoundaries: null, timer: timer }
@@ -53,8 +51,7 @@ class OverviewPage extends Component {
   
   async updateBikes() {
     let newBikes = await getAllBikes(this.props.settings.bikecoin.provider_url);
-    console.info("got bikes: %o", newBikes)
-    
+
     this.setState((prevstate)=>{
       return {
         bikes: newBikes,
@@ -116,7 +113,6 @@ class OverviewPage extends Component {
   render() {
     const { showMap, showList, adminmode, classes } = this.props;
     
-    console.log('render redirect %s', this.state.redirect);
     if(false!==this.state.redirect) {
       return (<Redirect to={this.state.redirect} push/>);
     }
@@ -179,7 +175,6 @@ export default withTracker((props) => {
 
   let settings = getSettingsClientSide();
   if(!settings) {
-    console.log("no settings available");
     return {};
   }
   

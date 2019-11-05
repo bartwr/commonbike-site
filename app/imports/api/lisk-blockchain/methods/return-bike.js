@@ -1,12 +1,13 @@
 const { APIClient } = require('@liskhq/lisk-client');
 const ReturnBikeTransaction = require('../transactions/return-bike');
-
+const { getSettingsClientSide } = require('/imports/api/settings.js');
 const { getTimestamp, getBike } = require('../_helpers.js');
-const client = new APIClient(['http://brainz.lisk.bike:4000']);
 
 import { Promise } from 'meteor/promise';
 
-const returnBike = (bike, renterAccount) => {
+const returnBike = (providerUrl, bike, renterAccount) => {
+    const client = new APIClient([providerUrl]);
+
     const tx =  new ReturnBikeTransaction({
         asset: {
             id: bike.id, // XXX or use bike.address
@@ -30,8 +31,15 @@ const returnBike = (bike, renterAccount) => {
 
 const doReturnBike = async (renterAccount, bikeAccount) => {
     const bike = await getBike(client, bikeAccount);
-      
-    const returnResult = returnBike(bike, renterAccount);
+
+    const settings = await getSettingsClientSide();
+    if(!settings) return false;
+
+    const returnResult = returnBike(
+        settings.bikecoin.provider_url,
+        bike,
+        renterAccount
+    );
     returnResult.then(result => {
         // console.log(result)
     }, (err) => {

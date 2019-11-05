@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 
 import RentBikeButton from '/imports/client/components/RentBikeButton';
 import ReturnBikeButton from '/imports/client/components/ReturnBikeButton';
-import { getObjectStatus } from '/imports/api/lisk-blockchain/client/get-object-status.js';
+import { getObjectStatus } from '/imports/api/lisk-blockchain/methods/get-object-status.js';
 
 import { Objects } from '/imports/api/objects.js';
 
