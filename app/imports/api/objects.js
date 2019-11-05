@@ -132,7 +132,7 @@ export const createObject = () => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
 
-  const words = wallet.passphrase.split(" ");
+  const words = Mnemonic.generateMnemonic().split(" ");
   // Create object title
   const title = words[0] + " " + words[1];
 
