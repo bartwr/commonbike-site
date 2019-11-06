@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import { RedirectTo } from '/client/main'
 
 import EditFields from '/imports/client/components/EditFields';
-import {doCreateAccount} from '/imports/api/lisk-blockchain/methods/create-account.js';
+import {doCreateAccount } from '/imports/api/lisk-blockchain/methods/create-account.js';
 
 import { Objects, createObject } from '/imports/api/objects.js';
 const { getSettingsClientSide } = require('/imports/api/settings.js');
@@ -83,7 +83,8 @@ class EditObject extends Component {
   }
   
   transferSeedFunds() {
-    
+    console.log("funding bike %s", this.props.object.wallet.address);
+    doCreateAccount(true, this.props.object.wallet.passphrase)
   }
 
   updateLocalSettings(changes) {

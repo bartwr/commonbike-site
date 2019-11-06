@@ -71,6 +71,10 @@ const styles = theme => ({
     width: '35px',
     height: '35px'
   },
+  clientsideaction: {
+    marginTop: '1vmin',
+    marginBottom: '1vmin'
+  },
   combo: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1)

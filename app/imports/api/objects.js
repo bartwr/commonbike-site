@@ -186,10 +186,6 @@ export const createObject = () => {
     return;
   }
 
-  const sendFundsToAddress = () => {
-    
-  }
-
   return data;
 }
 

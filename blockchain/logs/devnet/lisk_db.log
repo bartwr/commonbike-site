@@ -1,2 +1,0 @@
-{"name":"lisk-framework","hostname":"yap","pid":18429,"level":30,"msg":"Disconnecting","time":"2019-11-05T07:37:02.527Z","src":{"file":"/storage/lisk.bike/blockchain/node_modules/lisk-framework/src/components/storage/adapters/pgp_adapter.js","line":121,"func":"disconnect"},"v":0}
-{"name":"lisk-framework","hostname":"yap","pid":18815,"level":30,"msg":"Disconnecting","time":"2019-11-05T08:25:22.376Z","src":{"file":"/storage/lisk.bike/blockchain/node_modules/lisk-framework/src/components/storage/adapters/pgp_adapter.js","line":121,"func":"disconnect"},"v":0}

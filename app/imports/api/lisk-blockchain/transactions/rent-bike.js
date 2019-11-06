@@ -1,5 +1,6 @@
+// import BigNum from '@liskhq/bignum';
 const { BigNum } = require('@liskhq/bignum');
-const { TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
+const { TransferTransaction, TransactionError, transfer } = require('@liskhq/lisk-transactions');
 const { BikeValidator } = require('./bike.domain');
 
 /**

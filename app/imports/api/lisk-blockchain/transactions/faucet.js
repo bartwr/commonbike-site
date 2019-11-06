@@ -1,4 +1,4 @@
-const { BigNum } = require('@liskhq/bignum');
+// const { BigNum } = require('@liskhq/bignum');
 const { BaseTransaction } = require('@liskhq/lisk-transactions');
 
 class FaucetTransaction extends BaseTransaction {
@@ -20,7 +20,7 @@ class FaucetTransaction extends BaseTransaction {
 
         store.account.set(this.recipientId, {
             ...recipient,
-            balance: new BigNum(recipient.balance).add(this.amount).toString(),
+            balance: (Number(recipient.balance) + Number(this.amount)).toString() // new BigNum(recipient.balance).add(this.amount).toString(),
         });
 
         return [];
@@ -32,7 +32,7 @@ class FaucetTransaction extends BaseTransaction {
 
         store.account.set(this.recipientId, {
             ...recipient,
-            balance: new BigNum(recipient.balance).sub(this.amount).toString(),
+            balance: (Number(recipient.balance) - Number(this.amount)).toString() // new BigNum(recipient.balance).add(this.amount).toString(),
         });
 
         return [];
