@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "update": "git pull && git pull liskbike master",
     "start": "meteor run --settings settings.json"
   },
   "dependencies": {
