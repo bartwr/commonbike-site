@@ -1,5 +1,6 @@
 const { BaseTransaction, TransferTransaction, TransactionError } = require('@liskhq/lisk-transactions');
-const { Bike, BikeValidator } = require('./bike.domain');
+const transactions = require('@liskhq/lisk-transactions');
+const { BikeValidator } = require('./bike.domain');
 
 const defaultLocation = {
     latitude: '48.8534',
@@ -27,14 +28,14 @@ class CreateBikeTransaction extends BaseTransaction {
     validateAsset() {
         const errors = [];
 
-        const validId = BikeValidator.id(this.id, this.asset.id);
+        // const validId = BikeValidator.id(this.id, this.asset.id);
         // const validPricePerHour = true || BikeValidator.pricePerHour(this.id, this.asset.pricePerHour);
         // const validDeposit = true || BikeValidator.deposit(this.id, this.asset.pricePerHour);
 
-        if (validId !== true) {
-            errors.push(validId);
-        }
-
+        // if (validId !== true) {
+        //     errors.push(validId);
+        // }
+        //
         // if (validPricePerHour !== true) {
         //     errors.push(validPricePerHour);
         // }
@@ -57,7 +58,7 @@ class CreateBikeTransaction extends BaseTransaction {
         const errors = [];
 
         const recipient = store.account.get(this.recipientId);
-        if (recipient.asset !== undefined) {
+        if ("title" in recipient.asset == true) {
           errors.push(new TransactionError("Bike with this Id already exist", this.id, 'this.asset.id', this.asset.id, "A non-registered Id"));
         }
 

@@ -5,8 +5,7 @@ const { getTimestamp, getBike } = require('../_helpers.js');
 
 import { Promise } from 'meteor/promise';
 
-const rentBike = async (providerUrl, bike, renterAccount) => {
-    const client = new APIClient([providerUrl]);
+const rentBike = async (client, bike, renterAccount) => {
 
     const tx = new RentBikeTransaction({
         asset: {
@@ -25,23 +24,27 @@ const rentBike = async (providerUrl, bike, renterAccount) => {
 }
 
 const doRentBike = async (renterAccount, bikeAccount) => {
-    const bike = await getBike(client, bikeAccount);
+  const settings = await getSettingsClientSide();
+  if(!settings) return false;
 
-    const settings = await getSettingsClientSide();
-    if(!settings) return false;
-
-    const rentResult = rentBike(
-        settings.bikecoin.provider_url,
+  const client = new APIClient([settings.bikecoin.provider_url]);
+  if(!client) return false;
+  
+  const bike = await getBike(client, bikeAccount);
+  if(undefined==bike) return false;
+  
+  const rentResult = rentBike(
+        client,
         bike,
         renterAccount
     );
-    rentResult.then(result => {
-        // console.log(result)
-    }, (err) => {
-        alert(err.errors[0].message)
-    })
+  rentResult.then(result => {
+      // console.log(result)
+  }, (err) => {
+      alert(err.errors[0].message)
+  })
 
-    return rentResult;
+  return rentResult;
 }
 
 module.exports = {doRentBike}

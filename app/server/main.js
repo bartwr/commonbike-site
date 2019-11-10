@@ -27,6 +27,7 @@ Meteor.startup(() => {
 		    Objects.update(objectData._id, {$unset:{ wallet: "" }});
 				Objects.update(objectData._id, {$set:{ wallet: {   passphrase: '', privateKey: '', publicKey: '', address: '' }}});
 			}
+			
 		});
 
 		var myUsers = Meteor.users.find().fetch();

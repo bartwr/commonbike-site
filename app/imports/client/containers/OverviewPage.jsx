@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Redirect from 'react-router/Redirect'
 
 import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
-import { Objects, createObject } from '/imports/api/objects.js';
+import { Objects } from '/imports/api/objects.js';
 
 import ObjectList from '/imports/client/components/ObjectList';
 import LocationsMap from '/imports/client/components/LocationsMap';

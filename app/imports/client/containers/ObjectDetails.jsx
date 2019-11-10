@@ -96,7 +96,8 @@ class ObjectDetails extends Component {
     let timer = setTimeout(this.updateObjectStatus.bind(this), 1000);
     // let timer=false;
     this.state = {
-      timer: timer
+      timer: timer,
+      status: undefined
     }
   }
   
@@ -109,13 +110,8 @@ class ObjectDetails extends Component {
   async updateObjectStatus() {
     try {
       console.log("update object status for object %s", this.props.object.wallet.address)
-      // let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.settings.bikecoin.wallet.address);
       let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.object.wallet.address);
-      // console.info("got object status: %o", newStatus)
-      
-      if(newStatus!=false) {
-        this.setState((prevstate)=>{ return { status: newStatus } });
-      }
+      this.setState((prevstate)=>{ return { status: newStatus } });
     } catch(ex) {
       console.error(ex);
     } finally {
@@ -129,6 +125,38 @@ class ObjectDetails extends Component {
   // }
   //
  // }
+  renderBlockchain() {
+    const { classes } = this.props;
+    const { status } = this.state;
+    
+    console.log("render blockchain state %o", this.state)
+    if(status==undefined) {
+      return (null);
+    } else if(status==false) {
+      return (
+        <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ACCOUNT NOT FUNDED</Typography>
+      );
+    } else if("asset" in status==false||"ownerId" in status.asset==false) {
+      return (
+        <>
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {status.balance}</Typography>
+          <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>NOT REGISTERED ON THE BLOCKCHAIN</Typography>
+        </>
+      )
+    } else {
+      const { status } = this.state;
+      return (
+        <>
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {status.balance}</Typography>
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ownerId: {status.asset.ownerId}</Typography>
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>deposit: {status.asset.deposit}</Typography>
+          
+          <RentBikeButton bike={this.props.object} classes={classes} />
+          <ReturnBikeButton bike={this.props.object} classes={classes} />
+        </>
+      )
+    }
+  }
 
   render() {
     if(this.props.object==undefined) {
@@ -144,8 +172,7 @@ class ObjectDetails extends Component {
         <div className={classes.dialog}>
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.blockchain.title}</Typography>
           <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{object.wallet.address}</Typography>
-          <RentBikeButton bike={this.props.object} classes={classes} />
-          <ReturnBikeButton bike={this.props.object} classes={classes} />
+          { this.renderBlockchain() }
         </div>
       </div>
     );

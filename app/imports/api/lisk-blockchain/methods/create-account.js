@@ -7,8 +7,8 @@ const transactions = require('@liskhq/lisk-transactions');
 const { getTimestamp } = require('../_helpers.js');
 const { getSettingsClientSide } = require('/imports/api/settings.js');
 
-const createAccount = (providerUrl, addFunds=true) => {
-  const passphrase = Mnemonic.generateMnemonic();
+const createAccount = (providerUrl, addFunds=true, mnemonic='') => {
+  const passphrase = mnemonic || Mnemonic.generateMnemonic();
   const { privateKey, publicKey } = getKeys(passphrase);
   const address = getAddressFromPublicKey(publicKey);
 
@@ -32,9 +32,13 @@ const createAccount = (providerUrl, addFunds=true) => {
       recipientId: account.address,
       timestamp: getTimestamp()
     });
+    
+    console.log("faucet transaction is: %o", tx);
 
     // Sign tx
     tx.sign(account.passphrase);
+    
+    // console.log("created transaction %o", tx)
 
     return new Promise((resolve, reject) => {
       client.transactions.broadcast(tx.toJSON())
@@ -44,7 +48,7 @@ const createAccount = (providerUrl, addFunds=true) => {
           resolve(account);
         })
         .catch(err => {
-          console.log('err', err)
+          console.log('createaccount - err %o', err)
           alert(JSON.stringify(err.errors[0].message));
           reject(account);
         });
@@ -54,13 +58,13 @@ const createAccount = (providerUrl, addFunds=true) => {
   }
 }
 
-const doCreateAccount = async (addfunds=false) => {
+const doCreateAccount = async (addfunds=false, mnemonic='') => {
     const settings = await getSettingsClientSide();
     if(!settings) return false;
     
     console.log("calling createaccount with provider %s", settings.bikecoin.provider_url);
     
-    const createAccountResult = await createAccount(settings.bikecoin.provider_url, addfunds);
+    const createAccountResult = await createAccount(settings.bikecoin.provider_url, addfunds, mnemonic);
     console.log('createAccountResult', createAccountResult);
 
     return createAccountResult;

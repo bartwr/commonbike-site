@@ -128,14 +128,11 @@ if (Meteor.isServer) {
   });
 }
 
-export const createObject = async () => {
+export const createObject = () => {
   // set SimpleSchema.debug to true to get more info about schema errors
   SimpleSchema.debug = true
 
-  // Create seed
-  const wallet = await doCreateAccount(true)
-  console.log(wallet);
-  const words = wallet.passphrase.split(" ");
+  const words = Mnemonic.generateMnemonic().split(" ");
   // Create object title
   const title = words[0] + " " + words[1];
 
@@ -153,27 +150,34 @@ export const createObject = async () => {
       rentalStartDatetime: new Date(),
       rentalEndDatetime: new Date(),
     },
-    lock: {
-      locktype: 'concox-bl10',
-      lockid: '',
-      lat_lng: [999,999],
-      lat_lng_timestamp: new Date(),
-      state_timestamp: new Date(),
-      locked: false,
-      battery: 0,
-      charging: false
-    },
-    wallet: {
-      passphrase :  '',
-      privateKey :  '',
-      publicKey : '',
-      address :  ''
-    }
+    lock: {locktype: 'concox-bl10',
+           lockid: '',
+           lat_lng: [999,999],
+           lat_lng_timestamp: new Date(),
+           
+           state_timestamp: new Date(),
+           locked: false,
+           battery: 0,
+           charging: false
+          },
+    wallet: { passphrase :  '',
+              privateKey :  '',
+              publicKey : '',
+              address :  '' }
   }
-
-  data.wallet = wallet;
-
-  // Validate data
+  
+  // assign new keypair to object
+  const passphrase = Mnemonic.generateMnemonic();
+  const { privateKey, publicKey } = getKeys(passphrase);
+  const address = getAddressFromPublicKey(publicKey);
+  
+  data.wallet = {
+    passphrase,
+    privateKey,
+    publicKey,
+    address
+  };
+  
   try {
     var context = ObjectsSchema.newContext();
     check(data, ObjectsSchema);
@@ -182,16 +186,13 @@ export const createObject = async () => {
     return;
   }
 
-  const sendFundsToAddress = () => {
-    
-  }
-
   return data;
 }
 
 if(Meteor.isServer) {
   Meteor.methods({
     'objects.createnew'() {
+      console.log("calling createnew")
       let newObject = createObject();
       let newId = Objects.insert(newObject);
       return { _id: newId }
@@ -255,6 +256,7 @@ if(Meteor.isServer) {
       console.log(description);
     },
     async 'objects.registeronblockchain'(objectId){
+      
       var object = Objects.findOne(objectId);
       
       if(object.blockchain.title=='') {
@@ -264,7 +266,6 @@ if(Meteor.isServer) {
       }
       
       // Objects.update(objectId, {$set: {'blockchain.id': 'WAITING FOR TRANSACTION COMPLETION'}});
-      
       let settings = await getSettingsServerSide();
       const client = new APIClient([settings.bikecoin.provider_url]);
 
