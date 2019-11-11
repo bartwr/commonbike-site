@@ -120,7 +120,7 @@ class ObjectDetails extends Component {
         this.props.settings.bikecoin.provider_url,
         this.props.object.wallet.address
       );
-      console.log("update object status for object %s to %o", this.props.object.wallet.address, newStatus)
+      // console.log("update object status for object %s to %o", this.props.object.wallet.address, newStatus)
       this.setState((prevstate) => { return { status: newStatus } });
     } catch(ex) {
       console.error(ex);
@@ -188,7 +188,11 @@ class ObjectDetails extends Component {
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
-          <MiniMap lat_lng={object.lock.lat_lng} objectislocked={unlocked==false}/>
+          <MiniMap
+            lat_lng={object.lock.lat_lng}
+            objectislocked={unlocked==false}
+            bikeAddress={object.blockchain.id}
+            />
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.blockchain.title}</Typography>
           <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{object.wallet.address}</Typography>
           { this.renderBlockchain() }

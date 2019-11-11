@@ -3,6 +3,7 @@ import React, { Component, createRef} from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
+import { ClientStorage } from 'ClientStorage';
 
 import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
 
@@ -16,6 +17,8 @@ import { getObjectStatus } from '/imports/api/lisk-blockchain/methods/get-object
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
 import { Objects } from '/imports/api/objects.js';
+
+import {doReturnBike} from '/imports/api/lisk-blockchain/methods/return-bike.js';
 
 const styles = theme => ({
   root: {
@@ -80,9 +83,24 @@ class MiniMap extends Component {
   moveBike = () => {
     this.setState({ objectpos: this.state.mapcenter })
   }
+
+  returnBike = (bikeAddress) => {
+    if(! Meteor.user) {
+      alert('No user account found. Please wait a bit or reload the page.');
+      return;
+    }
+    const renterAccount = ClientStorage.get('user-wallet')
+    doReturnBike(renterAccount, bikeAddress).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.error(err)
+    });
+  }
   
   lockBike = () => {
-    
+    const bikeAddress = this.props.bikeAddress;
+    // We end the rental. This will lock the bike.
+    this.returnBike(bikeAddress)
   }
 
   render() {
