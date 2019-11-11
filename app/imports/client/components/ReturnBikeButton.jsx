@@ -1,5 +1,6 @@
 import React, { Component, } from 'react';
 import Button from '@material-ui/core/Button';
+import { ClientStorage } from 'ClientStorage';
 
 import {bikeAccount, renterAccount} from '../../config.js';
 import {doReturnBike} from '../../api/lisk-blockchain/methods/return-bike.js';
@@ -10,9 +11,16 @@ class ReturnBikeButton extends Component {
     super(props);
   }
 
-  clickReturnBike(bike) {
-    doReturnBike(renterAccount, bikeAccount).then(res => {
+  clickReturnBike(bikeAddress) {
+    if(! Meteor.user) {
+      alert('No user account found. Please wait a bit or reload the page.');
+      return;
+    }
+    const renterAccount = ClientStorage.get('user-wallet')
+    doReturnBike(renterAccount, bikeAddress).then(res => {
       console.log(res)
+    }).catch(err => {
+      console.error(err)
     });
   }
 
@@ -21,7 +29,8 @@ class ReturnBikeButton extends Component {
       <Button
         variant="contained"
         className={this.props.classes.actionbutton}
-        onClick={this.clickReturnBike.bind(this, this.props.bike)}
+        onClick={this.clickReturnBike.bind(this, this.props.bike.wallet.address)}
+        disabled={this.props.isDisabled}
         >
         RETURN BIKE
       </Button>

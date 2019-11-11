@@ -20,11 +20,11 @@ export const getObjectStatus = async (providerUrl, id) => {
       // console.log("got bike account: %o", bikestatus.data[0]);
       return bikestatus.data[0];
     } else {
-      console.log('getObjectStatus: not registered yet')
+      // console.log('getObjectStatus: not registered yet')
       return false;
     }
   } catch(ex) {
-    console.log('getObjectStatus: error %o', ex)
+    // console.log('getObjectStatus: error %o', ex)
     return false;
   }
 }

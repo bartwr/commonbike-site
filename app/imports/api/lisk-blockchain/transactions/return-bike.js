@@ -1,5 +1,4 @@
-const { BigNum } = require('@liskhq/bignum');
-const { BaseTransaction, TransactionError } = require('@liskhq/lisk-transactions');
+const { TransferTransaction, TransactionError, transfer } = require('@liskhq/lisk-transactions');
 const { BikeValidator } = require('./bike.domain');
 
 /**
@@ -9,7 +8,7 @@ const { BikeValidator } = require('./bike.domain');
  *     // lastReturnTransactionId: string, Transaction.id
  * }
  */
-class ReturnBikeTransaction extends BaseTransaction {
+class ReturnBikeTransaction extends TransferTransaction {
     static get TYPE () {
         return 1003;
     }
@@ -32,6 +31,7 @@ class ReturnBikeTransaction extends BaseTransaction {
     }
 
     applyAsset(store) {
+        super.applyAsset(store);
 
         const errors = [];
 
@@ -43,37 +43,46 @@ class ReturnBikeTransaction extends BaseTransaction {
             errors.push(new TransactionError("Object not found", this.id, "this.asset.id", this.asset.id, "An existing object ID on recipient account"));
         }
 
-        if (object.rentedBy === undefined) {
+        if (object.asset.rentedBy === undefined) {
             errors.push(new TransactionError("Object not currently rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently rented object"));
         }
 
-        if (object.rentedBy !== this.senderId) {
+        if (object.asset.rentedBy !== this.senderId) {
             errors.push(new TransactionError(`Bike can only be returned by the one who rented it`, this.id, "this.asset.id", this.asset.id, "Nice try"));
         }
 
-        const rentStartTimestamp = object.rentalStartDatetime; // this.timestamp - 15 * 60; // 15 minutes
+        const rentStartTimestamp = object.asset.rentalStartDatetime; // this.timestamp - 15 * 60; // 15 minutes
         const rentalDuration = this.timestamp - rentStartTimestamp;
         const billedHours = Math.ceil(rentalDuration / 3600);
-        const billedAmount = new BigNum(object.pricePerHour).mul(billedHours);        
-        const paidAmount = object.deposit;
+        const billedAmount = Number(object.asset.pricePerHour) * Number(billedHours);
+        const paidAmount = object.asset.deposit;
         
-        const netDepositReturn = new BigNum(paidAmount).sub(billedAmount);
-        const newRecipientBalance = new BigNum(recipient.balance).sub(netDepositReturn).toString();
-        const newSenderBalance = new BigNum(sender.balance).add(netDepositReturn).toString();
+        const netDepositReturn = Number(paidAmount) - Number(billedAmount);
+        const newRecipientBalance = (Number(recipient.balance) - Number(netDepositReturn)).toString();
+        const newSenderBalance = (Number(sender.balance) + Number(netDepositReturn)).toString();
 
-        store.account.set(this.senderId, { ...sender, balance: newSenderBalance});
-
-        object.rentalEndDatetime = this.timestamp;
-        object.rentedBy = undefined;
+        object.asset.rentalEndDatetime = this.timestamp;
+        object.asset.rentedBy = "";
 
         recipient.balance = newRecipientBalance;
 
+        // LOGGING:
+        // errors.push(new TransactionError(JSON.stringify(object)));
+
+        // Update senders balance
+        store.account.set(this.senderId, {...sender, balance: newSenderBalance});
+
+        // Store new recipient balance
         store.account.set(this.recipientId, recipient);
+
+        // Store bike object
+        store.account.set(this.asset.id, object);
 
         return errors;
     }
 
     undoAsset(store) {
+        super.undoAsset(store);
 
         const errors = [];
 
@@ -83,18 +92,19 @@ class ReturnBikeTransaction extends BaseTransaction {
 
         const rentalDuration = this.timestamp - lastRentTransaction.timestamp;
         const billedHours = Math.ceil(rentalDuration / 3600);
-        const billedAmount = new BigNum(object.pricePerHour).mul(billedHours);
-        const netDepositReturn = new BigNum(lastRentTransaction.deposit).sub(billedAmount);
-        const newRecipientBalance = new BigNum(recipient.balance).add(netDepositReturn).toString();
-        const newSenderBalance = new BigNum(sender.balance).sub(netDepositReturn).toString();
+        const billedAmount = Number(object.asset.pricePerHour) * Number(billedHours);
+        const netDepositReturn = Number(lastRentTransaction.deposit) - Number(billedAmount);
+        const newRecipientBalance = (Number(recipient.balance) + Number(netDepositReturn)).toString();
+        const newSenderBalance = (Number(sender.balance) - Number(netDepositReturn)).toString();
 
         store.account.set(this.senderId, { ...sender, balance: newSenderBalance});
 
-        object.rentalEndDatetime = this.timestamp;
-        object.rentedBy = this.senderId;
+        object.asset.rentalEndDatetime = this.timestamp;
+        object.asset.rentedBy = this.senderId;
 
         recipient.balance = newRecipientBalance;
 
+        store.account.set(this.asset.id, object);
         store.account.set(this.recipientId, recipient);
 
         return errors;

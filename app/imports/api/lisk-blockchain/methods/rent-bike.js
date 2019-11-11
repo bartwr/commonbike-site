@@ -8,8 +8,6 @@ import { Promise } from 'meteor/promise';
 
 const rentBike = async (client, bikeAddress, bikeDeposit, renterAccount) => {
 
-  console.log('bikeDeposit', transactions.utils.convertLSKToBeddows(bikeDeposit.toString()))
-
     const tx = new RentBikeTransaction({
         asset: {
             id: bikeAddress, // XXX or use bike.address
@@ -28,10 +26,10 @@ const rentBike = async (client, bikeAddress, bikeDeposit, renterAccount) => {
 
 const doRentBike = async (renterAccount, bikeAddress, bikeDeposit) => {
   const settings = await getSettingsClientSide();
-  if(!settings) return false;
+  if(! settings) return false;
 
   const client = new APIClient([settings.bikecoin.provider_url]);
-  if(!client) return false;
+  if(! client) return false;
   
   const rentResult = rentBike(
         client,

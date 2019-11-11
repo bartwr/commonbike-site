@@ -60,11 +60,13 @@ export const LiskSchema = new SimpleSchema({
   },
   rentalStartDatetime: {
     type: Date,
-    label: "Start Date/Time"
+    label: "Start Date/Time",
+    optional: true
   },
   rentalEndDatetime: {
     type: Date,
-    label: "End Date/Time"
+    label: "End Date/Time",
+    optional: true
   }
 });
 
@@ -146,9 +148,7 @@ export const createObject = () => {
       lat_lng: [0,0],
       pricePerHourInLSK: 1,
       depositInLSK: 20,
-      rentedBy: '',
-      rentalStartDatetime: new Date(),
-      rentalEndDatetime: new Date(),
+      rentedBy: ''
     },
     lock: {locktype: 'concox-bl10',
            lockid: '',

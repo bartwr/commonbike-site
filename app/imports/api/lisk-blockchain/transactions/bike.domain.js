@@ -22,6 +22,8 @@ module.exports = {
             return new TransactionError('Missing or invalid "asset.deposit" defined on transaction', transactionId, '.asset.deposit', param, 'A valid BigNum string')
         }
       },
+      rentedBy: (transactionId, param) => {
+      },
       cypheredLocation: (transactionId, param) => {
         try {
             return typeof param.latitude === 'string' && param.latitude.length > 0
