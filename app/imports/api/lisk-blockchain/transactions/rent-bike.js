@@ -1,5 +1,3 @@
-// import BigNum from '@liskhq/bignum';
-const { BigNum } = require('@liskhq/bignum');
 const { TransferTransaction, TransactionError, transfer } = require('@liskhq/lisk-transactions');
 const { BikeValidator } = require('./bike.domain');
 
@@ -9,7 +7,6 @@ const { BikeValidator } = require('./bike.domain');
  *     // lastRentTransactionId: string, Transaction.id
  *     // lastReturnTransactionId: string, Transaction.id
  * }
- * Amount: BigNum string, bike deposit
  */
 class RentBikeTransaction extends TransferTransaction {
     static get TYPE () {

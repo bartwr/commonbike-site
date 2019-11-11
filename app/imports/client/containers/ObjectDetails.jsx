@@ -110,6 +110,7 @@ class ObjectDetails extends Component {
   isBikeRentedToMe(rentedBike, myWalletAddress) {
     if(! rentedBike || ! rentedBike.address) return false;
     if(! ClientStorage.get('user-wallet')) return false;
+    console.log('ik kom hier', rentedBike.asset.rentedBy, ClientStorage.get('user-wallet').address)
     return rentedBike.asset.rentedBy == ClientStorage.get('user-wallet').address;
   }
   
@@ -180,6 +181,8 @@ class ObjectDetails extends Component {
 
     let location = object.lock && object.lock.lat_lng || [0,0];
     
+    // console.log("object %o", object);
+    
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
@@ -189,7 +192,6 @@ class ObjectDetails extends Component {
         </div>
       </div>
     );
-    // <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
     
   }
 }
