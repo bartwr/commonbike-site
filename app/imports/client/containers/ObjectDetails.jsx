@@ -109,7 +109,7 @@ class ObjectDetails extends Component {
   
   async updateObjectStatus() {
     try {
-      console.log("update object status for object %s", this.props.object.wallet.address)
+      // console.log("update object status for object %s", this.props.object.wallet.address)
       let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.object.wallet.address);
       this.setState((prevstate)=>{ return { status: newStatus } });
     } catch(ex) {
@@ -129,7 +129,7 @@ class ObjectDetails extends Component {
     const { classes } = this.props;
     const { status } = this.state;
     
-    console.log("render blockchain state %o", this.state)
+    // console.log("render blockchain state %o", this.state)
     if(status==undefined) {
       return (null);
     } else if(status==false) {
@@ -166,6 +166,8 @@ class ObjectDetails extends Component {
     const { object, classes } = this.props;
 
     let location = object.lock && object.lock.lat_lng || [0,0];
+    
+    console.log("object %o", object);
     
     return (
       <div className={classes.root}>

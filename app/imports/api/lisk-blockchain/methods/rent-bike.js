@@ -14,7 +14,7 @@ const rentBike = async (client, bikeAddress, bikeDeposit, renterAccount) => {
         asset: {
             id: bikeAddress, // XXX or use bike.address
         },
-        amount: transactions.utils.convertLSKToBeddows("20"),
+        amount: transactions.utils.convertLSKToBeddows(bikeDeposit.toString()),
         senderPublicKey: renterAccount.publicKey,
         recipientId: bikeAddress,
         timestamp: getTimestamp(),

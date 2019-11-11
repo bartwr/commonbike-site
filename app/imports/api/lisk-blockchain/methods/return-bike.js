@@ -5,48 +5,44 @@ const { getTimestamp, getBike } = require('../_helpers.js');
 
 import { Promise } from 'meteor/promise';
 
-const returnBike = (providerUrl, bike, renterAccount) => {
-    const client = new APIClient([providerUrl]);
+const returnBike = async (client, bikeAddress, bikeDeposit, renterAccount) => {
 
     const tx =  new ReturnBikeTransaction({
         asset: {
-            id: bike.id, // XXX or use bike.address
+            id: bikeAddress,
         },
-        amount: bike.deposit,
+        amount: transactions.utils.convertLSKToBeddows(bikeDeposit.toString()),
         senderPublicKey: renterAccount.publicKey,
-        recipientId: bike.id,
+        recipientId: bikeAddress,
         timestamp: getTimestamp(),
     });
 
     tx.sign(renterAccount.passphrase);
     // console.log(tx);
 
-    return client.transactions.broadcast(tx.toJSON())
-    .then(() => tx)
-    .catch(err => {
-      console.error("return-bike.err2:", err);
-      // return Promise.reject(err);
-    });
+    return await client.transactions.broadcast(tx.toJSON());
 }
 
-const doReturnBike = async (renterAccount, bikeAccount) => {
-    const bike = await getBike(client, bikeAccount);
+const doReturnBike = async (renterAccount, bikeAddress, bikeDeposit) => {
+  const settings = await getSettingsClientSide();
+  if(!settings) return false;
 
-    const settings = await getSettingsClientSide();
-    if(!settings) return false;
+  const client = new APIClient([settings.bikecoin.provider_url]);
+  if(!client) return false;
 
-    const returnResult = returnBike(
-        settings.bikecoin.provider_url,
-        bike,
-        renterAccount
-    );
-    returnResult.then(result => {
-        // console.log(result)
-    }, (err) => {
-        alert(err.errors[0].message)
-    })
+  const returnResult = returnBike(
+      client,
+      bikeAddress,
+      bikeDeposit,
+      renterAccount
+  );
+  returnResult.then(result => {
+      // console.log(result)
+  }, (err) => {
+      alert(err)
+  })
 
-    return returnResult;
+  return returnResult;
 }
 
 module.exports = {doReturnBike}
