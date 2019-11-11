@@ -5,6 +5,7 @@ import { CoinSchema } from '/imports/api/bikecoinschema.js';
 import { getSettingsServerSide } from '/imports/api/settings.js';
 
 import { getTimestamp } from '/imports/api/lisk-blockchain/_helpers.js';
+import {doReturnBike} from '/imports/api/lisk-blockchain/methods/return-bike.js';
 
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
 const BigNum = require('@liskhq/bignum');
@@ -301,6 +302,17 @@ if(Meteor.isServer) {
       });
       
       return { result: true, message: 'registration transaction has been sent to the blockchain!'}
+    },
+    'objects.lockBike'(renterAccount, bikeAddress) {
+      doReturnBike(renterAccount, bikeAddress).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.error(err)
+      });
+      return {
+        result: true,
+        message: 'Bike locked.'
+      }
     },
   });
 }

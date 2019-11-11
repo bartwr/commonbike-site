@@ -18,8 +18,6 @@ import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
 import { Objects } from '/imports/api/objects.js';
 
-import {doReturnBike} from '/imports/api/lisk-blockchain/methods/return-bike.js';
-
 const styles = theme => ({
   root: {
     position: 'relative',
@@ -90,11 +88,7 @@ class MiniMap extends Component {
       return;
     }
     const renterAccount = ClientStorage.get('user-wallet')
-    doReturnBike(renterAccount, bikeAddress).then(res => {
-      console.log(res)
-    }).catch(err => {
-      console.error(err)
-    });
+    Meteor.call('objects.lockBike', renterAccount, bikeAddress)
   }
   
   lockBike = () => {
