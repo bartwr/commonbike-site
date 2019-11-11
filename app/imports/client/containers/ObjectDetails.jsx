@@ -116,11 +116,11 @@ class ObjectDetails extends Component {
   
   async updateObjectStatus() {
     try {
-      // console.log("update object status for object %s", this.props.object.wallet.address)
       let newStatus = await getObjectStatus(
         this.props.settings.bikecoin.provider_url,
         this.props.object.wallet.address
       );
+      console.log("update object status for object %s to %o", this.props.object.wallet.address, newStatus)
       this.setState((prevstate) => { return { status: newStatus } });
     } catch(ex) {
       console.error(ex);
@@ -178,15 +178,17 @@ class ObjectDetails extends Component {
     }
 
     const { object, classes } = this.props;
+    const { status } = this.state;
 
     let location = object.lock && object.lock.lat_lng || [0,0];
+    let unlocked = status && status.asset && status.asset.rentedBy!="";
     
     // console.log("object %o", object);
     
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
-          <MiniMap lat_lng={object.lock.lat_lng} />
+          <MiniMap lat_lng={object.lock.lat_lng} objectislocked={unlocked==false}/>
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.blockchain.title}</Typography>
           <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{object.wallet.address}</Typography>
           { this.renderBlockchain() }
