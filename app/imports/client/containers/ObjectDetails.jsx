@@ -2,6 +2,7 @@ import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
+import { ClientStorage } from 'ClientStorage';
 
 import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
 
@@ -85,7 +86,6 @@ const styles = theme => ({
   }
 });
 
-
 class ObjectDetails extends Component {
 
   constructor(props) {
@@ -106,30 +106,37 @@ class ObjectDetails extends Component {
       clearTimeout(this.state.timer);
     }
   }
+
+  isBikeRentedToMe(rentedBike, myWalletAddress) {
+    if(! rentedBike || ! rentedBike.address) return false;
+    if(! ClientStorage.get('user-wallet')) return false;
+    return rentedBike.asset.rentedBy == ClientStorage.get('user-wallet').address;
+  }
   
   async updateObjectStatus() {
     try {
-      console.log("update object status for object %s", this.props.object.wallet.address)
-      let newStatus = await getObjectStatus(this.props.settings.bikecoin.provider_url, this.props.object.wallet.address);
-      this.setState((prevstate)=>{ return { status: newStatus } });
+      // console.log("update object status for object %s", this.props.object.wallet.address)
+      let newStatus = await getObjectStatus(
+        this.props.settings.bikecoin.provider_url,
+        this.props.object.wallet.address
+      );
+      this.setState((prevstate) => { return { status: newStatus } });
     } catch(ex) {
       console.error(ex);
     } finally {
-      this.setState((prevstate)=>{
-        return { timer: setTimeout(this.updateObjectStatus.bind(this), 2000) } });
+      this.setState((prevstate) => {
+        return {
+          timer: setTimeout(this.updateObjectStatus.bind(this), 2000)
+        }
+      });
     }
   }
-  
-  // clickCreateBike(object) {
-  //   console.log("clickCreateBike", object);
-  // }
-  //
- // }
+
   renderBlockchain() {
     const { classes } = this.props;
     const { status } = this.state;
     
-    console.log("render blockchain state %o", this.state)
+    console.log("render blockchain state %o", this.state.status)
     if(status==undefined) {
       return (null);
     } else if(status==false) {
@@ -145,14 +152,20 @@ class ObjectDetails extends Component {
       )
     } else {
       const { status } = this.state;
+      const bikeAddress = '';
+      const myWalletAddress = '';
       return (
         <>
           <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {status.balance}</Typography>
           <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ownerId: {status.asset.ownerId}</Typography>
           <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>deposit: {status.asset.deposit}</Typography>
-          
-          <RentBikeButton bike={this.props.object} classes={classes} />
-          <ReturnBikeButton bike={this.props.object} classes={classes} />
+
+          <RentBikeButton bike={this.props.object} classes={classes} isDisabled={
+            this.isBikeRentedToMe(this.state.status, myWalletAddress)
+          } />
+          <ReturnBikeButton bike={this.props.object} classes={classes} isDisabled={
+            ! this.isBikeRentedToMe(this.state.status, myWalletAddress)
+          } />
         </>
       )
     }
@@ -162,7 +175,7 @@ class ObjectDetails extends Component {
     if(this.props.object==undefined) {
       return (null);
     }
-    
+
     const { object, classes } = this.props;
 
     let location = object.lock && object.lock.lat_lng || [0,0];
@@ -176,7 +189,6 @@ class ObjectDetails extends Component {
         </div>
       </div>
     );
-    // <Button variant="contained" className={classes.actionbutton} onClick={this.clickCreateBike.bind(this, object)} disabled>CREATE BIKE</Button>
     // <Button variant="contained" className={classes.actionbutton} onClick={this.clickUpdateGPS.bind(this, object)} disabled>UPDATE GPS LOCATION</Button>
     
   }
@@ -198,8 +210,10 @@ export default withTracker((props) => {
     Meteor.subscribe('objects');
     Meteor.subscribe('settings');
     
-    let object = Objects.findOne({_id: props.objectId});
-    
+    let object = Objects.findOne({
+      _id: props.objectId
+    });
+
     let settings = getSettingsClientSide();
     if(!settings) {
       console.log("no settings available");

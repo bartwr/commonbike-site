@@ -45,7 +45,7 @@ class RentBikeTransaction extends TransferTransaction {
 
         // const recipient = store.account.get(this.recipientId);
         // const sender = store.account.get(this.senderId);
-        const object = store.account.get(this.asset.id);
+        const object = store.account.get(this.asset.id)// asset.id = bikeAddress
 
         // Check if this object does exist
         if (object === undefined) {
@@ -67,9 +67,12 @@ class RentBikeTransaction extends TransferTransaction {
 
         // Ok, everything is fine
         // Set who's the new renter for this object:
-        object.rentedBy = this.senderId;
-        object.rentalStartDatetime = this.timestamp;
-        object.rentalEndDatetime = undefined;
+        object.asset.rentedBy = this.senderId;
+        object.asset.rentalStartDatetime = this.timestamp;
+        object.asset.rentalEndDatetime = undefined;
+
+        // LOGGING:
+        // errors.push(new TransactionError(JSON.stringify(this.senderId)));
 
         // Finally, set this info in the recipients account
         store.account.set(this.asset.id, object);

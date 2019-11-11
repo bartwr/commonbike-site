@@ -22,6 +22,7 @@ class ReturnBikeButton extends Component {
         variant="contained"
         className={this.props.classes.actionbutton}
         onClick={this.clickReturnBike.bind(this, this.props.bike)}
+        disabled={this.props.isDisabled}
         >
         RETURN BIKE
       </Button>

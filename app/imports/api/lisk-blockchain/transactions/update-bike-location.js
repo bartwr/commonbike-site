@@ -46,7 +46,6 @@ class UpdateBikeLocationTransaction extends BaseTransaction {
     applyAsset(store) {
         const errors = [];
 
-        const recipient = store.account.get(this.recipientId);
         const object = store.account.get(this.asset.id);
 
         if (object === undefined) {
@@ -71,7 +70,6 @@ class UpdateBikeLocationTransaction extends BaseTransaction {
 
     undoAsset(store) {
         const errors = [];
-        const recipient = store.account.get(this.recipientId);
         const object = store.account.get(this.asset.id);
 
         object.location.latitude = this.asset.previousLatitude;
