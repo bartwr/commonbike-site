@@ -111,7 +111,6 @@ class ObjectDetails extends Component {
   isBikeRentedToMe(rentedBike, myWalletAddress) {
     if(! rentedBike || ! rentedBike.address) return false;
     if(! ClientStorage.get('user-wallet')) return false;
-    console.log('ik kom hier', rentedBike.asset.rentedBy, ClientStorage.get('user-wallet').address)
     return rentedBike.asset.rentedBy == ClientStorage.get('user-wallet').address;
   }
   
@@ -138,7 +137,7 @@ class ObjectDetails extends Component {
     const { classes } = this.props;
     const { status } = this.state;
     
-    console.log("render blockchain state %o", this.state.status)
+    // console.log("render blockchain state %o", this.state.status)
     if(status==undefined) {
       return (null);
     } else if(status==false) {

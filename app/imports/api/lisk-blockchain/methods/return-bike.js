@@ -8,7 +8,7 @@ import { Promise } from 'meteor/promise';
 
 const returnBike = async (client, bikeAddress, renterAccount) => {
 
-    const tx =  new ReturnBikeTransaction({
+    const tx = new ReturnBikeTransaction({
         asset: {
             id: bikeAddress,
         },
