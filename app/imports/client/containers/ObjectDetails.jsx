@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import RentBikeButton from '/imports/client/components/RentBikeButton';
 import ReturnBikeButton from '/imports/client/components/ReturnBikeButton';
 import { getObjectStatus } from '/imports/api/lisk-blockchain/methods/get-object-status.js';
+import MiniMap from '/imports/client/components/MiniMap';
 
 import { Objects } from '/imports/api/objects.js';
 
@@ -172,6 +173,7 @@ class ObjectDetails extends Component {
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
+          <MiniMap lat_lng={object.lock.lat_lng} />
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.blockchain.title}</Typography>
           <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{object.wallet.address}</Typography>
           { this.renderBlockchain() }
