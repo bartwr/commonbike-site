@@ -10,8 +10,8 @@ class RentBikeButton extends Component {
     super(props);
   }
 
-  clickRentBike(bike) {
-    doRentBike(renterAccount, bikeAccount).then(res => {
+  clickRentBike(bikeAddress, bikeDeposit) {
+    doRentBike(renterAccount, bikeAddress, bikeDeposit).then(res => {
       console.log(res)
     }).catch(err => {
       console.error(err)
@@ -23,7 +23,7 @@ class RentBikeButton extends Component {
       <Button
         variant="contained"
         className={this.props.classes.actionbutton}
-        onClick={this.clickRentBike.bind(this, this.props.bike)}
+        onClick={this.clickRentBike.bind(this, this.props.bike.wallet.address, this.props.bike.blockchain.depositInLSK)}
         >
         RENT BIKE
       </Button>

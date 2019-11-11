@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "update": "git pull && git pull liskbike master",
-    "start": "meteor run --settings settings.json"
+    "start": "meteor run --settings settings.json",
+    "update": "git pull && git pull liskbike master"
   },
   "dependencies": {
     "@babel/runtime": "^7.6.3",

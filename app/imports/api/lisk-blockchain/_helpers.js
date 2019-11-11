@@ -11,7 +11,6 @@ const getBike = (client, account) => {
   // console.log("account:", account);
 
   return client.accounts.get({
-    //address: '1391163426858015119L'
     address: account.address
   }).then(response => {
     const bikes = response.data[0].asset;

@@ -16,10 +16,10 @@ module.exports = {
       },
       deposit: (transactionId, param) => {
         try {
-            const deposit = new BigNum(param);
-            return deposit.gte(0);
+            const deposit = Number(param);
+            return deposit >= 0;
         } catch(err) {
-            return new TransactionError('Missing or invalid "asset.deposit" defined on transaction', transactionId, '.asset.deposit', param, 'A valid BigNum string')
+            return new TransactionError('Missing or invalid "asset.deposit" defined on transaction', transactionId, '.asset.deposit', param, 'A valid Number')
         }
       },
       cypheredLocation: (transactionId, param) => {
