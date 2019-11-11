@@ -1,8 +1,7 @@
 import React, { Component, } from 'react';
 import Button from '@material-ui/core/Button';
-
-import {bikeAccount, renterAccount} from '../../config.js';
 import {doRentBike} from '../../api/lisk-blockchain/methods/rent-bike.js';
+import { ClientStorage } from 'ClientStorage';
 
 class RentBikeButton extends Component {
 
@@ -11,6 +10,11 @@ class RentBikeButton extends Component {
   }
 
   clickRentBike(bikeAddress, bikeDeposit) {
+    if(! Meteor.user) {
+      alert('No user account found. Please wait a bit or reload the page.');
+      return;
+    }
+    const renterAccount = ClientStorage.get('user-wallet')
     doRentBike(renterAccount, bikeAddress, bikeDeposit).then(res => {
       console.log(res)
     }).catch(err => {
@@ -29,7 +33,6 @@ class RentBikeButton extends Component {
       </Button>
     )
   }
-
 
 }
 

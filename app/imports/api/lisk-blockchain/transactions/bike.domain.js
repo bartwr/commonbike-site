@@ -19,7 +19,7 @@ module.exports = {
             const deposit = Number(param);
             return deposit >= 0;
         } catch(err) {
-            return new TransactionError('Missing or invalid "asset.deposit" defined on transaction', transactionId, '.asset.deposit', param, 'A valid Number')
+            return new TransactionError('Missing or invalid "asset.deposit" defined on transaction', transactionId, '.asset.deposit', param, 'A valid BigNum string')
         }
       },
       cypheredLocation: (transactionId, param) => {

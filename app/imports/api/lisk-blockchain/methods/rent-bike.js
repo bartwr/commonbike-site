@@ -8,11 +8,13 @@ import { Promise } from 'meteor/promise';
 
 const rentBike = async (client, bikeAddress, bikeDeposit, renterAccount) => {
 
+  console.log('bikeDeposit', transactions.utils.convertLSKToBeddows(bikeDeposit.toString()))
+
     const tx = new RentBikeTransaction({
         asset: {
             id: bikeAddress, // XXX or use bike.address
         },
-        amount: transactions.utils.convertLSKToBeddows("20"),// bikeDeposit.toString()
+        amount: transactions.utils.convertLSKToBeddows("20"),
         senderPublicKey: renterAccount.publicKey,
         recipientId: bikeAddress,
         timestamp: getTimestamp(),

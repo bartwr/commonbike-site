@@ -34,9 +34,7 @@ class RentBikeTransaction extends TransferTransaction {
     }
 
     prepare(store) {
-
         const promises = [super.prepare(store)];
-
         return Promise.all(promises);
     }
 
@@ -60,10 +58,10 @@ class RentBikeTransaction extends TransferTransaction {
         }
 
         // Get the deposit amount
-        const deposit = new BigNum(object.deposit);
+        const deposit = Number(object.deposit);
 
         // Check if user sent the exact deposit amount
-        if (! deposit.eq(this.amount)) {
+        if (! deposit === this.amount) {
             errors.push(new TransactionError("Invalid amount", this.id, "this.amount", this.amount, `The precise amount of the objects deposit : ${object.deposit.toString()}`));
         }
 

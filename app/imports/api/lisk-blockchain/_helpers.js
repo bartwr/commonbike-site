@@ -14,9 +14,7 @@ const getBike = (client, account) => {
     address: account.address
   }).then(response => {
     const bikes = response.data[0].asset;
-    // console.log("bikes:", bikes);
     const thisBike = bikes.bikes[account.address];
-    // console.log("thisBike:", thisBike);
     return thisBike;
   }).catch(err => {
     console.error("err1",err);
