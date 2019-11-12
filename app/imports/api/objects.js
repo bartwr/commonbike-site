@@ -5,7 +5,8 @@ import { CoinSchema } from '/imports/api/bikecoinschema.js';
 import { getSettingsServerSide } from '/imports/api/settings.js';
 
 import { getTimestamp } from '/imports/api/lisk-blockchain/_helpers.js';
-import {doReturnBike} from '/imports/api/lisk-blockchain/methods/return-bike.js';
+import { doReturnBike } from '/imports/api/lisk-blockchain/methods/return-bike.js';
+import { doUpdateBikeLocation } from '/imports/api/lisk-blockchain/methods/update-bike-location.js';
 
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
 const BigNum = require('@liskhq/bignum');
@@ -191,6 +192,32 @@ export const createObject = () => {
 }
 
 if(Meteor.isServer) {
+  export const doServerUpdateBikeLocation = (bikeAddress, newLatitude, newLongitude) => {
+    let object = Objects.findOne({'wallet.address': bikeAddress});
+    
+    if(object==undefined) {
+      return {
+        result: true,
+        message: 'You can only move your own bikes!'
+      }
+    }
+    
+    console.log("object %s / %o", bikeAddress, object)
+    
+    doUpdateBikeLocation(object.wallet, newLatitude, newLongitude).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.error(err)
+    });
+    
+    return {
+      result: true,
+      message: 'Bike location updated'
+    }
+    
+    return ;
+  }
+
   Meteor.methods({
     'objects.createnew'() {
       console.log("calling createnew")
@@ -303,8 +330,8 @@ if(Meteor.isServer) {
       
       return { result: true, message: 'registration transaction has been sent to the blockchain!'}
     },
-    'objects.lockBike'(renterAccount, bikeAddress) {
-      doReturnBike(renterAccount, bikeAddress).then(res => {
+    'objects.lockBike'(renterAccount, bikeAddress, location, prevlocation) {
+      doReturnBike(renterAccount, bikeAddress, location, prevlocation).then(res => {
         console.log(res)
       }).catch(err => {
         console.error(err)
@@ -313,6 +340,9 @@ if(Meteor.isServer) {
         result: true,
         message: 'Bike locked.'
       }
+    },
+    'objects.updateBikeLocation'(bikeAddress, latitude, longitude) {
+      doServerUpdateBikeLocation(bikeAddress, latitude, longitude);
     },
   });
 }

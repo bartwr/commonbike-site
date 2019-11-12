@@ -8,7 +8,7 @@ import 'leaflet-search'
 
 import './Leaflet.EasyButton.js';
 
-import { Objects } from '/imports/api/objects.js';
+// import { Objects } from '/imports/api/objects.js';
 
 const styles = theme => ({
   base: {
@@ -130,18 +130,26 @@ class LocationsMap extends Component {
 
     if(!this.props.objects) return;
     
-  // create custom icon
+    // create custom icon
     var bikeIcon = L.icon({
-        iconUrl: '/files/ObjectDetails/marker.svg',
-        iconSize: ['32px', '32px'], // size of the icon
-        });
+        iconUrl: '/files/ObjectDetails/liskbike.png',
+        iconSize: [32,32],
+        iconAnchor: [16, 16],
+        popupAnchor: null,
+        shadowUrl: null,
+        shadowSize: null,
+        shadowAnchor: null
+    });
 
     this.props.objects.map((object) => {
-      if(object.lock && object.lock.lat_lng) {
-        var marker = L.marker(object.lock.lat_lng, {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
-        marker.bikeLocationId = object._id;
+      if(object && object.asset) {
+        let location = object.asset.location;
+        var marker = L.marker([location.latitude, location.longitude], {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
+        marker.objectId = object.id;
         // markers.push(marker); // .bindPopup(location.title)
         this.state.objectMarkersGroup.addLayer(marker);
+    
+        console.log("created marker %o", marker)
       }
     });
   }
@@ -230,8 +238,8 @@ class LocationsMap extends Component {
 }
 
 LocationsMap.propTypes = {
-  width: PropTypes.any,
-  height: PropTypes.any,
+  // width: PropTypes.any,
+  // height: PropTypes.any,
   locations: PropTypes.array,
   objects: PropTypes.array,
   mapboxSettings: PropTypes.object,
@@ -242,8 +250,8 @@ LocationsMap.propTypes = {
 };
 
 LocationsMap.defaultProps = {
-  width: '100vw',
-  height: '50vh',
+  // width: '100vw',
+  // height: '50vh',
   clickItemHandler: '',
   startLocation: [52.088304, 5.107243],   // LCU
   startZoom: 15

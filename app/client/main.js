@@ -13,7 +13,8 @@ import Login from '/imports/client/containers/Login.jsx'
 import Dashboard from '/imports/client/containers/Dashboard.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
 import SystemWallet from '/imports/client/containers/SystemWallet.jsx'
-import OverviewPage from '/imports/client/containers/OverviewPage.jsx'
+import OverviewPageClient from '/imports/client/containers/OverviewPageClient.jsx'
+import OverviewPageAdmin from '/imports/client/containers/OverviewPageAdmin.jsx'
 import AdminUsersList from '/imports/client/containers/AdminUsersList.jsx'
 import ObjectDetails from '/imports/client/containers/ObjectDetails.jsx'
 import LogList from '/imports/client/containers/LogList.jsx'
@@ -28,9 +29,9 @@ const UserAppLogin = ({match}) => {
 }
 const UserAppUserWallet = () => (<UserApp content={<div><UserWallet /></div>} />)
 
-const UserAppOverviewPage = () => (<UserApp content={<OverviewPage showMap={true} showList={true} />} />)
+const UserAppOverviewPage = () => (<UserApp content={<OverviewPageClient showMap={true} showList={true} />} />)
 
-const UserAppOverviewPageNoMap = () => (<UserApp content={<OverviewPage showMap={false} showList={true} />} />)
+//const UserAppOverviewPageNoMap = () => (<UserApp content={<OverviewPageAdmin showMap={false} showList={true} />} />)
 
 const UserAppLogList = () => (<UserApp content={<LogList admin="true" />} />)
 
@@ -38,7 +39,7 @@ const UserAppObjectDetails = ({match}) => (<UserApp content={<ObjectDetails obje
 
 const UserAppAdminAdminUsersList = () => (<UserApp content={<AdminUsersList />} />)
 
-const UserAppAdminOverviewPage = () => (<UserApp content={<OverviewPage showMap={true} showList={true} adminmode={true} />} />)
+const UserAppAdminOverviewPage = () => (<UserApp content={<OverviewPageAdmin showMap={true} showList={true} adminmode={true} />} />)
 
 const UserAppAdminEditObject = ({match}) => (<UserApp content={<EditObject  objectId={match.params.objectId}/>} />)
 
@@ -86,14 +87,13 @@ class AppRoutes extends React.Component {
     window.removeEventListener(EVENT_REDIRECTTO, this.onRedirectToEventHandler.bind(this))
   }
 
-  //
+  // <Route path='/objects' component={UserAppOverviewPageNoMap}/>
   render() {
     return (
      <Switch>
       <Route exact path='/' component={UserAppOverviewPage}/>
 
       <Route path='/login' component={UserAppLogin}/>
-      <Route path='/objects' component={UserAppOverviewPageNoMap}/>
       <Route path='/userwallet' component={UserAppUserWallet}/>
       <Route path='/object/:objectId' component={UserAppObjectDetails}/>
       <Route path='/dashboard' component={Dashboard}/>

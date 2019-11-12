@@ -1,34 +1,26 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
-import ObjectBlock from '/imports/client/containers/ObjectBlock';
-import Card from '@material-ui/core/Card';
-import Typography from '@material-ui/core/Typography';
-// import ObjectDetails from '/imports/client/containers/ObjectDetails';
-import AddBoxIcon from '@material-ui/icons/AddBox';
+import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 import Redirect from 'react-router/Redirect'
+import Typography from '@material-ui/core/Typography';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import ObjectBlockAdmin from '/imports/client/containers/ObjectBlockAdmin';
+import Card from '@material-ui/core/Card';
 
-// Import models
+import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
 import { Objects } from '/imports/api/objects.js';
 
 const styles = theme => ({
   root: {
-    margin: theme.spacing(3),
+    width: '100%',
+    height: '100%',
     display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    flexDirection: 'wrap',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
   },
   addbox: {
-  //    display: 'flex',
-  //    flexDirection: 'column',
-  //    justifyContent: 'center',
-  //    alignItems: 'center',
-  //    width: '200px',
-  //    height: '200px',
-  //    margin: theme.spacing(1),
-  //    paddingTop: theme.spacing(0.5).unit
-  //   },
-  // card: {
     position: 'relative',
     width: '38vmin', // '120px',
     height: '45vmin', // '120px',
@@ -53,15 +45,14 @@ const styles = theme => ({
     height: '100px',
     color: 'white'
   }
-  
 });
 
-class ObjectList extends Component {
+class OverviewPageAdmin extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {redirect: false}
+    
+    this.state = { redirect: false }
   }
   
   doRedirect = (location) => {
@@ -69,18 +60,29 @@ class ObjectList extends Component {
     this.setState({redirect: location});
   }
   
-  newObject() {
-    if(this.props.newObject) {
-      this.props.newObject();
-    }
+  newObjectHandler() {
+    Meteor.call('objects.createnew', this.newObjectAdded.bind(this));
   }
   
+  newObjectAdded(error, result) {
+    if(error) {
+      alert('Unable to add a new object to the system');
+      return false;
+    }
+
+      if(result._id!=undefined) {
+        this.setState((prevstate)=> {
+          return { redirect: '/admin/object/' + result._id }
+        });
+      }
+  }
+
   handleObjectSelection = (object) => {
     this.setState({redirect: '/object/'+object._id});
   }
   
   handleEditSelection = (object) => {
-    this.doRedirect((this.props.adminmode ? '/admin/object/' : '/object/') + object._id)
+    this.doRedirect('/admin/object/' + object._id)
   }
 
   handleDeleteSelection = (object) => {
@@ -99,61 +101,83 @@ class ObjectList extends Component {
     // if(err) {
     //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, JSON.stringify(err)), snackbarOptions.error);
     // } else if (serverResult.result!==true) {
-    //   this.doSnack(util.format('Unable to delete %s! reason: %s', item.title, serverResult.message), snackbarOptions.error);
+    //   this.doSnack(util.format('Unable to adminmodedelete %s! reason: %s', item.title, serverResult.message), snackbarOptions.error);
     // } else {
     //   this.doSnack(serverResult.message,snackbarOptions.success);
     // }
   };
-  
+
   renderObject(object) {
     return (
-      <ObjectBlock key={object._id} object={object}
+      <ObjectBlockAdmin key={object._id} object={object}
         selecthandler={this.handleObjectSelection}
         edithandler={this.handleEditSelection}
         deletehandler={this.handleDeleteSelection}
-        adminmode={this.props.adminmode} />
+        adminmode={true} />
      )
   }
 
   render() {
-    if(!this.props.objects ) return (null);
+    const { classes, objects } = this.props;
     
     if(false!==this.state.redirect) {
-      console.log("redirect to %s", this.state.redirect);
       return (<Redirect to={this.state.redirect} push/>);
     }
-
-    const { classes, objects, newObjectHandler } = this.props;
     
     return (
-      <div  className={classes.root}>
+      <div className={classes.root}>
         { objects.length != 0 ?
            objects.map(this.renderObject.bind(this))
           :
-          <Typography> variant='h4'>No Bicycles Available</Typography>
+          <Typography variant='h4'>No Bicycles Available</Typography>
         }
-        { undefined != newObjectHandler ?
-            <Card className={classes.addbox}>
-              <AddBoxIcon className={classes.addicon} onClick={newObjectHandler||null} />
-            </Card>
-          :
-            null
-        }
+        <Card className={classes.addbox}>
+          <AddBoxIcon className={classes.addicon} onClick={this.newObjectHandler.bind(this)} />
+        </Card>
       </div>
     );
   }
 }
 
-ObjectList.propTypes = {
-  objects: PropTypes.array,
-  newObjectHandler: PropTypes.any,
-  adminmode: PropTypes.bool
+var s = {
+  base: {
+    padding: '10px 20px'
+  },
+  paragraph: {
+    padding: '0 20px'
+  }
+}
+
+OverviewPageAdmin.propTypes = {
+  settings: PropTypes.any,
+  objects:  PropTypes.array,
+  showMap: PropTypes.bool,
+  showList: PropTypes.bool,
+  adminmode: PropTypes.bool,
 };
 
-ObjectList.defaultProps = {
+OverviewPageAdmin.defaultProps = {
+  settings: undefined,
   objects: [],
-  newObjectHandler: undefined,
+  showMap: false,
+  showList: true,
   adminmode: false
 }
 
-export default withStyles(styles)(ObjectList)
+export default withTracker((props) => {
+  Meteor.subscribe('settings', false);
+  Meteor.subscribe('objects');
+
+  let settings = getSettingsClientSide();
+  if(!settings) {
+    return {};
+  }
+  
+  let objects = Objects.find({}, { sort: {title: 1} }).fetch();
+  
+  return {
+    settings: getSettingsClientSide(),
+    objects,
+    ...props
+  };
+})(withStyles(styles)(OverviewPageAdmin));

@@ -52,16 +52,22 @@ class UpdateBikeLocationTransaction extends BaseTransaction {
             errors.push(new TransactionError("Object not found", this.id, "this.asset.id", this.asset.id, "An existing object ID on recipient account"));
         }
 
-        if (object.id !== this.senderId) {
-            errors.push(new TransactionError(`Object position can only be updated by the object itself`, this.id, "this.asset.id", this.asset.id, "Nice try"));
-        }
-
-        if (this.asset.previousLatitude !== object.location.latitude || this.asset.previousLongitude !== object.location.longitude) {
-            errors.push(new TransactionError("Invalid previous location", this.id));
-        }
-
-        object.location.latitude = this.asset.latitude;
-        object.location.longitude = this.asset.longitude;
+        // if (object.id !== this.senderId) {
+        //     errors.push(new TransactionError(`Object position can only be updated by the object itself`, this.id, "this.asset.id", this.asset.id, "Nice try"));
+        // }
+        
+        // if(object&&object.location) {
+        //   if (true||this.asset.previousLatitude !== object.location.latitude || this.asset.previousLongitude !== object.location.longitude) {
+        //       errors.push(new TransactionError("Invalid previous location", this.id));
+        //   }
+        //
+        //   object.location = {
+        //     latitude: this.asset.latitude.toString(),
+        //     longitude: this.asset.longitude.toString()
+        //   }
+        // };
+        
+        object.asset.location = { latitude: this.asset.latitude, longitude: this.asset.longitude };
 
         store.account.set(this.asset.id, object);
 
@@ -72,8 +78,8 @@ class UpdateBikeLocationTransaction extends BaseTransaction {
         const errors = [];
         const object = store.account.get(this.asset.id);
 
-        object.location.latitude = this.asset.previousLatitude;
-        object.location.longitude = this.asset.previousLongitude;
+        // object.location.latitude = this.asset.previousLatitude;
+        // object.location.longitude = this.asset.previousLongitude;
 
         store.account.set(this.asset.id, object);
 

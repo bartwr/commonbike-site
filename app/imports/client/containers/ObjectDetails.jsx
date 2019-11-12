@@ -4,6 +4,8 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { withStyles } from '@material-ui/core/styles';
 import { ClientStorage } from 'ClientStorage';
 
+const transactions = require('@liskhq/lisk-transactions');
+
 import { Settings, getSettingsClientSide } from '/imports/api/settings.js';
 
 import Typography from '@material-ui/core/Typography';
@@ -92,8 +94,6 @@ class ObjectDetails extends Component {
   constructor(props) {
     super(props);
     
-    const { object } = this.props;
-    
     let timer = setTimeout(this.updateObjectStatus.bind(this), 1000);
     // let timer=false;
     this.state = {
@@ -108,20 +108,22 @@ class ObjectDetails extends Component {
     }
   }
 
-  isBikeRentedToMe(rentedBike, myWalletAddress) {
-    if(! rentedBike || ! rentedBike.address) return false;
+  isBikeRentedToMe() {
+    if(! this.state.status) return false;
     if(! ClientStorage.get('user-wallet')) return false;
-    return rentedBike.asset.rentedBy == ClientStorage.get('user-wallet').address;
+    return this.state.status.rentedBy == ClientStorage.get('user-wallet').address;
   }
   
   async updateObjectStatus() {
     try {
       let newStatus = await getObjectStatus(
         this.props.settings.bikecoin.provider_url,
-        this.props.object.wallet.address
+        this.props.objectId
       );
-      // console.log("update object status for object %s to %o", this.props.object.wallet.address, newStatus)
-      this.setState((prevstate) => { return { status: newStatus } });
+
+      let balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);
+      let deposit = transactions.utils.convertBeddowsToLSK(newStatus.asset.deposit);
+      this.setState((prevstate) => { return { status: newStatus && newStatus.asset, balance: balance, deposit: deposit } });
     } catch(ex) {
       console.error(ex);
     } finally {
@@ -133,106 +135,79 @@ class ObjectDetails extends Component {
     }
   }
 
-  renderBlockchain() {
-    const { classes } = this.props;
-    const { status } = this.state;
-    
-    // console.log("render blockchain state %o", this.state.status)
-    if(status==undefined) {
-      return (null);
-    } else if(status==false) {
-      return (
-        <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ACCOUNT NOT FUNDED</Typography>
-      );
-    } else if("asset" in status==false||"ownerId" in status.asset==false) {
-      return (
-        <>
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {status.balance}</Typography>
-          <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>NOT REGISTERED ON THE BLOCKCHAIN</Typography>
-        </>
-      )
-    } else {
-      const { status } = this.state;
-      const bikeAddress = '';
-      const myWalletAddress = '';
-      return (
-        <>
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {status.balance}</Typography>
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ownerId: {status.asset.ownerId}</Typography>
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>deposit: {status.asset.deposit}</Typography>
-
-          <RentBikeButton bike={this.props.object} classes={classes} isDisabled={
-            this.isBikeRentedToMe(this.state.status, myWalletAddress)
-          } />
-          <ReturnBikeButton bike={this.props.object} classes={classes} isDisabled={
-            ! this.isBikeRentedToMe(this.state.status, myWalletAddress)
-          } />
-        </>
-      )
-    }
-  }
-
   render() {
-    if(this.props.object==undefined) {
+    if(this.props.objectId==undefined) {
       return (null);
     }
 
-    const { object, classes } = this.props;
-    const { status } = this.state;
-
-    let location = object.lock && object.lock.lat_lng || [0,0];
-    let unlocked = status && status.asset && status.asset.rentedBy!="";
+    const { objectId, classes } = this.props;
+    const { status, balance, deposit } = this.state;
     
-    // console.log("object %o", object);
+    if(undefined==status) {
+      return null;
+    }
+
+    let location = status.location || {latitude: 40, longitude: 10};
+    let unlocked = status.rentedBy!=""&&status.rentedBy!=undefined;
+    
+    console.log("unlocked: %s", status.rentedBy)
     
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
           <MiniMap
-            lat_lng={object.lock.lat_lng}
+            lat_lng={[location.latitude, location.longitude]}
             objectislocked={unlocked==false}
-            bikeAddress={object.blockchain.id}
-            />
-          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{object.blockchain.title}</Typography>
-          <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{object.wallet.address}</Typography>
-          { this.renderBlockchain() }
+            bikeAddress={objectId} />
+          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{status.title}</Typography>
+          <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{objectId}</Typography>
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {balance}</Typography>
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ownerId: {status.ownerId}</Typography>
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>deposit: {deposit}</Typography>
+          { unlocked==true?
+                <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>rented by: {status.rentedBy}</Typography>
+              :
+                null
+          }
+          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>location: {location.longitude}, {location.latitude}</Typography>
+
+          <RentBikeButton bikeId={this.props.objectId} depositInLSK={deposit} classes={classes} isDisabled={unlocked} />
         </div>
       </div>
     );
+    
+    // <ReturnBikeButton bikeId={this.props.objectId} classes={classes} isDisabled={
+    //   ! this.isBikeRentedToMe()
+    // } />
     
   }
 }
 
 ObjectDetails.propTypes = {
-  currentUser: PropTypes.object,
   object: PropTypes.object,
-  isEditable: PropTypes.any,
+  settings: PropTypes.object,
 };
 
 ObjectDetails.defaultProps = {
-  currentUser: undefined,
   object: undefined,
-  isEditable: false,
+  settings: undefined,
 }
 
 export default withTracker((props) => {
     Meteor.subscribe('objects');
     Meteor.subscribe('settings');
     
-    let object = Objects.findOne({
-      _id: props.objectId
-    });
-
     let settings = getSettingsClientSide();
     if(!settings) {
       console.log("no settings available");
       return {};
     }
     
+    console.log("init details for object %o", props.objectId)
+    
     // Return variables for use in this component
     return {
-      currentUser: Meteor.user(),
-      object: object,
+      objectId: props.objectId,
       settings: settings
     };
 })(withStyles(styles) (ObjectDetails));

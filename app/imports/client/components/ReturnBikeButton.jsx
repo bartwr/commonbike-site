@@ -17,7 +17,7 @@ class ReturnBikeButton extends Component {
       return;
     }
     const renterAccount = ClientStorage.get('user-wallet')
-    doReturnBike(renterAccount, bikeAddress).then(res => {
+    doReturnBike(renterAccount, bikeAddress, false).then(res => {
       console.log(res)
     }).catch(err => {
       console.error(err)
@@ -29,7 +29,7 @@ class ReturnBikeButton extends Component {
       <Button
         variant="contained"
         className={this.props.classes.actionbutton}
-        onClick={this.clickReturnBike.bind(this, this.props.bike.wallet.address)}
+        onClick={this.clickReturnBike.bind(this, this.props.bikeId)}
         disabled={this.props.isDisabled}
         >
         RETURN BIKE

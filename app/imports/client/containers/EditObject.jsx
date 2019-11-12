@@ -12,6 +12,8 @@ import {doCreateAccount } from '/imports/api/lisk-blockchain/methods/create-acco
 import { Objects, createObject } from '/imports/api/objects.js';
 const { getSettingsClientSide } = require('/imports/api/settings.js');
 
+// import MiniMap from '/imports/client/components/MiniMap';
+
 const styles = theme => ({
   root: {
     position: 'relative',
@@ -371,6 +373,9 @@ class EditObject extends Component {
   	}
 
     const {classes, object, isnew} = this.props;
+    
+    // TODO: insert map for setting up initial bike position
+    // <MiniMap lat_lng={object.lock.lat_lng} objectislocked={false}/>
     
     return (
       <div className={classes.root}>

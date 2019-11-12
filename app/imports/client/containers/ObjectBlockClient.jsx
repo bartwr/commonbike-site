@@ -13,13 +13,13 @@ import { Objects } from '/imports/api/objects.js';
 const styles = theme => ({
   card: {
     position: 'relative',
-    width: '38vmin', // '120px',
-    height: '45vmin', // '120px',
+    width: '19vmin', // '120px',
+    height: '19vmin', // '120px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    margin: '2vmin',
+    margin: '1vmin',
     boxSizing: 'border-box',
     padding: '0.1vmin',
     '-moz-user-select': 'none',
@@ -37,15 +37,15 @@ const styles = theme => ({
     //       border: '1px solid white'
     // },
     borderRadius: '10px',
-    zIndex: 1,
+    zIndex: 1
   },
   poster: {
     flex: '6 6 auto',
-    width: '90%',
+    width: '70%',
     boxSizing: 'border-box',
     marginTop: '10px',
     marginBotton: '5px',
-    height: 'calc(100%-1.1vmin)', // '120px',
+    height: '70%', // '120px',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -71,7 +71,7 @@ const styles = theme => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    fontSize: '5vmin',
+    fontSize: '2.2vmin',
     // fontFamily: 'Fredoka One',
     marginTop: '0.2vmin'
     // border: '1px solid red',
@@ -81,7 +81,7 @@ const styles = theme => ({
     boxSizing: 'border-box',
     width: '90%',
     textAlign: 'center',
-    height: '7vmin',
+    minHeight: '2vmin',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -90,7 +90,8 @@ const styles = theme => ({
     marginTop: '0.5vmin',
     margin: '1vmin',
     border: '1px solid black',
-    borderRadius: '1vmin'
+    borderRadius: '1vmin',
+    fontSize: '1.5vmin',
   },
   buttons: {
     position:'absolute',
@@ -139,62 +140,24 @@ class ObjectBlock extends Component {
     }
   }
   
-  edithandler = (menuitem) => (e) => {
-    e.preventDefault();
-    
-    if(this.props.edithandler) {
-      this.props.edithandler(menuitem);
-    } else {
-      console.warning('itemCompact.edithandler - edithandler not set by parent');
-    }
-  }
-
-  state2text(state) {
-    let text = "";
-    if (state=='r_available'||state=='available') {
-      text = 'AVAILABLE';
-    } else if (state=='r_rentstart'||state=='inuse') {
-      text = 'IN USE';
-    } else if (state=='r_outoforder'||state=='outoforder') {
-      text = 'OUT OF ORDER';
-    } else if (state=='reserved') {
-      text = 'RESERVED';
-    } else {
-      text = 'UNKNOWN';
-    }
-  
-    return text;
-  }
-
   render() {
     // try {
-      const { classes, object, zoom, adminmode, parentuuid } = this.props;
+      const { classes, object, asset } = this.props;
       
-      if(undefined==object||undefined==object.lock) {
+      // console.log("objectblock-client %o - asset %o", object, asset);
+      
+      if(undefined==object) {
         return (null);
       }
 
       let imagelink='url(/files/ObjectDetails/liskbike.png)' ;
-      let statetext = object.lock.locked? 'LOCKED': 'UNLOCKED';
+      let statetext = object.asset.rentedBy && object.asset.rentedBy!='' ? 'RENTED': 'AVAILABLE';
 
       return (
           <div className={classes.card} style={{position: 'relative'}}>
             <div className={classes.poster} style={{backgroundImage: imagelink}} onClick={ this.doHandler(object, 'selecthandler') }/>
+            <div className={classes.title} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{object.title}</div>
             <div className={classes.state} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{statetext}</div>
-            <div className={classes.title} variant={'h6'} onClick={ this.doHandler(object, 'selecthandler') }>{object.blockchain.title}</div>
-            { adminmode ?
-                <div className={classes.buttons}>
-                   <EditIcon className={classes.menuitem} title='Edit' onClick={this.doHandler(object, 'edithandler')} />
-                   {
-                     this.props.deletehandler ?
-                        <DeleteIcon className={classes.menuitem} title='Delete' onClick={this.doHandler(object, 'deletehandler')} />
-                      :
-                        <div />
-                   }
-                </div>
-              :
-                null
-            }
         </div>
       )
   }
@@ -202,18 +165,14 @@ class ObjectBlock extends Component {
 
 ObjectBlock.propTypes = {
   object: PropTypes.object.isRequired,
+  asset: PropTypes.object,
   selecthandler: PropTypes.any,
-  edithandler: PropTypes.any,
-  deletehandler: PropTypes.any,
-  adminmode: PropTypes.bool,
 };
 
 ObjectBlock.defaultProps = {
   object: undefined,
+  asset: undefined,
   selecthandler: undefined,
-  edithandler: undefined,
-  deletehandler: undefined,
-  adminmode: false,
 }
 
 export default withStyles(styles)(withRouter(ObjectBlock));

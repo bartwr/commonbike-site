@@ -27,7 +27,7 @@ class RentBikeButton extends Component {
       <Button
         variant="contained"
         className={this.props.classes.actionbutton}
-        onClick={this.clickRentBike.bind(this, this.props.bike.wallet.address, this.props.bike.blockchain.depositInLSK)}
+        onClick={this.clickRentBike.bind(this, this.props.bikeId, this.props.depositInLSK)}
         disabled={this.props.isDisabled}
         >
         RENT BIKE

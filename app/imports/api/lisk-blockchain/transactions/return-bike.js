@@ -65,6 +65,10 @@ class ReturnBikeTransaction extends TransferTransaction {
         object.asset.rentedBy = "";
 
         recipient.balance = newRecipientBalance;
+        
+        if(this.asset.location!=false) {
+          object.asset.location=this.asset.location
+        }
 
         // LOGGING:
         // errors.push(new TransactionError(JSON.stringify(object)));
@@ -101,6 +105,10 @@ class ReturnBikeTransaction extends TransferTransaction {
 
         object.asset.rentalEndDatetime = this.timestamp;
         object.asset.rentedBy = this.senderId;
+        
+        if(this.asset.location!=false&&this.asset.prevlocation!=false) {
+          object.asset.location=this.asset.prevlocation
+        }
 
         recipient.balance = newRecipientBalance;
 

@@ -34,8 +34,8 @@ module.exports = {
       },
       location: (transactionId, param) => {
         try {
-            new BigNum(param.latitude);
-            new BigNum(param.longitude);
+            // new BigNum(param.latitude);
+            // new BigNum(param.longitude);
             return true;
         } catch(err) {
             return new TransactionError('Missing or invalid "asset.latitude" or "asset.longitude" defined on transaction', transactionId, '.asset.latitude | longitude', param, 'A valid BigNum string')

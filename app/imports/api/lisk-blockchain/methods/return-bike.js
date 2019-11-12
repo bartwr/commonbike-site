@@ -6,12 +6,24 @@ const transactions = require('@liskhq/lisk-transactions');
 
 import { Promise } from 'meteor/promise';
 
-const returnBike = async (client, bikeAddress, renterAccount) => {
+const returnBike = async (client, bikeAddress, renterAccount, location, prevlocation) => {
+  
+    let asset = {
+        id: bikeAddress,
+    }
+    
+    if(location.longitude==undefined) {
+      location={longitude:51,latitude:0};
+      prevlocation={longitude:51,latitude:0};
+    }
+
+    if(location!=false&&prevlocation!=false) {
+      asset.location = location;
+      asset.prevlocation = prevlocation;
+    }
 
     const tx = new ReturnBikeTransaction({
-        asset: {
-            id: bikeAddress,
-        },
+        asset,
         // amount: transactions.utils.convertLSKToBeddows(bikeDeposit.toString()),
         senderPublicKey: renterAccount.publicKey,
         recipientId: bikeAddress,
@@ -19,11 +31,13 @@ const returnBike = async (client, bikeAddress, renterAccount) => {
     });
 
     tx.sign(renterAccount.passphrase);
+    
+    console.log(tx);
 
     return await client.transactions.broadcast(tx.toJSON());
 }
 
-const doReturnBike = async (renterAccount, bikeAddress) => {
+const doReturnBike = async (renterAccount, bikeAddress, location, prevlocation) => {
   const settings = await getSettingsClientSide();
   if(!settings) return false;
 
@@ -33,7 +47,9 @@ const doReturnBike = async (renterAccount, bikeAddress) => {
   const returnResult = returnBike(
       client,
       bikeAddress,
-      renterAccount
+      renterAccount,
+      location,
+      prevlocation
   );
   returnResult.then(result => {
       // console.log(result)
