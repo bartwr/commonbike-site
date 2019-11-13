@@ -7,9 +7,9 @@
     "update": "git pull && git pull liskbike master"
   },
   "dependencies": {
-    "@babel/runtime": "^7.6.3",
+    "@babel/runtime": "^7.7.2",
     "@liskhq/lisk-client": "^2.3.1",
-    "@material-ui/core": "^4.5.2",
+    "@material-ui/core": "^4.6.1",
     "@material-ui/icons": "^4.5.1",
     "ClientStorage": "^3.0.0",
     "bcrypt": "^1.0.3",
@@ -24,7 +24,7 @@
     "react": "^16.11.0",
     "react-addons-pure-render-mixin": "^15.3.1",
     "react-contenteditable": "^2.0.1",
-    "react-copy-to-clipboard": "^5.0.0",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.11.0",
     "react-geolocated": "^3.0.1",
     "react-leaflet": "^2.5.0",
