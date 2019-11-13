@@ -120,7 +120,7 @@ class EditFields extends Component {
       // to pass the schema check
       var changes = this.state.changes;
       Object.keys(changes).forEach((fieldname) => {
-        var itemidx = this.props.fields.findIndex((element)=>{return (element.fieldname==fieldname)});
+        var itemidx = this.props.fields.findIndex((element) => {return (element.fieldname==fieldname)});
         if(itemidx!=-1) {
           if(this.props.fields[itemidx].controltype=='yesno') {
             // yesno field: convert back to boolean
@@ -305,8 +305,8 @@ class EditFields extends Component {
               onChange={this.onFieldChange(fieldindex)}
               margin="normal"
               disabled={ field.controltype=='text-readonly' }/>
-            <RefreshIcon className={classes.apikeyButtonRefresh} key={'new_apikey_'+field.fieldname} onClick={()=>this.createNewAPIKey(fieldindex)} />
-            <DeleteIcon  className={classes.apikeyButtonDelete} key={'clear+apikey_'+field.fieldname} onClick={()=>this.setField(fieldindex, '')} />
+            <RefreshIcon className={classes.apikeyButtonRefresh} key={'new_apikey_'+field.fieldname} onClick={() => this.createNewAPIKey(fieldindex)} />
+            <DeleteIcon  className={classes.apikeyButtonDelete} key={'clear+apikey_'+field.fieldname} onClick={() => this.setField(fieldindex, '')} />
           </FormControl>
         );
         break;
@@ -341,33 +341,37 @@ class EditFields extends Component {
            labelPlacement="end" />
       )
       break;
-   case 'clientside-action':
-       var idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
+    case 'clientside-action':
+      var idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
        // console.log(field.fieldname + ' is using handler ' + idx);
 
-       return (
+      return (
          <Button
-         className={classes.actionButton}
-         key={'csa_'+field.fieldname}
-         onClick={idx!=undefined?this.props.handlers[idx].action.bind(this):null}
-         variant='contained'
-         >{field.label}</Button>
-       );
-
-       break;
-     case 'clientside-action-nochanges':
-        let haschanges = Object.keys(this.state.changes).length>0;
-         var idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
-
-         return (
-           <Button
+           className={classes.actionButton}
            key={'csa_'+field.fieldname}
            onClick={idx!=undefined?this.props.handlers[idx].action.bind(this):null}
-           disabled={haschanges}
            variant='contained'
-           className={classes.clientsideaction}
-           >{field.label}</Button>
-         );
+           >
+           {field.label}
+        </Button>
+      );
+
+      break;
+     case 'clientside-action-nochanges':
+        let haschanges = Object.keys(this.state.changes).length>0;
+        var idx = this.props.handlers.findIndex((handler) => handler.name==field.fieldname);
+
+        return (
+           <Button
+             key={'csa_'+field.fieldname}
+             onClick={idx !=undefined
+              ? this.props.handlers[idx] ? this.props.handlers[idx].action.bind(this) : null
+              : null}
+             disabled={haschanges}
+             variant='contained'
+             className={classes.clientsideaction}
+             >{field.label}</Button>
+           );
 
          break;
        
@@ -450,8 +454,17 @@ class EditFields extends Component {
             this.props.fields.map((field,index) => this.getField(classes, index, field, field.controltype+'-'+index, this.actionhandler.bind(this))) // || 'control' -> because lab4
           }
           <div style={{textAlign:'center'}}>
-          <Button className={classes.actionButton} disabled={!enablebuttons} variant='contained' onClick={this.apply()}>APPLY</Button>
-          <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>RESET</Button>
+            <Button
+              className={classes.actionButton}
+              disabled={!enablebuttons}
+              variant='contained'
+              onClick={this.apply()}
+              >
+              APPLY
+            </Button>
+            <Button className={classes.actionButton} disabled={!enablebuttons} variant='outlined' onClick={this.reset()}>
+              RESET
+            </Button>
           </div>
         </div>
       )

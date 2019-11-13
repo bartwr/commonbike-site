@@ -245,7 +245,7 @@ if(Meteor.isServer) {
           console.log('Settings changed for ' + (changes['blockchain.title'] || "unnamed object"));
 
           return {
-            result: true,
+            result: object,
             message: 'Object ' + object.title + ' updated',
             id: object._id
           }
@@ -261,7 +261,7 @@ if(Meteor.isServer) {
         object = Objects.findOne({'blockchain.title': changes.title})
         if(object) {
           return {
-            result: true,
+            result: object,
             message: 'There is already an object with this title registered (' + changes.title + ')',
             id: object._id
           }
@@ -270,7 +270,7 @@ if(Meteor.isServer) {
         object = Object.assign({}, createObject(), changes);
         Objects.insert(object);
         return {
-          result: true,
+          result: object,
           message: 'Object ' + changes.title + ' created',
         }
       }
@@ -314,7 +314,7 @@ if(Meteor.isServer) {
         }
       });
       console.log("create transaction %o", tx);
-      
+
       // Sign transaction
       tx.sign(settings.bikecoin.wallet.passphrase);
       

@@ -116,9 +116,13 @@ class ObjectDetails extends Component {
   
   async updateObjectStatus() {
     try {
+      console.log('updateObjectStatus props', this.props)
+      if(this.props.object==undefined) {
+        throw Error(`No object found; I cannot update the object status.`)
+      }
       let newStatus = await getObjectStatus(
         this.props.settings.bikecoin.provider_url,
-        this.props.objectId
+        this.props.object.wallet.address
       );
 
       let balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);

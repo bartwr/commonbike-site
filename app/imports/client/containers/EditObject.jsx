@@ -68,8 +68,8 @@ class EditObject extends Component {
     // ask the Blockchain to send the latest settings
   }
 
-  sendSettingsToBlockchain() {
-    Meteor.call('objects.registeronblockchain', this.props.object._id, this.processSendSettingsToBlockchainResult.bind(this));
+  sendSettingsToBlockchain(objectId) {
+    Meteor.call('objects.registeronblockchain', objectId, this.processSendSettingsToBlockchainResult);
   }
   
   processSendSettingsToBlockchainResult(error, result) {
@@ -77,21 +77,41 @@ class EditObject extends Component {
       alert('unable to register this object on the blockchain')
       return;
     }
-    
     if(!result.result) {
       alert('unable to register this object on the blockchain: ' + result.message);
       return;
     }
   }
   
-  transferSeedFunds() {
-    console.log("funding bike %s", this.props.object.wallet.address);
-    doCreateAccount(true, this.props.object.wallet.passphrase)
+  async transferSeedFunds() {
+    // console.log("funding bike %s", this.props.object.wallet.address);
+    return await doCreateAccount(true, this.props.object.wallet.passphrase)
   }
 
   updateLocalSettings(changes) {
-    // update the object settings that are backend specific in the local mongodb
-    Meteor.call('objects.applychanges', this.props.object._id, changes);
+    const self = this;
+
+    // Function that logs an error
+    const logError = (err) => console.error(err)
+
+    // Function that registers the bike onto a blockchain
+    const registerBikeOnTheBlockchain = async (err, res) => {
+      // Only register on blockchain if object is new
+      if(!self.props.isnew == false) return false;
+      // Check for errors
+      if(err) { logError(err); return false; }
+      if(! res.id) { logError('Bike could not be stored to the database') }
+      // Transfer seed funds
+      const transferSeedFundsResult = await this.transferSeedFunds()
+      // Register bike on the blockchain..
+      // ..as soon as seeding is processed by the blockchain.
+      setTimeout(function() {
+        self.sendSettingsToBlockchain(self.props.objectId)
+      }, 5000)
+    }
+
+    // Update the object settings that are backend specific in the local mongodb
+    Meteor.call('objects.applychanges', this.props.object._id, changes, registerBikeOnTheBlockchain);
     return true;
   }
 
@@ -264,19 +284,19 @@ class EditObject extends Component {
             fieldvalue: (object.blockchain ? object.blockchain.depositInLSK : object.lisk.depositInLSK),
             controltype: 'number',
             label: 'Deposit (LSK)'
-    		},
-        {
-            fieldname: 'transferseedfunds',
-            fieldvalue: 'transferseedfunds',
-            controltype: 'clientside-action-nochanges',
-            label: 'TRANSFER SEED FUNDS'
-    		},
-        {
-            fieldname: 'registeronblockchain',
-            fieldvalue: 'registeronblockchain',
-            controltype: 'clientside-action-nochanges',
-            label: 'Register on the blockchain'
     		}
+      //   {
+      //       fieldname: 'transferseedfunds',
+      //       fieldvalue: 'transferseedfunds',
+      //       controltype: 'clientside-action-nochanges',
+      //       label: 'TRANSFER SEED FUNDS'
+    		// },
+      //   {
+      //       fieldname: 'registeronblockchain',
+      //       fieldvalue: 'registeronblockchain',
+      //       controltype: 'clientside-action-nochanges',
+      //       label: 'Register on the blockchain'
+    		// }
       ]
     } else if(object.blockchain.id=='WAITING FOR TRANSACTION COMPLETION') {
         fields = [
@@ -373,13 +393,13 @@ class EditObject extends Component {
   	}
 
     const {classes, object, isnew} = this.props;
-    
+
     // TODO: insert map for setting up initial bike position
     // <MiniMap lat_lng={object.lock.lat_lng} objectislocked={false}/>
     
     return (
       <div className={classes.root}>
-        <div className={classes.dialog}>
+          <div className={classes.dialog}>
             <EditFields
                title="BLOCKCHAIN SETTINGS"
                fields={this.getBlockchainFields()}
@@ -387,11 +407,7 @@ class EditObject extends Component {
                handleExpansion={this.handleExpansion.bind(this)}
                panelId={'exp-contr-settings-blockchain'}
                externalPanelId={this.state.openpanel}
-               handlers={[
-                  {name:'registeronblockchain', action:this.sendSettingsToBlockchain.bind(this)},
-                  {name:'transferseedfunds', action:this.transferSeedFunds.bind(this)},
-                 ]
-               } />
+               />
             <EditFields
                title="WALLET SETTINGS"
                fields={this.getCoinFields()}
@@ -407,7 +423,7 @@ class EditObject extends Component {
                panelId={'exp-contr-settings-lock'}
                externalPanelId={this.state.openpanel} />
           </div>
-        </div>
+      </div>
     );
   }
 }

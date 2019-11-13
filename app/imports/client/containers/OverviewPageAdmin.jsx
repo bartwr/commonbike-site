@@ -14,9 +14,8 @@ import { Objects } from '/imports/api/objects.js';
 const styles = theme => ({
   root: {
     width: '100%',
-    height: '100%',
     display: 'flex',
-    flexDirection: 'wrap',
+    flexWrap: 'wrap',
     justifyContent: 'flex-start',
     alignItems: 'flex-start'
   },
@@ -71,7 +70,7 @@ class OverviewPageAdmin extends Component {
     }
 
       if(result._id!=undefined) {
-        this.setState((prevstate)=> {
+        this.setState((prevstate) => {
           return { redirect: '/admin/object/' + result._id }
         });
       }
@@ -86,7 +85,8 @@ class OverviewPageAdmin extends Component {
   }
 
   handleDeleteSelection = (object) => {
-    if( ! confirm('Are you sure that you want to delete bicycle '+ object.title +'?'))
+    console.log(object, object.blockchain.title);
+    if( ! confirm(`Are you sure that you want to delete this bicycle, "${object.blockchain.title}"?`))
       return;
   
     Meteor.call('objects.remove', object._id, this.processServerResultDeleteItem.bind(this));
