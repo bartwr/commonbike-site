@@ -53,14 +53,14 @@ class OverviewPageClient extends Component {
   }
   
   updateObjectState = async (object) => {
-    console.log(object.id)
+    // console.log(object.id)
     let status = await getObjectStatus(this.props.settings.bikecoin.provider_url, object.id);
     // console.log("status for %s is %o", object.id, status.asset);
     if(false!=status) {
-      this.setState((prevstate)=>{
+      this.setState((prevstate) => {
         return { ['asset-' + object.id]:status.asset}});
     } else {
-      this.setState((prevstate)=>{
+      this.setState((prevstate) => {
         return { ['asset-' + object.id]:false}});
     }
   }
@@ -83,13 +83,13 @@ class OverviewPageClient extends Component {
       newstate['asset-' + object.id]=false
     });
     
-    console.log(newstate);
+    // console.log(newstate);
     
     // this.state.objects.forEach((existingobject)=>{
     //   if
     // })
     
-    console.log("got new objects %o", newObjects)
+    // console.log("got new objects %o", newObjects)
 
     this.setState((prevstate)=>{
       return {

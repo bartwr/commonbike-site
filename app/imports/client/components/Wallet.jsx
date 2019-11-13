@@ -123,17 +123,16 @@ class Wallet extends Component {
       if(wallet&&wallet.address!='') {
         let account = await doGetAccount(wallet.address);
         if(false!=account) {
-          this.setState((prevstate)=>{
+          this.setState((prevstate) => {
             return {
-              balance: account.length>0 ?
-                transactions.utils.convertBeddowsToLSK(account[0].balance)
-                :
-                'account does not exist yet'
+              balance: account.length>0
+                ? transactions.utils.convertBeddowsToLSK(account[0].balance)
+                : 'account does not exist yet'
             }
           });
         }
       } else {
-        this.setState((prevstate)=>{
+        this.setState((prevstate) => {
             return {
               balance: '-'
             }
@@ -142,7 +141,7 @@ class Wallet extends Component {
     } catch(ex) {
       console.error(ex.message);
     } finally {
-      this.setState((prevstate)=>{return {
+      this.setState((prevstate) => {return {
         timer: setTimeout(this.getBalance.bind(this), updatedelay)
       }});
     }

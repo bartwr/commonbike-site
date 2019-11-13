@@ -35,14 +35,14 @@ class PageHeader extends Component {
           <Toolbar>
             <div className={classes.menudiv}>
               <AppMenu testitems={this.props.showTestOptions} user={currentUser} />
-              <div className={classes.useraddress}>{useraddress}</div>
+              <div hidden={true} className={classes.useraddress}>{useraddress}</div>
             </div>
             <div onClick={() => RedirectTo('/')} className={classes.logodiv}>
               <LiskBikeLogo className={classes.logo}/>
             </div>
           </Toolbar>
         </AppBar>
-        {this.props.children}    Meteor.subscribe('settings');
+        {this.props.children}
       </div>
     );
   }
