@@ -16,8 +16,9 @@ const styles = theme => ({
     width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start'
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginTop: '2vmin'
   },
   addbox: {
     position: 'relative',
@@ -27,7 +28,7 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    margin: '2vmin',
+    margin: '4vmin',
     boxSizing: 'border-box',
     padding: '0.1vmin',
     '-moz-user-select': 'none',

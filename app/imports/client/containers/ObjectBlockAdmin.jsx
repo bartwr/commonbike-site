@@ -19,7 +19,7 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    margin: '2vmin',
+    margin: '4vmin',
     boxSizing: 'border-box',
     padding: '0.1vmin',
     '-moz-user-select': 'none',
