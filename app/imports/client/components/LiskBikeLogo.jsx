@@ -1,17 +1,21 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
+import Redirect from 'react-router/Redirect'
 
 class LiskBikeLogo extends Component {
 
   render() {
     return (
-      <div style={s.base}>Lisk.Bike</div>
+      <a href="/" style={s.base}>
+        Lisk.Bike
+      </a>
     );
   }
 }
 
 var s = {
   base: {
+    display: 'block',
     width: '300px',
     height: '45px',
     fontSize: 'default',
@@ -23,6 +27,7 @@ var s = {
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
     textIndent: '-9999px',
+    position: 'relative'
   },
 }
 

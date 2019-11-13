@@ -33,7 +33,7 @@ const createAccount = (providerUrl, addFunds=true, mnemonic='') => {
       timestamp: getTimestamp()
     });
     
-    console.log("faucet transaction is: %o", tx);
+    // console.log("faucet transaction is: %o", tx);
 
     // Sign tx
     tx.sign(account.passphrase);
@@ -43,7 +43,7 @@ const createAccount = (providerUrl, addFunds=true, mnemonic='') => {
     return new Promise((resolve, reject) => {
       client.transactions.broadcast(tx.toJSON())
         .then((res) => {
-          console.log('res', res)
+          // console.log('res', res)
           // alert(JSON.stringify(res));
           resolve(account);
         })
@@ -65,7 +65,7 @@ const doCreateAccount = async (addfunds=false, mnemonic='') => {
     console.log("calling createaccount with provider %s", settings.bikecoin.provider_url);
     
     const createAccountResult = await createAccount(settings.bikecoin.provider_url, addfunds, mnemonic);
-    console.log('createAccountResult', createAccountResult);
+    // console.log('createAccountResult', createAccountResult);
 
     return createAccountResult;
 }

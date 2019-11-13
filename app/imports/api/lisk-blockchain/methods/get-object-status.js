@@ -1,6 +1,6 @@
 const { APIClient } = require('@liskhq/lisk-client');
 
-export const getObjectStatus = async (providerUrl, id) => {
+export const getObjectStatus = async (providerUrl, address) => {
   if(undefined==providerUrl) {
     console.warn("getObjectStatus: no provider url set");
     return undefined;
@@ -9,7 +9,7 @@ export const getObjectStatus = async (providerUrl, id) => {
   const client = new APIClient([providerUrl]);
   
   try {
-    let bikestatus = await client.accounts.get({address:id});
+    const bikestatus = await client.accounts.get({address: address});
     if(bikestatus.data.length==1) {
       return bikestatus.data[0];
     } else if(bikestatus.data.length>1) {

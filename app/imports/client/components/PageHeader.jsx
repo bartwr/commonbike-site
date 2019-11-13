@@ -71,7 +71,6 @@ const styles = theme => ({
     position: 'absolute',
     left: theme.spacing(1),
     top: theme.spacing(1),
-    width: '95%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',

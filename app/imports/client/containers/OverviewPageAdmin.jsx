@@ -14,11 +14,11 @@ import { Objects } from '/imports/api/objects.js';
 const styles = theme => ({
   root: {
     width: '100%',
-    height: '100%',
     display: 'flex',
-    flexDirection: 'wrap',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start'
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginTop: '2vmin'
   },
   addbox: {
     position: 'relative',
@@ -28,7 +28,7 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
-    margin: '2vmin',
+    margin: '4vmin',
     boxSizing: 'border-box',
     padding: '0.1vmin',
     '-moz-user-select': 'none',
@@ -71,7 +71,7 @@ class OverviewPageAdmin extends Component {
     }
 
       if(result._id!=undefined) {
-        this.setState((prevstate)=> {
+        this.setState((prevstate) => {
           return { redirect: '/admin/object/' + result._id }
         });
       }
@@ -86,7 +86,8 @@ class OverviewPageAdmin extends Component {
   }
 
   handleDeleteSelection = (object) => {
-    if( ! confirm('Are you sure that you want to delete bicycle '+ object.title +'?'))
+    console.log(object, object.blockchain.title);
+    if( ! confirm(`Are you sure that you want to delete this bicycle, "${object.blockchain.title}"?`))
       return;
   
     Meteor.call('objects.remove', object._id, this.processServerResultDeleteItem.bind(this));
