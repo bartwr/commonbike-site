@@ -116,15 +116,18 @@ class ObjectDetails extends Component {
   
   async updateObjectStatus() {
     try {
-      console.log('updateObjectStatus props', this.props)
       if(this.props.object==undefined) {
-        throw Error(`No object found; I cannot update the object status.`)
+        console.error(`No object found; I cannot update the object status.`)
+        return false;
       }
       let newStatus = await getObjectStatus(
         this.props.settings.bikecoin.provider_url,
         this.props.object.wallet.address
       );
-
+      if(! newStatus) {
+        console.error(`Couldn't get object status for ${this.props.settings.bikecoin.provider_url} and ${this.props.object.wallet.address}`)
+        return false;
+      }
       let balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);
       let deposit = transactions.utils.convertBeddowsToLSK(newStatus.asset.deposit);
       this.setState((prevstate) => { return { status: newStatus && newStatus.asset, balance: balance, deposit: deposit } });
@@ -154,7 +157,7 @@ class ObjectDetails extends Component {
     let location = status.location || {latitude: 40, longitude: 10};
     let unlocked = status.rentedBy!=""&&status.rentedBy!=undefined;
     
-    console.log("unlocked: %s", status.rentedBy)
+    // console.log("unlocked: %s", status.rentedBy)
     
     return (
       <div className={classes.root}>
@@ -162,7 +165,8 @@ class ObjectDetails extends Component {
           <MiniMap
             lat_lng={[location.latitude, location.longitude]}
             objectislocked={unlocked==false}
-            bikeAddress={objectId} />
+            bikeAddress={objectId}
+            />
           <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{status.title}</Typography>
           <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{objectId}</Typography>
           <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {balance}</Typography>
@@ -200,18 +204,16 @@ ObjectDetails.defaultProps = {
 export default withTracker((props) => {
     Meteor.subscribe('objects');
     Meteor.subscribe('settings');
-    
+    // Get settings
     let settings = getSettingsClientSide();
     if(!settings) {
       console.log("no settings available");
       return {};
     }
-    
-    console.log("init details for object %o", props.objectId)
-    
     // Return variables for use in this component
     return {
       objectId: props.objectId,
+      object: Objects.findOne(props.objectId),
       settings: settings
     };
 })(withStyles(styles) (ObjectDetails));
