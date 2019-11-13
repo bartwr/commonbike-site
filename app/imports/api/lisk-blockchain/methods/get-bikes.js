@@ -34,15 +34,16 @@ export const getAllBikes = async (providerUrl) => {
     bikes=[];
     for(let i=0; i<createbiketxs.data.length;i++) {
       // Validate that bike object is valid
-      if(validateBike(createbiketxs.data[i].asset)) continue; else break
-      // Get bike status
-      let status = await getObjectStatus(client, createbiketxs.data[i].asset.id);
-      bikes.push({
-        id: createbiketxs.data[i].asset.id,
-        title: createbiketxs.data[i].asset.title,
-        balance: transactions.utils.convertBeddowsToLSK(status.balance),
-        asset: status.asset
-      });
+      if(validateBike(createbiketxs.data[i].asset)==true) {
+        // Get bike status
+        let status = await getObjectStatus(client, createbiketxs.data[i].asset.id);
+        bikes.push({
+          id: createbiketxs.data[i].asset.id,
+          title: createbiketxs.data[i].asset.title,
+          balance: transactions.utils.convertBeddowsToLSK(status.balance),
+          asset: status.asset
+        });
+      }
     }
     
     return bikes;

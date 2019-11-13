@@ -31,6 +31,7 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
+    alignContent: 'flex-start'
   },
   mapcontainer: {
     flex:  '1 0 auto',
