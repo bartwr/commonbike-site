@@ -10,6 +10,7 @@ import Settings from '/imports/api/settings.js';
 
 import UserApp from '/imports/client/components/UserApp.jsx'
 import Login from '/imports/client/containers/Login.jsx'
+import Info from '/imports/client/containers/Info.jsx'
 import Dashboard from '/imports/client/containers/Dashboard.jsx'
 import UserWallet from '/imports/client/containers/UserWallet.jsx'
 import SystemWallet from '/imports/client/containers/SystemWallet.jsx'
@@ -22,11 +23,16 @@ import SystemSettings from '/imports/client/containers/SystemSettings.jsx'
 import NoMatch from '/imports/client/components/NoMatch.jsx'
 import EditObject from '/imports/client/containers/EditObject.jsx'
 
+import { ClientStorage } from 'ClientStorage';
+
 const UserAppLogin = ({match}) => {
   // TEMPORARY because I can't find the way to get query params via react-router:
   var redirectTo = window.location.search.split('=')[1];
   return (<UserApp content={<Login redirectTo={redirectTo} />} />)
 }
+
+const UserAppInfo = () => (<UserApp content={<Info />} />)
+
 const UserAppUserWallet = () => (<UserApp content={<div><UserWallet /></div>} />)
 
 const UserAppOverviewPage = () => (<UserApp content={<OverviewPageClient showMap={true} showList={true} />} />)
@@ -75,6 +81,10 @@ export const RedirectTo = (path) => {
 
 //
 class AppRoutes extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  
   onRedirectToEventHandler(event) {
     this.props.history.push(event.detail.path)
   }
@@ -91,7 +101,9 @@ class AppRoutes extends React.Component {
   render() {
     return (
      <Switch>
-      <Route exact path='/' component={UserAppOverviewPage}/>
+      <Route exact path='/' component={UserAppOverviewPage }/>
+
+      <Route exact path='/info' component={UserAppInfo}/>
 
       <Route path='/login' component={UserAppLogin}/>
       <Route path='/userwallet' component={UserAppUserWallet}/>
