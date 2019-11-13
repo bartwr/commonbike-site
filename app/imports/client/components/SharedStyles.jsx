@@ -19,10 +19,21 @@ export const controlStyles = theme => ({
     marginBottom: 0.5 * theme.spacing.unit,
     fontSize: 'small',
   },
+  spotlight: {
+    marginBottom: 0.5 * theme.spacing.unit,
+    fontSize: 'small',
+    backgroundColor: 'lightblue',
+  },
   explainercentered: {
     textAlign: 'center',
     marginBottom: 0.5 * theme.spacing.unit,
     fontSize: 'small',
+  },
+  spotlightcentered: {
+    textAlign: 'center',
+    marginBottom: 0.5 * theme.spacing.unit,
+    fontSize: 'small',
+    backgroundColor: 'lightblue',
   },
   textfield: {
     fontSize: 'small',
@@ -33,6 +44,18 @@ export const controlStyles = theme => ({
     marginTop: '5px',
     marginBottom: '5px',
     width: '100%'
+  },
+  root: {
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'space-around',
+  overflow: 'hidden',
+  backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    flexWrap: 'nowrap',
+    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+    transform: 'translateZ(0)',
   },
 });
 
