@@ -53,7 +53,6 @@ class MiniMap extends Component {
 
     let lat_lng = props.lat_lng;
     if(props.lat_lng[0]==999&&props.lat_lng[1]==999) {
-      console.log('set latlng to default LCU location');
       lat_lng = [52.088147, 5.106613];
     }
     
@@ -86,18 +85,8 @@ class MiniMap extends Component {
     });
   }
   
-  // updatePosition = () => {
-  //   const map = this.state.refmap.current;
-  //   console.log("update position %o", map.viewport.center)
-  //
-  //   if (map != null) {
-  //       this.setState({mapcenter: map.viewport.center})
-  //   }
-  // }
-  
   updateMapCenter = () => {
     const map = this.state.refmap.current;
-    console.log(map.viewport);
     if (map != null) {
       this.setState({mapcenter: map.viewport.center, zoom: map.viewport.zoom})
     }
@@ -113,7 +102,6 @@ class MiniMap extends Component {
   }
 
   findBike = () => {
-    console.log("set mapcenter to %o", this.state.objectpos)
     this.setState((prevstate) => ({ mapcenter: this.state.objectpos }))
   }
   
@@ -132,8 +120,6 @@ class MiniMap extends Component {
     const location = { latitude:this.state.mapcenter[0], longitude:this.state.mapcenter[1] }
     const prevlocation = { latitude:this.props.lat_lng[0], longitude:this.props.lat_lng[1] }
     
-    console.log("before meteor call %o / %o", location, prevlocation)
-
     Meteor.call('objects.lockBike', renterAccount, bikeAddress, location, prevlocation );
   }
   
@@ -142,14 +128,6 @@ class MiniMap extends Component {
     const bikeAddress = this.props.bikeAddress;
     // We end the rental. This will lock the bike.
     this.returnBike(bikeAddress)
-  }
-  
-  onZoom = () => {
-    console.log("on zoom");
-    const map = this.state.refmap.current;
-    if (map != null) {
-      // this.setState({zoom: map.viewport.zoom})
-    }
   }
   
   render() {
@@ -164,10 +142,10 @@ class MiniMap extends Component {
           ref={refmap}
           center={mapcenter}
           zoom={this.state.zoom}
-          draggable={objectislocked==false}
+          useFlyTo={true}
+          dragging={objectislocked==false}
           onDragEnd={this.updateMapCenter}
           onDrag={this.updateMapCenter}
-          onZoom={this.onZoom}
           >
           <TileLayer
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

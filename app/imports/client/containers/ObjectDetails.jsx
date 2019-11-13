@@ -150,8 +150,6 @@ class ObjectDetails extends Component {
     let location = status.location || {latitude: 40, longitude: 10};
     let unlocked = status.rentedBy!=""&&status.rentedBy!=undefined;
     
-    console.log("unlocked: %s", status.rentedBy)
-    
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
