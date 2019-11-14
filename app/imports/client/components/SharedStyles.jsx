@@ -1,23 +1,50 @@
 export const controlStyles = theme => ({
   base: {
+    boxSizing: 'border-box',
     display: 'flex',
-    flexWrap: 'wrap',
+    flexDirection: 'row',
     justifyContent: 'center',
-    margin: theme.spacing(1),
+    borderRadius: '16px',
+    width: '90vw',
   },
   paper: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    margin: theme.spacing(1),
     margin: theme.spacing(0.5),
     padding: theme.spacing(3),
     borderRadius: '16px',
     width: '90vw',
+    justifySelf: 'space-around'
   },
   header: {
     textAlign: 'center',
     marginBottom: theme.spacing(0.5),
   },
+  imageline: {
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
   explainer: {
-    marginBottom: theme.spacing(0.5),
+    width: '100%',
+    marginBottom: theme.spacing(2),
     fontSize: 'small',
+  },
+  explainerimage: {
+    width: '20vmin',
+    height: '20vmin',
+    flex: '1 1 auto',
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'contain',
+    border: '1px solid black',
+    borderRadius: '1vmin',
+    margin: '1vmin'
   },
   spotlight: {
     marginBottom: theme.spacing(0.5),
