@@ -34,7 +34,7 @@ class Info extends Component {
     console.log("init dontshow %s", dontshow)
 
     this.state = {
-      dontshow,
+      dontshow: true,
       redirect: false
     }
   }
@@ -49,6 +49,28 @@ class Info extends Component {
     this.setState({'dontshow': dontshow});
   };
 
+  renderAppButtons() {
+    const { classes } = this.props;
+
+    return (
+      <div>
+        <Button className={classes.button} variant="contained" onClick={this.doRedirect('/').bind(this)} className={classes.button}>
+            Rent a bike
+        </Button>
+        <Button className={classes.button} variant="contained" onClick={ this.doRedirect('/admin/objects').bind(this) } className={classes.button}>
+          Manage your locks
+        </Button>
+        <div style={{display:'flex', justifyContent: 'space-around'}}>
+          <FormControlLabel control={
+              <Checkbox checked={this.state.dontshow===true
+            }
+            onChange={this.handleChangeCheckbox()} /> }
+            label={'Skip this page in the future'} />
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { classes } = this.props;
     const { read } = this.state;
@@ -60,10 +82,19 @@ class Info extends Component {
 
     return (
       <div className={classes.base}>
+
         <Paper className={classes.paper}>
+
           <Typography className={classes.header} variant="h4">
             Lisk.Bike
           </Typography>
+
+          {this.renderAppButtons()}
+
+          <Typography className={classes.explainer}>
+            <p data-info="Spacing"></p>
+          </Typography>
+
           <Typography className={classes.header} variant="h6">
             Blockchain Proof of Concept
           </Typography>
@@ -71,7 +102,7 @@ class Info extends Component {
             <Link href="https://lisk.io" target="_blank">Lisk</Link> is a blockchain application platform. Blockchain has a lot of benefits compared to traditional means of storing data on a public network, but the major downside is that the technology is very complex. The goal of the Lisk project is to take away the barrier to entry and make it easy for Javascript developers to build their application on the Blockchain. We like to showcase a Proof of Concept that can be made with the current state of the Lisk Software Development Kit. The application is called Lisk.Bike.
           </Typography>
           <Typography className={classes.explainer}>
-            Cycling is a common mode of transport in the Netherlands, with 36% of the people listing the bicycle as their most frequent means of transport on a typical day. The Netherlands' busiest cycleway, Vredenburg in the city of Utrecht, sees some 32,000 cyclists on an average weekday, and up to 37,000 on peak days. There are several bicycle parking stations in Utrecht. In 2018 the largest one opened for 12,500 bicycles, which makes it the largest in the Netherlands.
+            Cycling is a common mode of transport in The Netherlands, with 36% of the people listing the bicycle as their most frequent means of transport on a typical day. The Netherlands' busiest cycleway, Vredenburg in the city of Utrecht, sees some 32,000 cyclists on an average weekday, and up to 37,000 on peak days. There are several bicycle parking stations in Utrecht. In 2018 the largest one opened for 12,500 bicycles, which makes it the largest in The Netherlands.
           </Typography>
           <Typography className={classes.spotlight}>
             Times are changing and nowadays new concepts like 'bike sharing' are becoming much more popular. We want to make use of this concept, fit a bike with a GPS tracking lock, build a Javascript application and use the Lisk blockchain for the data registration. Information like who is using the bike, when and its location will be registered on the Lisk blockchain in its own separate side chain. We will build an easy mobile interface to register your usage via a QR code and you are on your way!
@@ -107,9 +138,9 @@ class Info extends Component {
           <Typography className={classes.header} variant="h6">
             App impression
           </Typography>
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <figure>
-              <video autoPlay={true} src="https://i.imgur.com/YOvpa19.mp4" />
+              <video autoPlay={true} loop={true} src="https://i.imgur.com/YOvpa19.mp4" />
               <figcaption>
                 Proof of Concept mobile interface impression
               </figcaption>
@@ -117,7 +148,7 @@ class Info extends Component {
             <p hidden>
               (Demo will be available in English)
             </p>
-          </Typography>
+          </div>
           <Typography className={classes.header} variant="h6">
             Roadmap
           </Typography>
@@ -230,18 +261,11 @@ class Info extends Component {
           </Typography>
 
           <Typography className={classes.explainer}>
-            <p></p>
+            <p data-info="Spacing"></p>
           </Typography>
-          <Button className={classes.button} variant="contained" onClick={ this.doRedirect('/').bind(this) } className={classes.button}>Rent a bike</Button>
-          <Button className={classes.button} variant="contained" onClick={ this.doRedirect('/login').bind(this) } className={classes.button}>Manage your locks</Button>
-          <Typography className={classes.explainer}>&nbsp;</Typography>
-          <div style={{display:'flex', justifyContent: 'space-around'}}>
-            <FormControlLabel control={
-                <Checkbox checked={this.state.dontshow===true
-              }
-              onChange={this.handleChangeCheckbox()} /> }
-              label={'Dont\' show this message in the future'} />
-          </div>
+
+          {this.renderAppButtons()}
+
         </Paper>
       </div>
     )

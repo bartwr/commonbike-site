@@ -26,17 +26,17 @@ const styles = theme => ({
   listroot: {
     flex:  '1 1 auto',
     height: '20vh',
-    width: '90vw',
+    width: '90%',
     marginTop: theme.spacing(1),
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignContent: 'flex-start'
   },
   mapcontainer: {
     flex:  '1 0 auto',
     height: '20vh',
-    width: '90vw'
+    width: '90%'
   },
   title: {
     color: 'white'

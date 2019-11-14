@@ -61,7 +61,7 @@ img, video, iframe {
   max-width: 100%;
 }
 
-figcaption {
+figure, figcaption {
   text-align: center;
 }
 

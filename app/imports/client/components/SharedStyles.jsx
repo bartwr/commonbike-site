@@ -5,8 +5,11 @@ export const controlStyles = theme => ({
     flexDirection: 'row',
     justifyContent: 'center',
     borderRadius: '16px',
-    width: '100%',
     padding: '40px 0',
+    width: '860px',
+    maxWidth: '100%',
+    marginRight: 'auto',
+    marginLeft: 'auto'
   },
   paper: {
     boxSizing: 'border-box',
@@ -17,7 +20,7 @@ export const controlStyles = theme => ({
     margin: theme.spacing(0.5),
     padding: theme.spacing(3),
     borderRadius: '16px',
-    width: '90vw',
+    width: '90%',
     justifySelf: 'space-around'
   },
   header: {

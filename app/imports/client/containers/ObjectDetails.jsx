@@ -35,7 +35,7 @@ const styles = theme => ({
     background: 'transparent'
   },
   dialog: {
-    width: '90vw',
+    width: '90%',
     height: 'auto',
     minHeight: '60vh',
     padding: '4vmin',

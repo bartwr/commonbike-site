@@ -31,7 +31,9 @@ export default class UserApp extends Component {
     return (
       <div style={s.base}>
         {this.props.showPageHeader ? <PageHeader /> : null}
-        {this.props.content}
+        <div style={s.inner}>
+          {this.props.content}
+        </div>
       </div>
     );
   }
@@ -54,4 +56,11 @@ var s = {
     overflow: 'auto',
     margin: '0 auto',
   },
+  inner: {
+    width: '860px',
+    maxWidth: '100%',
+    paddingTop: '16px',
+    marginRight: 'auto',
+    marginLeft: 'auto'
+  }
 }

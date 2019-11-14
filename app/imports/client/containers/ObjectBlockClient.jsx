@@ -13,8 +13,8 @@ import { Objects } from '/imports/api/objects.js';
 const styles = theme => ({
   card: {
     position: 'relative',
-    width: '40vw', // '120px',
-    height: '40vw', // '120px',
+    width: '40%', // '120px',
+    minHeight: '180px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
