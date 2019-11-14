@@ -149,8 +149,8 @@ class Info extends Component {
             <Typography className={classes.explainer}>
               <p></p>
             </Typography>
-            <Button className={classes.button} variant="outlined" onClick={ this.doRedirect('/').bind(this) } className={classes.button}>Rent a bike</Button>
-            <Button className={classes.button} variant="outlined" onClick={ this.doRedirect('/login').bind(this) } className={classes.button}>Manage your locks</Button>
+            <Button className={classes.button} variant="contained" onClick={ this.doRedirect('/').bind(this) } className={classes.button}>Rent a bike</Button>
+            <Button className={classes.button} variant="contained" onClick={ this.doRedirect('/login').bind(this) } className={classes.button}>Manage your locks</Button>
             <Typography className={classes.explainer}>&nbsp;</Typography>
             <div style={{display:'flex', justifyContent: 'space-around'}}>
               <FormControlLabel control={
@@ -158,6 +158,21 @@ class Info extends Component {
                 }
                 onChange={this.handleChangeCheckbox()} /> }
                 label={'Dont\' show this message in the future'} />
+            </div>
+            <div style={{display:'flex', justifyContent: 'space-around'}}>
+              <img src={'/files/homepageFiles/alphasdk.png'} style={{width:300, height:'auto'}} />
+            </div>
+            <div style={{display:'flex', justifyContent: 'space-around'}}>
+              <img src={'/files/homepageFiles/app.png'} style={{width:300, height:'auto'}} />
+            </div>
+            <div style={{display:'flex', justifyContent: 'space-around'}}>
+              <img src={'/files/homepageFiles/bike.png'} style={{width:300, height:'auto'}} />
+            </div>
+            <div style={{display:'flex', justifyContent: 'space-around'}}>
+              <img src={'/files/homepageFiles/blockchain.png'} style={{width:300, height:'auto'}} />
+            </div>
+            <div style={{display:'flex', justifyContent: 'space-around'}}>
+              <img src={'/files/homepageFiles/lock.jpg'} style={{width:300, height:'auto'}} />
             </div>
           </FormGroup>
         </Paper>

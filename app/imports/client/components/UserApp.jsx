@@ -1,13 +1,33 @@
 import React, { Component, } from 'react';
 import PropTypes from 'prop-types';
+import { Session } from 'meteor/session'
 
 // Import components
 import PageHeader from '/imports/client/components/PageHeader.jsx'
+import Info from '/imports/client/containers/Info.jsx'
+
+import { ClientStorage } from 'ClientStorage';
 
 // UserApp component - represents the whole app
 export default class UserApp extends Component {
+  constructor(props) {
+    super(props);
+  }
 
   render() {
+    console.log("info shown: %s", Session.get("infoshown"))
+    let nevershow = ClientStorage.has("dontshow-info") && (ClientStorage.get("dontshow-info")==true);
+
+    if(Session.get("infoshown")!=true&&nevershow==false) {
+        Session.set("infoshown", true);
+        console.log("info shown 2: %s", Session.get("infoshown"))
+        return (
+          <div style={s.base}>
+            <Info/>
+          </div>
+        );
+    }
+    
     return (
       <div style={s.base}>
         {this.props.showPageHeader ? <PageHeader /> : null}

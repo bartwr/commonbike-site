@@ -142,7 +142,7 @@ class LocationsMap extends Component {
     });
 
     this.props.objects.map((object) => {
-      if(object && object.asset) {
+      if(object && object.asset && object.asset.location) {
         let location = object.asset.location;
         var marker = L.marker([location.latitude, location.longitude], {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
         marker.objectId = object.id;

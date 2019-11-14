@@ -125,7 +125,7 @@ class ObjectDetails extends Component {
         this.props.object.wallet.address
       );
       if(! newStatus) {
-        console.error(`Couldn't get object status for ${this.props.settings.bikecoin.provider_url} and ${this.props.object.wallet.address}`)
+        console.error(`Couldnt get object status for ${this.props.settings.bikecoin.provider_url} and ${this.props.object.wallet.address}`)
         return false;
       }
       let balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);
@@ -212,7 +212,7 @@ export default withTracker((props) => {
     // Return variables for use in this component
     return {
       objectId: props.objectId,
-      object: Objects.findOne(props.objectId),
+      object: Objects.findOne({'blockchain.id': props.objectId}),
       settings: settings
     };
 })(withStyles(styles) (ObjectDetails));

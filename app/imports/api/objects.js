@@ -297,6 +297,7 @@ if(Meteor.isServer) {
       let settings = await getSettingsServerSide();
       const client = new APIClient([settings.bikecoin.provider_url]);
 
+      const defaultlocation = [52.088147, 5.106613]
       // Create tx
       const tx = new CreateBikeTransaction({
         senderPublicKey: settings.bikecoin.wallet.publicKey,
@@ -309,8 +310,8 @@ if(Meteor.isServer) {
           ownerid: settings.bikecoin.wallet.address,
           pricePerHour: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.pricePerHourInLSK).toString() : Number(object.lisk.pricePerHourInLSK)),
           deposit: transactions.utils.convertLSKToBeddows(object.blockchain ? Number(object.blockchain.depositInLSK).toString() : Number(object.lisk.depositInLSK)),
-          latitude: null,
-          longitude: null
+          latitude: defaultlocation[0],
+          longitude: defaultlocation[1]
         }
       });
       console.log("create transaction %o", tx);

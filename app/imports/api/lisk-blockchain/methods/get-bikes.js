@@ -4,6 +4,7 @@ const transactions = require('@liskhq/lisk-transactions');
 const getObjectStatus = async (client, id) => {
   if(isNaN(id)) {
     console.error('You called getObjectStatus in get-bikes.js, but the id/address you sent was incorrect.')
+    return false;
   }
   try {
     let bikestatus = await client.accounts.get({address:id});
@@ -34,13 +35,13 @@ export const getAllBikes = async (providerUrl) => {
     bikes=[];
     for(let i=0; i<createbiketxs.data.length;i++) {
       // Validate that bike object is valid
-      if(validateBike(createbiketxs.data[i].asset)==true) {
+      if(("asset" in createbiketxs.data[i]==true)&&validateBike(createbiketxs.data[i].asset)==true) {
         // Get bike status
         let status = await getObjectStatus(client, createbiketxs.data[i].asset.id);
         bikes.push({
           id: createbiketxs.data[i].asset.id,
           title: createbiketxs.data[i].asset.title,
-          balance: transactions.utils.convertBeddowsToLSK(status.balance),
+          balance: transactions.utils.convertBeddowsToLSK(status.balance||"0"),
           asset: status.asset
         });
       }

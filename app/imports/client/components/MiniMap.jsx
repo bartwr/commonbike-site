@@ -52,7 +52,8 @@ class MiniMap extends Component {
     super(props);
 
     let lat_lng = props.lat_lng;
-    if(props.lat_lng[0]==999&&props.lat_lng[1]==999) {
+    if((props.lat_lng[0]==999&&props.lat_lng[1]==999)||
+       (props.lat_lng[0]==null&&props.lat_lng[1]==null)) {
       lat_lng = [52.088147, 5.106613];
     }
     
@@ -134,6 +135,7 @@ class MiniMap extends Component {
     const { classes, lat_lng, objectislocked, isGeolocationAvailable, isGeolocationEnabled } = this.props; // lat_lng,
     const { refmap, mapcenter, reftilelayer, objectpos} = this.state;
     
+    console.log(objectpos);
     if(objectpos[0]==undefined) return null;
     
     return (

@@ -151,7 +151,7 @@ class ObjectBlock extends Component {
       }
 
       let imagelink='url(/files/ObjectDetails/liskbike.png)' ;
-      let statetext = object.asset.rentedBy && object.asset.rentedBy!='' ? 'RENTED': 'AVAILABLE';
+      let statetext = object.asset && object.asset.rentedBy && object.asset.rentedBy!='' ? 'RENTED': 'AVAILABLE';
 
       return (
           <div className={classes.card} style={{position: 'relative'}}>
