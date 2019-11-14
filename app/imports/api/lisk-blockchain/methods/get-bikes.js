@@ -37,6 +37,8 @@ export const getAllBikes = async (providerUrl) => {
       // Validate that bike object is valid
       if(("asset" in createbiketxs.data[i]==true)&&validateBike(createbiketxs.data[i].asset)==true) {
         // Get bike status
+        console.log("get bike status for %o", createbiketxs.data[i]);
+        
         let status = await getObjectStatus(client, createbiketxs.data[i].asset.id);
         bikes.push({
           id: createbiketxs.data[i].asset.id,
