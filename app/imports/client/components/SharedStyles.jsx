@@ -57,6 +57,16 @@ export const controlStyles = theme => ({
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
     transform: 'translateZ(0)',
   },
+  column: {
+    float: 'left',
+    width: '25%',
+    padding: '5px',
+  },
+  row: {
+    content: '',
+    clear: 'both',
+    display: 'table',
+  },
 });
 
 export const snackbarOptions = {

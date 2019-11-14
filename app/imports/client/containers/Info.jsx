@@ -54,12 +54,6 @@ class Info extends Component {
     const { read } = this.state;
     const error = [read].filter(v => v).length !== 1;
 
-    const tileData = [
-      {
-        img: '/files/homepageFiles/app.png',
-      },
-    ];
-
     if(false!==this.state.redirect) {
       return (<Redirect to={this.state.redirect} />)
     }
@@ -81,22 +75,21 @@ class Info extends Component {
             <Typography className={classes.spotlight}>
               <p>Times are changing and nowadays new concepts like 'bike sharing' are becoming much more popular. We want to make use of this concept, fit a bike with a GPS tracking lock, build a Javascript application and use the Lisk blockchain for the data registration. Information like who is using the bike, when and its location will be registered on the Lisk blockchain in its own separate side chain. We will build an easy mobile interface to register your usage via a QR code and you are on your way!</p>
             </Typography>
-            <div className={classes.root}>
-               <Grid container direction="row" justify="flex-start" alignItems="center">
-                 <Grid item xs={3}>
-                   <Paper className={classes.paper}><img src={'/files/homepageFiles/bike.png'} style={{width:100, height:'auto'}} /></Paper>
-                 </Grid>
-                 <Grid item xs={3}>
-                   <Paper className={classes.paper}><img src={'/files/homepageFiles/lock.jpg'} style={{width:100, height:'auto'}}/></Paper>
-                 </Grid>
-                 <Grid item xs={3}>
-                   <Paper className={classes.paper}><img src={'/files/homepageFiles/blockchain.png'} style={{width:100, height:'auto'}}/></Paper>
-                 </Grid>
-                 <Grid item xs={3}>
-                   <Paper className={classes.paper}><img src={'/files/homepageFiles/app.png'} style={{width:100, height:'auto'}}/></Paper>
-                 </Grid>
-               </Grid>
-             </div>
+            <div>
+                <div style={{display:'flex', justifyContent: 'space-around', float: 'left', width: '25%', padding: '5px'}}>
+                  <img src={'/files/homepageFiles/bike.png'} style={{width:'100%', height:'auto'}} />
+                </div>
+                <div style={{display:'flex', justifyContent: 'space-around', float: 'left', width: '25%', padding: '5px'}}>
+                  <img src={'/files/homepageFiles/lock.jpg'} style={{width:300, height:'auto'}} />
+                </div>
+                <div style={{display:'flex', justifyContent: 'space-around', float: 'left', width: '25%', padding: '5px'}}>
+                  <img src={'/files/homepageFiles/blockchain.png'} style={{width:300, height:'auto'}} />
+                </div>
+                <div style={{display:'flex', justifyContent: 'space-around', float: 'left', width: '25%', padding: '5px'}}>
+                  <img src={'/files/homepageFiles/app.png'} style={{width:300, height:'auto'}} />
+                </div>
+            </div>
+
             <Typography className={classes.header} variant="h6">
               Pitch
             </Typography>
@@ -181,20 +174,8 @@ class Info extends Component {
                 onChange={this.handleChangeCheckbox()} /> }
                 label={'Dont\' show this message in the future'} />
             </div>
-            <div style={{display:'flex', justifyContent: 'space-around'}}>
+            <div style={{display:'flex', justifyContent: 'space-around' }}>
               <img src={'/files/homepageFiles/alphasdk.png'} style={{width:300, height:'auto'}} />
-            </div>
-            <div style={{display:'flex', justifyContent: 'space-around'}}>
-              <img src={'/files/homepageFiles/app.png'} style={{width:300, height:'auto'}} />
-            </div>
-            <div style={{display:'flex', justifyContent: 'space-around'}}>
-              <img src={'/files/homepageFiles/bike.png'} style={{width:300, height:'auto'}} />
-            </div>
-            <div style={{display:'flex', justifyContent: 'space-around'}}>
-              <img src={'/files/homepageFiles/blockchain.png'} style={{width:300, height:'auto'}} />
-            </div>
-            <div style={{display:'flex', justifyContent: 'space-around'}}>
-              <img src={'/files/homepageFiles/lock.jpg'} style={{width:300, height:'auto'}} />
             </div>
           </FormGroup>
         </Paper>
