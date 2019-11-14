@@ -16,8 +16,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Divider from '@material-ui/core/Divider';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
+import Grid from '@material-ui/core/Grid';
 
 import { ClientStorage } from 'ClientStorage';
 
@@ -55,6 +54,12 @@ class Info extends Component {
     const { read } = this.state;
     const error = [read].filter(v => v).length !== 1;
 
+    const tileData = [
+      {
+        img: '/files/homepageFiles/app.png',
+      },
+    ];
+
     if(false!==this.state.redirect) {
       return (<Redirect to={this.state.redirect} />)
     }
@@ -76,6 +81,22 @@ class Info extends Component {
             <Typography className={classes.spotlight}>
               <p>Times are changing and nowadays new concepts like 'bike sharing' are becoming much more popular. We want to make use of this concept, fit a bike with a GPS tracking lock, build a Javascript application and use the Lisk blockchain for the data registration. Information like who is using the bike, when and its location will be registered on the Lisk blockchain in its own separate side chain. We will build an easy mobile interface to register your usage via a QR code and you are on your way!</p>
             </Typography>
+            <div className={classes.root}>
+               <Grid container direction="row" justify="flex-start" alignItems="center">
+                 <Grid item xs={3}>
+                   <Paper className={classes.paper}><img src={'/files/homepageFiles/bike.png'} style={{width:100, height:'auto'}} /></Paper>
+                 </Grid>
+                 <Grid item xs={3}>
+                   <Paper className={classes.paper}><img src={'/files/homepageFiles/lock.jpg'} style={{width:100, height:'auto'}}/></Paper>
+                 </Grid>
+                 <Grid item xs={3}>
+                   <Paper className={classes.paper}><img src={'/files/homepageFiles/blockchain.png'} style={{width:100, height:'auto'}}/></Paper>
+                 </Grid>
+                 <Grid item xs={3}>
+                   <Paper className={classes.paper}><img src={'/files/homepageFiles/app.png'} style={{width:100, height:'auto'}}/></Paper>
+                 </Grid>
+               </Grid>
+             </div>
             <Typography className={classes.header} variant="h6">
               Pitch
             </Typography>
@@ -144,6 +165,7 @@ class Info extends Component {
             </Typography>
             <Typography className={classes.explainer}>
               <p>The lisk.bike POC will be based on the Commonbike platform, an open source project that has been setup to stimulate bike sharing in the Netherlands. This will allow us to efficiently realize a working solution.</p>
+              <p>A special thanks to Lisk community member <a href="https://github.com/JesusTheHun/lisk-bike">Jesus the Hun</a> for providing a code demo for the lisk-bike project.</p>
               <p>All developed code will be added to the public domain (Github) so that interested parties can join and use the project results.</p>
             </Typography>
             <Typography className={classes.explainer}>

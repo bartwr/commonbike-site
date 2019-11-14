@@ -46,11 +46,11 @@ export const controlStyles = theme => ({
     width: '100%'
   },
   root: {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'space-around',
-  overflow: 'hidden',
-  backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
   },
   gridList: {
     flexWrap: 'nowrap',
