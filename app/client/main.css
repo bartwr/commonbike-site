@@ -14,7 +14,7 @@ html, body {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif !important;
 }
 
 h1,
@@ -22,11 +22,13 @@ h2,
 h3,
 h4,
 h4.MuiTypography-h4,
+h4.MuiTypography-h6,
 h5,
 h6 {
-  margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif !important;
+  margin: 16px 0;
 }
 h4.MuiTypography-h4 {
   font-weight: 700;
@@ -47,8 +49,20 @@ p {
   line-height: 1.4em;
 }
 
-img {
+.MuiTypography-body1 {
+  font-size:15px;
+  letter-spacing:0.1px;
+  font-weight: 400;
+  line-height:25px;
+  color:#0c152ea3;
+}
+
+img, video, iframe {
   max-width: 100%;
+}
+
+figcaption {
+  text-align: center;
 }
 
 #root, #root > * {

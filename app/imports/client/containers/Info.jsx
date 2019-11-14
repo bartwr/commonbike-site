@@ -68,7 +68,7 @@ class Info extends Component {
             Blockchain Proof of Concept
           </Typography>
           <Typography className={classes.explainer}>
-            Lisk is a blockchain application platform. Blockchain has a lot of benefits compared to traditional means of storing data on a public network, but the major downside is that the technology is very complex. The goal of the Lisk project is to take away the barrier to entry and make it easy for Javascript developers to build their application on the Blockchain. We like to showcase a Proof of Concept that can be made with the current state of the Lisk Software Development Kit. The application is called Lisk.Bike.
+            <Link href="https://lisk.io" target="_blank">Lisk</Link> is a blockchain application platform. Blockchain has a lot of benefits compared to traditional means of storing data on a public network, but the major downside is that the technology is very complex. The goal of the Lisk project is to take away the barrier to entry and make it easy for Javascript developers to build their application on the Blockchain. We like to showcase a Proof of Concept that can be made with the current state of the Lisk Software Development Kit. The application is called Lisk.Bike.
           </Typography>
           <Typography className={classes.explainer}>
             Cycling is a common mode of transport in the Netherlands, with 36% of the people listing the bicycle as their most frequent means of transport on a typical day. The Netherlands' busiest cycleway, Vredenburg in the city of Utrecht, sees some 32,000 cyclists on an average weekday, and up to 37,000 on peak days. There are several bicycle parking stations in Utrecht. In 2018 the largest one opened for 12,500 bicycles, which makes it the largest in the Netherlands.
@@ -86,9 +86,9 @@ class Info extends Component {
             Pitch
           </Typography>
           <Typography className={classes.explainer}>
-            <p>We are very pragmatic and hands-on focussed. We do not spend time on fancy whitepapers, money on marketing or create fancy websites.
-            This is our pitch and we like to build this PoC to learn and present the showcase.</p>
-
+            <p>
+              <Link href="https://github.com/liskcenterutrecht/lisk.bike/graphs/contributors" target="_blank">We</Link> are very pragmatic and hands-on focussed. We do not spend time on fancy whitepapers, money on marketing or create fancy websites. This is our pitch and we like to build this PoC to learn and present the showcase.
+            </p>
             <p><i>The PoC is:</i></p>
             <ul>
               <li>to learn how its done and get handson experience with the SDK;</li>
@@ -96,7 +96,6 @@ class Info extends Component {
               <li>to showcase a proof of concept what can be done with the Lisk alpha SDK;</li>
               <li>to inspire visitors/developers at the LCU to start building with the alpha SDK;</li>
             </ul>
-
             <p><i>The PoC is not:</i></p>
             <ul>
               <li>to showcase what the best application for blockchain technology is;</li>
@@ -105,9 +104,19 @@ class Info extends Component {
               <li>to earn a profit.</li>
             </ul>
           </Typography>
+          <Typography className={classes.header} variant="h6">
+            App impression
+          </Typography>
           <Typography className={classes.explainer}>
-            Proof of Concept mobile interface impression
-            <p>(Demo will be available in English)</p>
+            <figure>
+              <video autoPlay={true} src="https://i.imgur.com/YOvpa19.mp4" />
+              <figcaption>
+                Proof of Concept mobile interface impression
+              </figcaption>
+            </figure>
+            <p hidden>
+              (Demo will be available in English)
+            </p>
           </Typography>
           <Typography className={classes.header} variant="h6">
             Roadmap
@@ -126,7 +135,13 @@ class Info extends Component {
               <li>Showcase the result to the community at Lisk.JS 2019 in Berlin [ upcoming ] / 2019-11-19</li>
               <li> Release bikes in Utrecht and Berlin to demonstrate this concept [ future ] </li>
             </ol>
+          </Typography>
 
+          <Typography className={classes.header} variant="h6">
+            Result
+          </Typography>
+
+          <Typography className={classes.explainer}>
             <p><b>Result:</b></p>
             <p>Lisk SDK proof of concept application combining various ideas and technologies into an interesting use case.
             And a working demonstration for all Lisk Center visitors/developers to inspire and start using the Lisk SDK.</p>
@@ -137,22 +152,83 @@ class Info extends Component {
             <p><b>THANK YOU</b></p>
           </Typography>
           <Typography className={classes.explainer}>
-            <p><i>All funding is spend on making this PoC. The bike, lock, website, domain, servers, coding, art, etc.
-            These funds are not used to make a profit but to cover all the necessary costs.
-            The thing we take away is learning a new technology.</i></p>
+            <p>
+              <i>All funding is spent on making this PoC. The bike, lock, website, domain, servers, coding, art, etc.
+              These funds are not used to make a profit but to cover all the necessary costs.
+              The thing we take away is learning a new technology.</i>
+            </p>
           </Typography>
           <Typography className={classes.explainer}>
             <p>This project was supported by:</p>
-            <p>List of names of the donators.</p>
+            <ul>
+              <li>List of names</li>
+              <li>of the donators</li>
+              <li>including</li>
+              <li>people</li>
+              <li>who</li>
+              <li>spent</li>
+              <li>time</li>
+              <li>on the project</li>
+            </ul>
           </Typography>
           <Typography className={classes.header} variant="h6">
             Code base
           </Typography>
           <Typography className={classes.explainer}>
-            <p>The lisk.bike POC will be based on the Commonbike platform, an open source project that has been setup to stimulate bike sharing in the Netherlands. This will allow us to efficiently realize a working solution.</p>
-            <p>A special thanks to Lisk community member <a href="https://github.com/JesusTheHun/lisk-bike">Jesus the Hun</a> for providing a code demo for the lisk-bike project.</p>
-            <p>All developed code will be added to the public domain (Github) so that interested parties can join and use the project results.</p>
+            <p>
+              All developed code has been added to the public domain (GitHub) so that interested parties can join and use the project results.
+            </p>
+            <p>
+              The Lisk.Bike POC is based on the <Link href="http://common.bike/" href="_blank">CommonBike</Link> platform: an open source project that has been setup to stimulate bike sharing in The Netherlands. This allowed us to efficiently realize a working solution.
+            </p>
+            <p>
+              A special thanks to Lisk community member <Link href="https://github.com/JesusTheHun/lisk-bike">Jesus the Hun</Link> for providing a code demo for the lisk-bike project.
+            </p>
+            <p>
+              Find the <b>source code repositories</b> over here:
+            </p>
+            <ul>
+              <li>
+                <Link href="https://github.com/liskcenterutrecht/lisk.bike">
+                  App, lock server & blockchain node
+                </Link>
+              </li>
+            </ul>
           </Typography>
+
+          <Typography className={classes.header} variant="h6">
+            Publications
+          </Typography>
+          <Typography className={classes.explainer}>
+            <ul>
+              <li>
+                <Link href="https://www.linkedin.com/posts/caspar-roelofs_liskbike-showcasing-custom-blockchain-transactions-activity-6597044489418756097-mZRz/" target="_blank">
+                  Caspar on LinkedIn
+                </Link>
+              </li>
+              <li>
+                <Link href="https://medium.com/@GimlyBlockchain/lisk-bike-showcasing-custom-blockchain-transactions-and-sharing-lessons-da2b22f9b20c" target="_blank">
+                  Lisk.Bike: showcasing custom blockchain transactions and sharing lessons
+                </Link> (Medium)
+              </li>
+              <li>
+                <Link href="https://www.liskmagazine.com/blog/2019/11/12/gimly-and-lisk-bike-to-collaborate-on-smart-bicycle-sharing-platform/" target="_blank">
+                  Gimly and Lisk.Bike To Collaborate On Smart Bicycle Sharing Platform
+                </Link> (Lisk Magazine)
+              </li>
+              <li>
+                <Link href="https://www.liskmagazine.com/blog/2019/11/12/gimly-and-lisk-bike-to-collaborate-on-smart-bicycle-sharing-platform/" target="_blank">
+                  Gimly and Lisk.Bike To Collaborate On Smart Bicycle Sharing Platform
+                </Link> (Lisk Magazine)
+              </li>
+              <li>
+                <Link href="https://lisk.io/events/lisk.js-2019" target="_blank">
+                  Lisk.Bike Hands-On Developer Workshop
+                </Link> (lisk.io)
+              </li>
+            </ul>
+          </Typography>
+
           <Typography className={classes.explainer}>
             <p></p>
           </Typography>

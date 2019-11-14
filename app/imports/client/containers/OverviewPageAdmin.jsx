@@ -86,7 +86,6 @@ class OverviewPageAdmin extends Component {
   }
 
   handleDeleteSelection = (object) => {
-    console.log(object, object.blockchain.title);
     if( ! confirm(`Are you sure that you want to delete this bicycle, "${object.blockchain.title}"?`))
       return;
   

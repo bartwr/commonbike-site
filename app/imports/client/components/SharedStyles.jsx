@@ -5,7 +5,8 @@ export const controlStyles = theme => ({
     flexDirection: 'row',
     justifyContent: 'center',
     borderRadius: '16px',
-    width: '90vw',
+    width: '100%',
+    padding: '40px 0',
   },
   paper: {
     boxSizing: 'border-box',
@@ -21,9 +22,10 @@ export const controlStyles = theme => ({
   },
   header: {
     textAlign: 'center',
-    marginBottom: theme.spacing(0.5),
+    marginBottom: '16px',
   },
   imageline: {
+    margin: '16px 0',
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'row',
@@ -33,7 +35,7 @@ export const controlStyles = theme => ({
   explainer: {
     width: '100%',
     marginBottom: theme.spacing(2),
-    fontSize: 'small',
+    // fontSize: 'small',
   },
   explainerimage: {
     width: '20vmin',
@@ -48,22 +50,24 @@ export const controlStyles = theme => ({
   },
   spotlight: {
     marginBottom: theme.spacing(0.5),
-    fontSize: 'small',
+    // fontSize: 'small',
+    padding: '20px',
     backgroundColor: 'lightblue',
   },
   explainercentered: {
     textAlign: 'center',
+    padding: '20px',
     marginBottom: theme.spacing(0.5),
-    fontSize: 'small',
+    // fontSize: 'small',
   },
   spotlightcentered: {
     textAlign: 'center',
     marginBottom: theme.spacing(0.5),
-    fontSize: 'small',
+    // fontSize: 'small',
     backgroundColor: 'lightblue',
   },
   textfield: {
-    fontSize: 'small',
+    // fontSize: 'small',
     width: '100%',
     margin: theme.spacing(0.5),
   },
