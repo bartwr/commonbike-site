@@ -190,14 +190,14 @@ class Info extends Component {
           <Typography className={classes.explainer}>
             <p>This project was supported by:</p>
             <ul>
-              <li>List of names</li>
-              <li>of the donators</li>
-              <li>including</li>
-              <li>people</li>
-              <li>who</li>
-              <li>spent</li>
-              <li>time</li>
-              <li>on the project</li>
+              <li>Marc</li>
+              <li>Caspar</li>
+              <li>Eric</li>
+              <li>Bart</li>
+              <li>Albert</li>
+              <li>Susanne</li>
+              <li>Jesus</li>
+              <li>Joost</li>
             </ul>
           </Typography>
           <Typography className={classes.header} variant="h6">
