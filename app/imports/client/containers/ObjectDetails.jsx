@@ -116,16 +116,12 @@ class ObjectDetails extends Component {
   
   async updateObjectStatus() {
     try {
-      if(this.props.object==undefined) {
-        console.error(`No object found; I cannot update the object status.`)
-        return false;
-      }
       let newStatus = await getObjectStatus(
         this.props.settings.bikecoin.provider_url,
-        this.props.object.wallet.address
+        this.props.objectId
       );
       if(! newStatus) {
-        console.error(`Couldnt get object status for ${this.props.settings.bikecoin.provider_url} and ${this.props.object.wallet.address}`)
+        console.error(`Couldnt get object status for ${this.props.settings.bikecoin.provider_url} and ${this.props.objectId}`)
         return false;
       }
       let balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);
@@ -191,12 +187,12 @@ class ObjectDetails extends Component {
 }
 
 ObjectDetails.propTypes = {
-  object: PropTypes.object,
+  objectId: PropTypes.string,
   settings: PropTypes.object,
 };
 
 ObjectDetails.defaultProps = {
-  object: undefined,
+  objectId: undefined,
   settings: undefined,
 }
 
@@ -209,10 +205,12 @@ export default withTracker((props) => {
       console.log("no settings available");
       return {};
     }
+    
+    console.log("display details for object %s", props.objectId)
+    
     // Return variables for use in this component
     return {
       objectId: props.objectId,
-      object: Objects.findOne({'blockchain.id': props.objectId}),
       settings: settings
     };
 })(withStyles(styles) (ObjectDetails));

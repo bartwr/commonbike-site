@@ -4,7 +4,7 @@ const fs = require('fs');
 const { getAddressFromPublicKey, getKeys } = require('@liskhq/lisk-cryptography');
 const { Mnemonic } = require('@liskhq/lisk-passphrase');
 const transactions = require('@liskhq/lisk-transactions');
-const { getTimestamp } = require('../_helpers.js');
+const { getTimestamp, getProviderURL } = require('../_helpers.js');
 
 const FaucetTransaction = require('../transactions/faucet.js');
 
@@ -43,8 +43,7 @@ const createAccount = (name) => {
 const account = createAccount(process.argv[2])
 
 // Make connection to the blockchain
-// `http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`
-const client = new APIClient(['https://brainz.lisk.bike']);
+const client = new APIClient([getProviderURL()]);
 
 // Add funds to account
 const tx = new FaucetTransaction({

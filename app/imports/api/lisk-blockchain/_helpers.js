@@ -21,4 +21,14 @@ const getBike = (client, account) => {
   });
 }
 
-module.exports = {getTimestamp, getBike}
+const getProviderURL = () => {
+  // return `http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`;
+  // return 'http://localhost:4000';
+  return 'https://brainz.lisk.bike';
+}
+
+const prefix = (text, prefix) => {
+  return text.split("\n").map((line)=>{ return prefix + line}).join("\n");
+}
+
+module.exports = {getTimestamp, getBike, getProviderURL, prefix}
