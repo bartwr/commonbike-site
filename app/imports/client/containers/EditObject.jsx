@@ -107,7 +107,7 @@ class EditObject extends Component {
       // ..as soon as seeding is processed by the blockchain.
       setTimeout(function() {
         self.sendSettingsToBlockchain(self.props.objectId)
-      }, 5000)
+      }, 10000)
     }
 
     // Update the object settings that are backend specific in the local mongodb

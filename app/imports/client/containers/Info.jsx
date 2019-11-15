@@ -91,9 +91,9 @@ class Info extends Component {
 
           {this.renderAppButtons()}
 
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <p data-info="Spacing"></p>
-          </Typography>
+          </div>
 
           <Typography className={classes.header} variant="h6">
             Blockchain Proof of Concept
@@ -116,7 +116,7 @@ class Info extends Component {
           <Typography className={classes.header} variant="h6">
             Pitch
           </Typography>
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <p>
               <Link href="https://github.com/liskcenterutrecht/lisk.bike/graphs/contributors" target="_blank">We</Link> are very pragmatic and hands-on focussed. We do not spend time on fancy whitepapers, money on marketing or create fancy websites. This is our pitch and we like to build this PoC to learn and present the showcase.
             </p>
@@ -134,7 +134,7 @@ class Info extends Component {
               <li>to showcase a valid businessmodel;</li>
               <li>to earn a profit.</li>
             </ul>
-          </Typography>
+          </div>
           <Typography className={classes.header} variant="h6">
             App impression
           </Typography>
@@ -152,7 +152,7 @@ class Info extends Component {
           <Typography className={classes.header} variant="h6">
             Roadmap
           </Typography>
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <ol>
               <li>Create the concept - [ done ] / 2019-08-08</li>
               <li>Get the domain, rent a server and setup a website - [ done ] / 2019-08-09</li>
@@ -166,28 +166,28 @@ class Info extends Component {
               <li>Showcase the result to the community at Lisk.JS 2019 in Berlin [ upcoming ] / 2019-11-19</li>
               <li> Release bikes in Utrecht and Berlin to demonstrate this concept [ future ] </li>
             </ol>
-          </Typography>
+          </div>
 
           <Typography className={classes.header} variant="h6">
             Result
           </Typography>
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <p>Lisk SDK proof of concept application combining various ideas and technologies into an interesting use case.
             And a working demonstration for all Lisk Center visitors/developers to inspire and start using the Lisk SDK.</p>
-          </Typography>
-          <Typography className={classes.spotlightcentered}>
+          </div>
+          <div className={classes.spotlightcentered}>
             <p><b>We asked the community for 5000 LSK to build this Proof of Concept.</b></p>
             <p><b>Your Lisk donations to wallet address 11629240136553438599L made this project possible.</b></p>
             <p><b>THANK YOU</b></p>
-          </Typography>
-          <Typography className={classes.explainer}>
+          </div>
+          <div className={classes.explainer}>
             <p>
               <i>All funding is spent on making this PoC. The bike, lock, website, domain, servers, coding, art, etc.
               These funds are not used to make a profit but to cover all the necessary costs.
               The thing we take away is learning a new technology.</i>
             </p>
-          </Typography>
-          <Typography className={classes.explainer}>
+          </div>
+          <div className={classes.explainer}>
             <p>This project was supported by:</p>
             <ul>
               <li>Marc</li>
@@ -199,11 +199,11 @@ class Info extends Component {
               <li>Jesus</li>
               <li>Joost</li>
             </ul>
-          </Typography>
+          </div>
           <Typography className={classes.header} variant="h6">
             Code base
           </Typography>
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <p>
               All developed code has been added to the public domain (GitHub) so that interested parties can join and use the project results.
             </p>
@@ -223,12 +223,12 @@ class Info extends Component {
                 </Link>
               </li>
             </ul>
-          </Typography>
+          </div>
 
           <Typography className={classes.header} variant="h6">
             Publications
           </Typography>
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <ul>
               <li>
                 <Link href="https://www.linkedin.com/posts/caspar-roelofs_liskbike-showcasing-custom-blockchain-transactions-activity-6597044489418756097-mZRz/" target="_blank">
@@ -246,21 +246,16 @@ class Info extends Component {
                 </Link> (Lisk Magazine)
               </li>
               <li>
-                <Link href="https://www.liskmagazine.com/blog/2019/11/12/gimly-and-lisk-bike-to-collaborate-on-smart-bicycle-sharing-platform/" target="_blank">
-                  Gimly and Lisk.Bike To Collaborate On Smart Bicycle Sharing Platform
-                </Link> (Lisk Magazine)
-              </li>
-              <li>
                 <Link href="https://lisk.io/events/lisk.js-2019" target="_blank">
                   Lisk.Bike Hands-On Developer Workshop
                 </Link> (lisk.io)
               </li>
             </ul>
-          </Typography>
+          </div>
 
-          <Typography className={classes.explainer}>
+          <div className={classes.explainer}>
             <p data-info="Spacing"></p>
-          </Typography>
+          </div>
 
           {this.renderAppButtons()}
 

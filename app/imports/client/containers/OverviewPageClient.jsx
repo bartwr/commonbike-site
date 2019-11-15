@@ -36,6 +36,7 @@ const styles = theme => ({
   mapcontainer: {
     flex:  '1 0 auto',
     height: '20vh',
+    minHeight: '200px',
     width: '90%'
   },
   title: {

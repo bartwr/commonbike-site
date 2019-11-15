@@ -78,11 +78,12 @@ class OverviewPageAdmin extends Component {
   }
 
   handleObjectSelection = (object) => {
-    this.setState({redirect: '/object/'+object._id});
+    console.log('handleObjectSelection', object.wallet.address)
+    this.setState({redirect: '/object/'+object.wallet.address});
   }
   
   handleEditSelection = (object) => {
-    this.doRedirect('/admin/object/' + object._id)
+    this.doRedirect('/admin/object/' + object.wallet.address)
   }
 
   handleDeleteSelection = (object) => {
