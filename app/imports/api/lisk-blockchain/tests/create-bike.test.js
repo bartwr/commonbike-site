@@ -3,7 +3,7 @@ const fs = require('fs');
 const { Mnemonic } = require('@liskhq/lisk-passphrase');
 const { APIClient } = require('@liskhq/lisk-client');
 const transactions = require('@liskhq/lisk-transactions');
-const { getTimestamp, getProviderURL } = require('../_helpers.js');
+const { getTimestamp, getProviderURL, getBaseLocation } = require('../_helpers.js');
 
 // Get custom transaction types
 const CreateBikeTransaction = require('../transactions/create-bike'); // require the newly created transaction type 'HelloTransaction'
@@ -25,8 +25,7 @@ if(undefined==owneraccount) { console.log("Owner account not found"); return; }
 if(undefined==bikeaccount) { console.log("Bicycle account not found"); return; }
 
 // create a nice start location for the bike
-let base = [52.090621, 5.121474] // put bike at a random location near utrecht
-// let base = [52.499752, 13.376343] // put bike at a random location in berlin
+let base = getBaseLocation();
 
 latitude = base[0] + Math.random() / 100;
 longitude = base[1] + Math.random() / 100;

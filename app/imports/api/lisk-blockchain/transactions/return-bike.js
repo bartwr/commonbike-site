@@ -47,8 +47,8 @@ class ReturnBikeTransaction extends TransferTransaction {
             errors.push(new TransactionError("Object not currently rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently rented object"));
         }
 
-        if (object.asset.rentedBy !== this.senderId) {
-            errors.push(new TransactionError(`Bike can only be returned by the one who rented it`, this.id, "this.asset.id", this.asset.id, "Nice try"));
+        if (object.address !== this.senderId && object.asset.ownerId !== this.senderId) {
+            errors.push(new TransactionError(`Bike can only be returned from its own account or by its owner`, this.id, "this.asset.address", this.senderId, this.asset.address + " or " + object.asset.ownerId));
         }
 
         const rentStartTimestamp = object.asset.rentalStartDatetime; // this.timestamp - 15 * 60; // 15 minutes

@@ -20,11 +20,14 @@ const listbikes = async (showdetails) => {
     let accountlist = await client.accounts.get({address:tx.asset.id});
     if(accountlist.data.length==1) {
       account = accountlist.data[0];
+      description += ' [' + transactions.utils.convertBeddowsToLSK(account.balance) + ' LSK]'
       if(account.asset) {
-        description+= ' - ' + account.asset.rentedBy!='' ? util.format("rented by %s", account.asset.rentedBy) : 'available';
+        description+= ' - ' + (account.asset.rentedBy!='' ? util.format("rented by %s", account.asset.rentedBy) : 'available');
       } else {
         description+= ' - no account info available';
       }
+    } else {
+      description+= ' - no account info available';
     }
 
     if(showdetails==true&&account!=undefined) {

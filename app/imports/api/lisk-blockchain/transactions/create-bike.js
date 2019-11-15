@@ -67,8 +67,8 @@ class CreateBikeTransaction extends BaseTransaction {
             longitude: this.asset.longitude,
         };
 
-        const location = BikeValidator.location(this.id, providedLocation) === true 
-            ? providedLocation 
+        const location = BikeValidator.location(this.id, providedLocation) === true
+            ? providedLocation
             : defaultLocation;
         
         let assetdata = {
@@ -78,7 +78,8 @@ class CreateBikeTransaction extends BaseTransaction {
           ownerId: this.senderId,
           pricePerHour:  transactions.utils.convertLSKToBeddows("1"), // this.asset.pricePerHour.toString()
           deposit: transactions.utils.convertLSKToBeddows("20"), // this.asset.deposit.toString()
-          location: location
+          location: location,
+          rentedBy: ''
         }
         recipient.asset = assetdata;
 

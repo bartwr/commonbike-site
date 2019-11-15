@@ -27,8 +27,14 @@ const getProviderURL = () => {
   return 'https://brainz.lisk.bike';
 }
 
+const getBaseLocation = () => {
+  let base = [52.090621, 5.121474] // put bike at a random location near utrecht
+  // let base = [52.499752, 13.376343] // put bike at a random location in berlin
+  return base;
+}
+
 const prefix = (text, prefix) => {
   return text.split("\n").map((line)=>{ return prefix + line}).join("\n");
 }
 
-module.exports = {getTimestamp, getBike, getProviderURL, prefix}
+module.exports = {getTimestamp, getBike, getProviderURL, prefix, getBaseLocation}

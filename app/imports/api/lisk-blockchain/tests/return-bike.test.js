@@ -1,6 +1,58 @@
-const {doReturnBike} = require('../client/return-bike.js');
+require('dotenv').config()
+const { APIClient } = require('@liskhq/lisk-client');
+const { prefix, getTimestamp, getProviderURL } = require('../_helpers.js');
+const ReturnBikeTransaction = require('../transactions/return-bike');
+const transactions = require('@liskhq/lisk-transactions');
+const fs = require('fs');
 
-const bikeAccount = {"passphrase":"debris glare sustain expire cloth shove paper grit flock vital object laptop","privateKey":"49f24b696c7d31b6f85ae496aad43869c3e40cf553b17080e7550639b93338dcb6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962","publicKey":"b6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962","address":"5079673205830650891L"}
-const renterAccount = {"passphrase":"bridge tail scissors ahead crunch easily wild play face parent between perfect","privateKey":"0c6e2f5d58d7f9c52d287fac34d8e2a02a932ebd357daf065d599c2e0c1a2cca4ccc735fa41359a4d5ebf13057d70c67ce0cee68415e5b597db34d6b2c8d9a91","publicKey":"4ccc735fa41359a4d5ebf13057d70c67ce0cee68415e5b597db34d6b2c8d9a91","address":"4271028317684991679L"}
+const returnbike = async (bikeaccount) => {
+  const client = new APIClient([getProviderURL()]);
 
-doReturnBike(renterAccount, bikeAccount)
+  // find the bike info on the blockchain
+  let account = undefined;
+  let accountlist = await client.accounts.get({address:bikeaccount.address});
+  if(accountlist.data.length==1) {
+    account = accountlist.data[0];
+  } else {
+    console.log("bike account not found. Please try again");
+    return false;
+  }
+
+  let asset = {
+      id: bikeaccount.address,
+  }
+  
+  let prevlatitude = account.asset.location.latitude;
+  let prevlongitude = account.asset.location.longitude;
+  
+  // move bike around
+  latitude = prevlatitude + Math.random() / 100;
+  longitude = prevlongitude + Math.random() / 100;
+
+  asset.location = {longitude,latitude};
+  asset.prevlocation = {prevlongitude,prevlatitude};
+
+  const tx = new ReturnBikeTransaction({
+      asset,
+      // amount: transactions.utils.convertLSKToBeddows(bikeDeposit.toString()),
+      senderPublicKey: bikeaccount.publicKey,
+      recipientId: bikeaccount.address,
+      timestamp: getTimestamp(),
+  });
+
+  tx.sign(bikeaccount.passphrase);
+  
+  return await client.transactions.broadcast(tx.toJSON());
+}
+
+// Get 'accounts'
+const bikeaccount = JSON.parse(fs.readFileSync('./accounts/'+process.argv[2]+'.json'));
+
+if(undefined==bikeaccount) { console.log("Bicycle account not found"); return; }
+
+console.log("Bike %s will be locked", bikeaccount);
+
+returnbike(bikeaccount)
+.catch(error => {
+  console.error(error);
+});
