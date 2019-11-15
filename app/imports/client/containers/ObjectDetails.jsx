@@ -114,7 +114,6 @@ class ObjectDetails extends Component {
   }
   
   async updateObjectStatus() {
-    console.log(this.props);
     try {
       let newStatus = await getObjectStatus(
         this.props.settings.bikecoin.provider_url,
@@ -124,7 +123,6 @@ class ObjectDetails extends Component {
         console.error(`Couldnt get object status for ${this.props.settings.bikecoin.provider_url} and ${this.props.objectId}`)
         return false;
       }
-      console.log('newStatus', newStatus)
       let balance = 0;
       if(newStatus.balance) {
         balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);
@@ -164,8 +162,6 @@ class ObjectDetails extends Component {
     let location = status.location || {latitude: 40, longitude: 10};
     let unlocked = status.rentedBy!=""&&status.rentedBy!=undefined;
     
-    console.log('status.asset', status)
-
     const pricePerHourInLsk = status ? transactions.utils.convertBeddowsToLSK(status.pricePerHour) : "0";
     const depositInLsk = status ? transactions.utils.convertBeddowsToLSK(status.deposit) : "0";
 
@@ -197,8 +193,12 @@ class ObjectDetails extends Component {
             <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>location: {location.longitude}, {location.latitude}</Typography>
           </div>
   
-          { unlocked==true?
-                <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>rented by: {status.rentedBy}</Typography>
+          { unlocked==true ?
+                <div align="center" variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>
+                  Rented by {
+                    status.rentedBy
+                  }. Click LOCK to stop renting.<br /><br />
+                </div>
               :
                 null
           }
