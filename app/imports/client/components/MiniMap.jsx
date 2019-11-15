@@ -22,15 +22,15 @@ import { Objects } from '/imports/api/objects.js';
 const styles = theme => ({
   root: {
     position: 'relative',
-    width: '50vmin',
-    height: '30vmin',
+    width: '100%',
+    height: '50vmin',
     background: 'transparent',
     margin: '1vmin',
     border: '1px solid black'
   },
   map: {
     width: '100%',
-    height: '23vmin',
+    height: 'calc(100% - 40px)',
   },
   mapLocked: {
     width: '100%',
