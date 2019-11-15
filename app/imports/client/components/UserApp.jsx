@@ -15,7 +15,7 @@ export default class UserApp extends Component {
   }
 
   render() {
-    console.log("info shown: %s", Session.get("infoshown"))
+    // console.log("info shown: %s", Session.get("infoshown"))
     let nevershow = ClientStorage.has("dontshow-info") && (ClientStorage.get("dontshow-info")==true);
 
     if(Session.get("infoshown")!=true&&nevershow==false) {

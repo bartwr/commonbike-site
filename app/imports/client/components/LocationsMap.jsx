@@ -149,7 +149,7 @@ class LocationsMap extends Component {
         // markers.push(marker); // .bindPopup(location.title)
         this.state.objectMarkersGroup.addLayer(marker);
     
-        console.log("created marker %o", marker)
+        // console.log("created marker %o", marker)
       }
     });
   }
