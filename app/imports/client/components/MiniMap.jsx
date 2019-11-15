@@ -135,7 +135,7 @@ class MiniMap extends Component {
     const { classes, lat_lng, objectislocked, isGeolocationAvailable, isGeolocationEnabled } = this.props; // lat_lng,
     const { refmap, mapcenter, reftilelayer, objectpos} = this.state;
     
-    console.log(objectpos);
+    // console.log(objectpos);
     if(objectpos[0]==undefined) return null;
     
     return (

@@ -50,8 +50,7 @@ const styles = theme => ({
     '-ms-user-select': 'none',
     'user-select': 'none',
     backgroundColor: 'white',
-    color: 'black',
-    borderRadius: '5vmin'
+    color: 'black'
   },
   actionbutton: {
     width: '50vw',
@@ -115,6 +114,7 @@ class ObjectDetails extends Component {
   }
   
   async updateObjectStatus() {
+    console.log(this.props);
     try {
       let newStatus = await getObjectStatus(
         this.props.settings.bikecoin.provider_url,
@@ -124,9 +124,20 @@ class ObjectDetails extends Component {
         console.error(`Couldnt get object status for ${this.props.settings.bikecoin.provider_url} and ${this.props.objectId}`)
         return false;
       }
-      let balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);
-      let deposit = transactions.utils.convertBeddowsToLSK(newStatus.asset.deposit);
-      this.setState((prevstate) => { return { status: newStatus && newStatus.asset, balance: balance, deposit: deposit } });
+      console.log('newStatus', newStatus)
+      let balance = 0;
+      if(newStatus.balance) {
+        balance = transactions.utils.convertBeddowsToLSK(newStatus.balance);
+      }
+      let deposit = 0;
+      if(newStatus.asset.deposit) {
+        deposit = transactions.utils.convertBeddowsToLSK(newStatus.asset.deposit);
+      }
+      this.setState((prevstate) => { return {
+        status: newStatus && newStatus.asset,
+        balance: balance,
+        deposit: deposit
+      } });
     } catch(ex) {
       console.error(ex);
     } finally {
@@ -153,8 +164,11 @@ class ObjectDetails extends Component {
     let location = status.location || {latitude: 40, longitude: 10};
     let unlocked = status.rentedBy!=""&&status.rentedBy!=undefined;
     
-    // console.log("unlocked: %s", status.rentedBy)
-    
+    console.log('status.asset', status)
+
+    const pricePerHourInLsk = status ? transactions.utils.convertBeddowsToLSK(status.pricePerHour) : "0";
+    const depositInLsk = status ? transactions.utils.convertBeddowsToLSK(status.deposit) : "0";
+
     return (
       <div className={classes.root}>
         <div className={classes.dialog}>
@@ -162,17 +176,32 @@ class ObjectDetails extends Component {
             lat_lng={[location.latitude, location.longitude]}
             objectislocked={unlocked==false}
             bikeAddress={objectId} />
-          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>{status.title}</Typography>
-          <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{objectId}</Typography>
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {balance}</Typography>
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ownerId: {status.ownerId}</Typography>
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>deposit: {deposit}</Typography>
+
+          <Typography variant="h4" style={{backgroundColor: 'white', color: 'black'}}>
+            {status.title}
+          </Typography>
+          
+          <div align="center" hidden={unlocked == true}>
+            Do you want to rent me?
+            I cost {pricePerHourInLsk} BikeCoin per hour.
+            To rent me, you need at least {depositInLsk} BikeCoin as deposit.
+          </div>
+
+          <br/>
+
+          <div hidden>
+            <Typography variant="h6" style={{backgroundColor: 'white', color: 'black'}}>{objectId}</Typography>
+            <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>balance: {balance}</Typography>
+            <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>ownerId: {status.ownerId}</Typography>
+            <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>deposit: {deposit}</Typography>
+            <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>location: {location.longitude}, {location.latitude}</Typography>
+          </div>
+  
           { unlocked==true?
                 <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>rented by: {status.rentedBy}</Typography>
               :
                 null
           }
-          <Typography variant="subtitle1" style={{backgroundColor: 'white', color: 'black'}}>location: {location.longitude}, {location.latitude}</Typography>
 
           <RentBikeButton bikeId={this.props.objectId} depositInLSK={deposit} classes={classes} isDisabled={unlocked} />
         </div>

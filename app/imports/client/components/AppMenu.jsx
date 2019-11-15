@@ -204,7 +204,7 @@ class AppMenu extends React.Component {
                     { title: 'User Management', onclick: this.doRedirect('/admin/users').bind(this) },
                     { title: 'System Settings', onclick: this.doRedirect('/systemsettings').bind(this) } ,
                     { title: 'System Wallet', onclick: this.doRedirect('/systemwallet').bind(this) } ,
-                    { title: 'Log', onclick: this.doRedirect('/admin/log').bind(this) } ,
+                    /*{ title: 'Log', onclick: this.doRedirect('/admin/log').bind(this) } ,*/
                     ].map((info, index) => (
                     <ListItem button key={'menuitem' + info.title}  onClick={info.onclick} className={classes.nested}>
                       <ListItemIcon><StarBorderIcon /></ListItemIcon>
@@ -236,7 +236,7 @@ class AppMenu extends React.Component {
        }
        { this.props.user ?
          <ListItem>
-           <AccountCircleIcon />
+           <AccountCircleIcon />&nbsp;
            <ListItemText primary={email} />
          </ListItem>
          :
