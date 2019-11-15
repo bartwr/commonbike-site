@@ -1,6 +1,49 @@
-const {doRentBike} = require('../client/rent-bike.js');
+require('dotenv').config()
+const { APIClient } = require('@liskhq/lisk-client');
+const { prefix, getTimestamp, getProviderURL } = require('../_helpers.js');
+const RentBikeTransaction = require('../transactions/rent-bike');
+const transactions = require('@liskhq/lisk-transactions');
+const fs = require('fs');
 
-const bikeAccount = {"passphrase":"debris glare sustain expire cloth shove paper grit flock vital object laptop","privateKey":"49f24b696c7d31b6f85ae496aad43869c3e40cf553b17080e7550639b93338dcb6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962","publicKey":"b6b88243c1aea70a9c1770cac22e510f884013d97a5402ae3555e70340057962","address":"5079673205830650891L"}
-const renterAccount = {"passphrase":"bridge tail scissors ahead crunch easily wild play face parent between perfect","privateKey":"0c6e2f5d58d7f9c52d287fac34d8e2a02a932ebd357daf065d599c2e0c1a2cca4ccc735fa41359a4d5ebf13057d70c67ce0cee68415e5b597db34d6b2c8d9a91","publicKey":"4ccc735fa41359a4d5ebf13057d70c67ce0cee68415e5b597db34d6b2c8d9a91","address":"4271028317684991679L"}
+const rentbike = async (renteraccount, bikeaddress) => {
+  const client = new APIClient([getProviderURL()]);
 
-doRentBike(renterAccount, bikeAccount)
+  // find the bike info on the blockchain
+  let account = undefined;
+  let accountlist = await client.accounts.get({address:bikeaddress});
+  if(accountlist.data.length==1) {
+    account = accountlist.data[0];
+  } else {
+    console.log("bike account not found. Please try again");
+    return false;
+  }
+
+  const tx = new RentBikeTransaction({
+      asset: {
+          id: bikeaddress, 
+      },
+      amount: account.asset.deposit,
+      senderPublicKey: renteraccount.publicKey,
+      recipientId: bikeaddress,
+      timestamp: getTimestamp(),
+  });
+
+  tx.sign(renteraccount.passphrase);
+  // console.log(tx);
+
+  return await client.transactions.broadcast(tx.toJSON())
+}
+
+// Get 'accounts'
+const renteraccount = JSON.parse(fs.readFileSync('./accounts/'+process.argv[2]+'.json'));
+const bikeaddress = process.argv[3];
+
+if(undefined==renteraccount) { console.log("Owner account not found"); return; }
+if(undefined==bikeaddress) { console.log("Bicycle account not found"); return; }
+
+console.log("Renter %s will rent bike %s", renteraccount.address, bikeaddress);
+
+rentbike(renteraccount, bikeaddress)
+.catch(error => {
+  console.error(error);
+});
