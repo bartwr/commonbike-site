@@ -171,9 +171,7 @@ class Info extends Component {
           <Typography className={classes.header} variant="h6">
             Result
           </Typography>
-
           <Typography className={classes.explainer}>
-            <p><b>Result:</b></p>
             <p>Lisk SDK proof of concept application combining various ideas and technologies into an interesting use case.
             And a working demonstration for all Lisk Center visitors/developers to inspire and start using the Lisk SDK.</p>
           </Typography>
