@@ -146,9 +146,11 @@ class LocationsMap extends Component {
         let location = object.asset.location;
         var marker = L.marker([location.latitude, location.longitude], {icon: bikeIcon, zIndexOffset: -900}); // bike object marker
         marker.objectId = object.id;
+        // Check if marker exists
+        if(marker._latlng === null)
+          return;
         // markers.push(marker); // .bindPopup(location.title)
         this.state.objectMarkersGroup.addLayer(marker);
-    
         // console.log("created marker %o", marker)
       }
     });

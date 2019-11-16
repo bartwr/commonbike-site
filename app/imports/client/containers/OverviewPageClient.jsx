@@ -49,13 +49,12 @@ class OverviewPageClient extends Component {
   constructor(props) {
     super(props);
     
-    let timer = setTimeout(this.updateObjects.bind(this), 1000);  // first check after 1 second
+    let timer = setTimeout(this.updateObjects.bind(this), 1000);// first check after 1 second
     // let timer=false;
     this.state = { redirect: false, mapBoundaries: null, timer: timer, objects: [] }
   }
   
   updateObjectState = async (object) => {
-    // console.log(object.id)
     let status = await getObjectStatus(this.props.settings.bikecoin.provider_url, object.id);
     // console.log("status for %s is %o", object.id, status.asset);
     if(false!=status) {
@@ -75,25 +74,16 @@ class OverviewPageClient extends Component {
 
   async updateObjects() {
     let newObjects = await getAllBikes(this.props.settings.bikecoin.provider_url);
-    
     newObjects.forEach(this.updateObjectState.bind(this));
-    
+
     let newstate = {
       objects: newObjects
     }
-    newObjects.forEach((object)=>{
+    newObjects.forEach((object) => {
       newstate['asset-' + object.id]=false
     });
     
-    // console.log(newstate);
-    
-    // this.state.objects.forEach((existingobject)=>{
-    //   if
-    // })
-    
-    // console.log("got new objects %o", newObjects)
-
-    this.setState((prevstate)=>{
+    this.setState((prevstate) => {
       return {
         objects: newObjects,
         timer: setTimeout(this.updateObjects.bind(this), 2000)
@@ -112,7 +102,7 @@ class OverviewPageClient extends Component {
     }
 
     if(result._id!=undefined) {
-      this.setState((prevstate)=> {
+      this.setState((prevstate) => {
         return { redirect: '/admin/object/' + result._id }
       });
     }
@@ -202,18 +192,14 @@ OverviewPageClient.defaultProps = {
 
 export default withTracker((props) => {
   Meteor.subscribe('settings', false);
-  // Meteor.subscribe('objects');
 
   let settings = getSettingsClientSide();
-  if(!settings) {
+  if(! settings) {
     return {};
   }
   
-  // let objects = Objects.find({}, { sort: {title: 1} }).fetch();
-  
   return {
     settings: getSettingsClientSide(),
-    // objects,
     ...props
   };
 })(withStyles(styles)(OverviewPageClient));

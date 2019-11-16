@@ -31,7 +31,12 @@ export const getAllBikes = async (providerUrl) => {
   try {
     if(undefined==providerUrl) return [];
     const client = new APIClient([providerUrl]);
-    let createbiketxs = await client.transactions.get({ type: '1001' });
+    let createbiketxs = await client.transactions.get({
+      type: '1001',
+      offset: 0,
+      limit: 20,
+      sort: 'timestamp:desc'
+    });
     bikes=[];
     for(let i=0; i<createbiketxs.data.length;i++) {
       // Validate that bike object is valid

@@ -9,12 +9,17 @@ const listbikes = async (showdetails) => {
   // Make connection to the blockchain
   const client = new APIClient([getProviderURL()]);
 
-  const createbiketxs = await client.transactions.get({ type: '1001' });
+  const createbiketxs = await client.transactions.get({
+    type: '1001',
+    sort: 'timestamp:desc'
+  });
   for(let i=0; i<createbiketxs.data.length;i++) {
     let tx = createbiketxs.data[i];
-
     let description = util.format("%s - '%s' owned by %s", tx.asset.id, tx.asset.title, tx.asset.ownerid)
-    
+    // Check if bike has a correct asset ID
+    if(! tx.asset.id || tx.asset.id == 'NaN') {
+      continue;
+    }
     // Now lookup the account info for this bike
     let account;
     let accountlist = await client.accounts.get({address:tx.asset.id});
