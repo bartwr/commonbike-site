@@ -27,7 +27,7 @@ const createAccount = (providerUrl, addFunds=true, mnemonic='') => {
     const tx = new FaucetTransaction({
       type: 777,
       fee: '0',
-      amount: transactions.utils.convertLSKToBeddows('10000'),
+      amount: transactions.utils.convertLSKToBeddows('200'),
       senderPublicKey: account.publicKey,
       recipientId: account.address,
       timestamp: getTimestamp()
