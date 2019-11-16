@@ -207,11 +207,6 @@ class ObjectDetails extends Component {
         </div>
       </div>
     );
-    
-    // <ReturnBikeButton bikeId={this.props.objectId} classes={classes} isDisabled={
-    //   ! this.isBikeRentedToMe()
-    // } />
-    
   }
 }
 
@@ -226,6 +221,8 @@ ObjectDetails.defaultProps = {
 }
 
 export default withTracker((props) => {
+    // console.log("display details for object %s", props.objectId)
+
     Meteor.subscribe('objects');
     Meteor.subscribe('settings');
     // Get settings
@@ -234,9 +231,7 @@ export default withTracker((props) => {
       console.log("no settings available");
       return {};
     }
-    
-    console.log("display details for object %s", props.objectId)
-    
+
     // Return variables for use in this component
     return {
       objectId: props.objectId,

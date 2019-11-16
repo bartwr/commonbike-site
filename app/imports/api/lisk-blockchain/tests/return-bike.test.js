@@ -22,8 +22,8 @@ const returnbike = async (bikeaccount) => {
       id: bikeaccount.address,
   }
   
-  let prevlatitude = account.asset.location.latitude;
-  let prevlongitude = account.asset.location.longitude;
+  let prevlatitude = account.asset.location ? account.asset.location.latitude : 0;
+  let prevlongitude = account.asset.location ? account.asset.location.longitude : 0;
   
   // move bike around
   latitude = prevlatitude + Math.random() / 100;

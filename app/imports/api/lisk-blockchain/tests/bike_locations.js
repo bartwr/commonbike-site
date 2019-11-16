@@ -10,16 +10,13 @@ const url = `http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}/api/transa
 
 exec(`curl ${url}`, (err, stdout, stderr) => {
 	if (err) {
-		//some err occurred
 		console.error(err)
 	} else {
 		JSON.parse(stdout).data.forEach(bike => {
 			const bikeId = bike.asset.id;
-			const url2 = `http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}/api/accounts?address=${bikeId}`;
-			// console.log(url2);
-			exec(`curl ${url2}`, (err, stdout, stderr) => {
+			const url = `http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}/api/accounts?address=${bikeId}`;
+			exec(`curl ${url}`, (err, stdout, stderr) => {
 				if (err) {
-					//some err occurred
 					console.error(err)
 				} else {
 					const bikeAsset = JSON.parse(stdout).data[0].asset.bikes[bikeId];
