@@ -22,9 +22,11 @@ const getBike = (client, account) => {
 }
 
 const getProviderURL = () => {
-  // return `http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}`;
-  // return 'http://localhost:4000';
-  return 'https://brainz.lisk.bike';
+  // use local development blockchain
+  return 'http://localhost:4000';
+  
+  // use online development blockchain
+  // return 'https://brainz.lisk.bike';
 }
 
 const getBaseLocation = () => {
