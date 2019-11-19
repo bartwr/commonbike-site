@@ -86,7 +86,7 @@ class OverviewPageClient extends Component {
     this.setState((prevstate) => {
       return {
         objects: newObjects,
-        timer: setTimeout(this.updateObjects.bind(this), 2000)
+        timer: setTimeout(this.updateObjects.bind(this), 25000)
       }
     });
   }
