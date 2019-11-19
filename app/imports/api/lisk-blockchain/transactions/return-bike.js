@@ -35,9 +35,9 @@ class ReturnBikeTransaction extends TransferTransaction {
 
         const errors = [];
 
-        const sender = store.account.get(this.senderId);
-        const recipient = store.account.get(this.recipientId);
-        const object = store.account.get(this.asset.id);
+        const sender = store.account.get(this.senderId);        // = bike
+        const recipient = store.account.get(this.recipientId);  // = renter
+        const object = store.account.get(this.asset.id);        // = bike object
 
         if (object === undefined) {
             errors.push(new TransactionError("Object not found", this.id, "this.asset.id", this.asset.id, "An existing object ID on recipient account"));
@@ -47,8 +47,8 @@ class ReturnBikeTransaction extends TransferTransaction {
             errors.push(new TransactionError("Object not currently rented", this.id, "this.asset.id", this.asset.id, "The ID of a currently rented object"));
         }
 
-        if (object.address !== this.senderId && object.asset.ownerId !== this.senderId) {
-            errors.push(new TransactionError(`Bike can only be returned from its own account or by its owner`, this.id, "this.asset.address", this.senderId, this.asset.address + " or " + object.asset.ownerId));
+        if (object.address !== this.senderId) {
+            errors.push(new TransactionError(`Bike can only be returned from its own account or by its owner`, this.id, "this.asset.address", this.senderId, "The address of the bike"));
         }
 
         const rentStartTimestamp = object.asset.rentalStartDatetime; // this.timestamp - 15 * 60; // 15 minutes
@@ -57,51 +57,54 @@ class ReturnBikeTransaction extends TransferTransaction {
         const billedAmount = Number(object.asset.pricePerHour) * Number(billedHours);
         const paidAmount = object.asset.deposit;
         
-        const netDepositReturn = Number(paidAmount) - Number(billedAmount);
-        const newRecipientBalance = (Number(recipient.balance) - Number(netDepositReturn)).toString();
-        const newSenderBalance = (Number(sender.balance) + Number(netDepositReturn)).toString();
+        // Calculate unused deposit
+        const netDepositReturn = Number(paidAmount) - Number(billedAmount);//19
+        // Set new bikes balance
+        const newBikeBalance = (Number(sender.balance) - Number(netDepositReturn)).toString();//120-19 = 101
+        // Set new renter's balance
+        const newRenterBalance = (Number(recipient.balance) + Number(netDepositReturn)).toString();// 80 + 19 = 99
 
         object.asset.rentalEndDatetime = this.timestamp;
         object.asset.rentedBy = "";
 
-        recipient.balance = newRecipientBalance;
-        
         if(this.asset.location!=false) {
           object.asset.location=this.asset.location
         }
 
-        // LOGGING:
-        // errors.push(new TransactionError(JSON.stringify(object)));
-
-        // Update senders balance
-        store.account.set(this.senderId, {...sender, balance: newSenderBalance});
-
-        // Store new recipient balance
-        store.account.set(this.recipientId, recipient);
+        // Update users balance
+        store.account.set(this.recipientId, {...recipient, balance: newRenterBalance});
 
         // Store bike object
+        object.balance = newBikeBalance;
         store.account.set(this.asset.id, object);
 
         return errors;
     }
 
     undoAsset(store) {
+        const errors = [
+            new TransactionError(JSON.stringify({
+                'We didnt undo the asset in return-bike custom tx': true
+            }))
+        ]
+        return errors;
+
         super.undoAsset(store);
 
         const errors = [];
 
-        const sender = store.account.get(this.senderId);
-        const recipient = store.account.get(this.recipientId);
-        const object = store.account.get[this.asset.id];
+        const sender = store.account.get(this.senderId);        // bike
+        const recipient = store.account.get(this.recipientId);  // renter
+        const object = store.account.get[this.asset.id];        // bike object
 
         const rentalDuration = this.timestamp - lastRentTransaction.timestamp;
         const billedHours = Math.ceil(rentalDuration / 3600);
         const billedAmount = Number(object.asset.pricePerHour) * Number(billedHours);
         const netDepositReturn = Number(lastRentTransaction.deposit) - Number(billedAmount);
-        const newRecipientBalance = (Number(recipient.balance) + Number(netDepositReturn)).toString();
-        const newSenderBalance = (Number(sender.balance) - Number(netDepositReturn)).toString();
+        const newBikeBalance = (Number(recipient.balance) + Number(netDepositReturn)).toString();
+        const newRenterBalance = (Number(sender.balance) - Number(netDepositReturn)).toString();
 
-        store.account.set(this.senderId, { ...sender, balance: newSenderBalance});
+        store.account.set(this.senderId, { ...sender, balance: newRenterBalance});
 
         object.asset.rentalEndDatetime = this.timestamp;
         object.asset.rentedBy = this.senderId;
@@ -110,7 +113,7 @@ class ReturnBikeTransaction extends TransferTransaction {
           object.asset.location=this.asset.prevlocation
         }
 
-        recipient.balance = newRecipientBalance;
+        recipient.balance = newBikeBalance;
 
         store.account.set(this.asset.id, object);
         store.account.set(this.recipientId, recipient);
