@@ -32,8 +32,11 @@ const listaccount = async (address, showdetails) => {
     account = accountlist.data[0];
     description = account.address + ' [' + transactions.utils.convertBeddowsToLSK(account.balance) + ' LSK]'
     console.log(description);
+    if(showdetails) {
+      console.log(prefix(JSON.stringify(account,0,2), "    "));
+    }
   } else {
-    description = account.address + ' - no account info available';
+    description = address + ' - no account info available';
     console.log(description);
     return;
   }
@@ -64,11 +67,12 @@ const listaccount = async (address, showdetails) => {
   }
 }
 
-if(process.argv.length!=3) {
+if(process.argv.length<3) {
   console.log("You need to specify an account or address to get account info");
-  console.log("usage node list-accoint.test.js <account name / address>");
+  console.log("usage node list-accoint.test.js <account name / address> [<details>]");
   return;
 }
+
 
 // Get 'account'
 let address;
@@ -82,7 +86,8 @@ if(fs.existsSync(filename)==true) {
 
 if(undefined==address) { console.log("no account specified"); return; }
 
-listaccount(address)
+let showdetails = process.argv.length>3
+listaccount(address, showdetails)
 .catch(error => {
   console.error(error);
 });
