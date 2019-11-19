@@ -91,7 +91,7 @@ class ReturnBikeTransaction extends TransferTransaction {
 
         super.undoAsset(store);
 
-        const errors = [];
+        // const errors = [];
 
         const sender = store.account.get(this.senderId);        // bike
         const recipient = store.account.get(this.recipientId);  // renter
